@@ -1,0 +1,1440 @@
+{
+  "graphName" : "maven-dependency-plugin",
+  "artifacts" : [ {
+    "id" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "numericId" : 1,
+    "groupId" : "org.apache.maven.plugins",
+    "artifactId" : "maven-dependency-plugin",
+    "version" : "4.0.0-SNAPSHOT",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "maven-plugin" ]
+  }, {
+    "id" : "org.apache.maven:maven-artifact:jar",
+    "numericId" : 2,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-artifact",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "javax.enterprise:cdi-api:jar",
+    "numericId" : 3,
+    "groupId" : "javax.enterprise",
+    "artifactId" : "cdi-api",
+    "version" : "1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "javax.annotation:jsr250-api:jar",
+    "numericId" : 4,
+    "groupId" : "javax.annotation",
+    "artifactId" : "jsr250-api",
+    "version" : "1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "javax.inject:javax.inject:jar",
+    "numericId" : 5,
+    "groupId" : "javax.inject",
+    "artifactId" : "javax.inject",
+    "version" : "1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "numericId" : 6,
+    "groupId" : "org.eclipse.sisu",
+    "artifactId" : "org.eclipse.sisu.plexus",
+    "version" : "0.0.0.M5",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "com.google.guava:guava:jar",
+    "numericId" : 7,
+    "groupId" : "com.google.guava",
+    "artifactId" : "guava",
+    "version" : "10.0.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "com.google.code.findbugs:jsr305:jar",
+    "numericId" : 8,
+    "groupId" : "com.google.code.findbugs",
+    "artifactId" : "jsr305",
+    "version" : "1.3.9",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.sonatype.sisu:sisu-guice:jar:no_aop",
+    "numericId" : 9,
+    "groupId" : "org.sonatype.sisu",
+    "artifactId" : "sisu-guice",
+    "version" : "3.1.0",
+    "optional" : false,
+    "classifiers" : [ "no_aop" ],
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "aopalliance:aopalliance:jar",
+    "numericId" : 10,
+    "groupId" : "aopalliance",
+    "artifactId" : "aopalliance",
+    "version" : "1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.sisu:org.eclipse.sisu.inject:jar",
+    "numericId" : 11,
+    "groupId" : "org.eclipse.sisu",
+    "artifactId" : "org.eclipse.sisu.inject",
+    "version" : "0.0.0.M5",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-plugin-api:jar",
+    "numericId" : 12,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-plugin-api",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-model:jar",
+    "numericId" : 13,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-model",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-core:jar",
+    "numericId" : 14,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-core",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-settings-builder:jar",
+    "numericId" : 15,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-settings-builder",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-model-builder:jar",
+    "numericId" : 16,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-model-builder",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.aether:aether-impl:jar",
+    "numericId" : 17,
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-impl",
+    "version" : "0.9.0.M2",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-classworlds:jar",
+    "numericId" : 18,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-classworlds",
+    "version" : "2.5.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-component-annotations:jar",
+    "numericId" : 19,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-component-annotations",
+    "version" : "2.1.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.sonatype.plexus:plexus-sec-dispatcher:jar",
+    "numericId" : 20,
+    "groupId" : "org.sonatype.plexus",
+    "artifactId" : "plexus-sec-dispatcher",
+    "version" : "1.3",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.sonatype.plexus:plexus-cipher:jar",
+    "numericId" : 21,
+    "groupId" : "org.sonatype.plexus",
+    "artifactId" : "plexus-cipher",
+    "version" : "1.4",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-repository-metadata:jar",
+    "numericId" : 22,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-repository-metadata",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-settings:jar",
+    "numericId" : 23,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-settings",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-aether-provider:jar",
+    "numericId" : 24,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-aether-provider",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.aether:aether-spi:jar",
+    "numericId" : 25,
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-spi",
+    "version" : "0.9.0.M2",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "numericId" : 26,
+    "groupId" : "org.apache.maven.reporting",
+    "artifactId" : "maven-reporting-impl",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.reporting:maven-reporting-api:jar",
+    "numericId" : 27,
+    "groupId" : "org.apache.maven.reporting",
+    "artifactId" : "maven-reporting-api",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-sink-api:jar",
+    "numericId" : 28,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-sink-api",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-logging-api:jar",
+    "numericId" : 29,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-logging-api",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-decoration-model:jar",
+    "numericId" : 30,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-decoration-model",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-container-default:jar",
+    "numericId" : 31,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-container-default",
+    "version" : "2.1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.xbean:xbean-reflect:jar",
+    "numericId" : 32,
+    "groupId" : "org.apache.xbean",
+    "artifactId" : "xbean-reflect",
+    "version" : "3.7",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "com.google.collections:google-collections:jar",
+    "numericId" : 33,
+    "groupId" : "com.google.collections",
+    "artifactId" : "google-collections",
+    "version" : "1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-core:jar",
+    "numericId" : 34,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-core",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.commons:commons-text:jar",
+    "numericId" : 35,
+    "groupId" : "org.apache.commons",
+    "artifactId" : "commons-text",
+    "version" : "1.3",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.httpcomponents:httpclient:jar",
+    "numericId" : 36,
+    "groupId" : "org.apache.httpcomponents",
+    "artifactId" : "httpclient",
+    "version" : "4.5.13",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-codec:commons-codec:jar",
+    "numericId" : 37,
+    "groupId" : "commons-codec",
+    "artifactId" : "commons-codec",
+    "version" : "1.11",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.httpcomponents:httpcore:jar",
+    "numericId" : 38,
+    "groupId" : "org.apache.httpcomponents",
+    "artifactId" : "httpcore",
+    "version" : "4.4.14",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "numericId" : 39,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-site-renderer",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-skin-model:jar",
+    "numericId" : 40,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-skin-model",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-module-xhtml:jar",
+    "numericId" : 41,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-module-xhtml",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.doxia:doxia-module-xhtml5:jar",
+    "numericId" : 42,
+    "groupId" : "org.apache.maven.doxia",
+    "artifactId" : "doxia-module-xhtml5",
+    "version" : "1.11.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-i18n:jar",
+    "numericId" : 43,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-i18n",
+    "version" : "1.0-beta-10",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-velocity:jar",
+    "numericId" : 44,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-velocity",
+    "version" : "1.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.velocity:velocity:jar",
+    "numericId" : 45,
+    "groupId" : "org.apache.velocity",
+    "artifactId" : "velocity",
+    "version" : "1.7",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-lang:commons-lang:jar",
+    "numericId" : 46,
+    "groupId" : "commons-lang",
+    "artifactId" : "commons-lang",
+    "version" : "2.4",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.velocity:velocity-tools:jar",
+    "numericId" : 47,
+    "groupId" : "org.apache.velocity",
+    "artifactId" : "velocity-tools",
+    "version" : "2.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-digester:commons-digester:jar",
+    "numericId" : 48,
+    "groupId" : "commons-digester",
+    "artifactId" : "commons-digester",
+    "version" : "1.8",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-chain:commons-chain:jar",
+    "numericId" : 49,
+    "groupId" : "commons-chain",
+    "artifactId" : "commons-chain",
+    "version" : "1.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "dom4j:dom4j:jar",
+    "numericId" : 50,
+    "groupId" : "dom4j",
+    "artifactId" : "dom4j",
+    "version" : "1.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "oro:oro:jar",
+    "numericId" : 51,
+    "groupId" : "oro",
+    "artifactId" : "oro",
+    "version" : "2.0.8",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-io:commons-io:jar",
+    "numericId" : 52,
+    "groupId" : "commons-io",
+    "artifactId" : "commons-io",
+    "version" : "2.11.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-archiver:jar",
+    "numericId" : 53,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-archiver",
+    "version" : "4.2.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.commons:commons-compress:jar",
+    "numericId" : 54,
+    "groupId" : "org.apache.commons",
+    "artifactId" : "commons-compress",
+    "version" : "1.20",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.iq80.snappy:snappy:jar",
+    "numericId" : 55,
+    "groupId" : "org.iq80.snappy",
+    "artifactId" : "snappy",
+    "version" : "0.4",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.tukaani:xz:jar",
+    "numericId" : 56,
+    "groupId" : "org.tukaani",
+    "artifactId" : "xz",
+    "version" : "1.8",
+    "optional" : false,
+    "scopes" : [ "runtime" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-utils:jar",
+    "numericId" : 57,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-utils",
+    "version" : "3.4.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-io:jar",
+    "numericId" : 58,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-io",
+    "version" : "3.2.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-dependency-analyzer:jar",
+    "numericId" : 59,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-dependency-analyzer",
+    "version" : "1.12.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.ow2.asm:asm:jar",
+    "numericId" : 60,
+    "groupId" : "org.ow2.asm",
+    "artifactId" : "asm",
+    "version" : "9.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-dependency-tree:jar",
+    "numericId" : 61,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-dependency-tree",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-common-artifact-filters:jar",
+    "numericId" : 62,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-common-artifact-filters",
+    "version" : "3.2.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-artifact-transfer:jar",
+    "numericId" : 63,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-artifact-transfer",
+    "version" : "0.13.1",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.slf4j:slf4j-api:jar",
+    "numericId" : 64,
+    "groupId" : "org.slf4j",
+    "artifactId" : "slf4j-api",
+    "version" : "1.7.5",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-shared-utils:jar",
+    "numericId" : 65,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-shared-utils",
+    "version" : "3.3.4",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.commons:commons-lang3:jar",
+    "numericId" : 66,
+    "groupId" : "org.apache.commons",
+    "artifactId" : "commons-lang3",
+    "version" : "3.12.0",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.commons:commons-collections4:jar",
+    "numericId" : 67,
+    "groupId" : "org.apache.commons",
+    "artifactId" : "commons-collections4",
+    "version" : "4.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.plugin-tools:maven-plugin-annotations:jar",
+    "numericId" : 68,
+    "groupId" : "org.apache.maven.plugin-tools",
+    "artifactId" : "maven-plugin-annotations",
+    "version" : "3.6.4",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.aether:aether-api:jar",
+    "numericId" : 69,
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-api",
+    "version" : "0.9.0.M2",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.aether:aether-util:jar",
+    "numericId" : 70,
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-util",
+    "version" : "0.9.0.M2",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.aether:aether-connector-wagon:jar",
+    "numericId" : 71,
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-connector-wagon",
+    "version" : "0.9.0.M2",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.wagon:wagon-provider-api:jar",
+    "numericId" : 72,
+    "groupId" : "org.apache.maven.wagon",
+    "artifactId" : "wagon-provider-api",
+    "version" : "1.0",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.wagon:wagon-http-shared:jar",
+    "numericId" : 73,
+    "groupId" : "org.apache.maven.wagon",
+    "artifactId" : "wagon-http-shared",
+    "version" : "3.4.0",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.jsoup:jsoup:jar",
+    "numericId" : 74,
+    "groupId" : "org.jsoup",
+    "artifactId" : "jsoup",
+    "version" : "1.12.1",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.wagon:wagon-http-lightweight:jar",
+    "numericId" : 75,
+    "groupId" : "org.apache.maven.wagon",
+    "artifactId" : "wagon-http-lightweight",
+    "version" : "3.4.0",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "junit:junit:jar",
+    "numericId" : 76,
+    "groupId" : "junit",
+    "artifactId" : "junit",
+    "version" : "4.13.2",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.hamcrest:hamcrest-core:jar",
+    "numericId" : 77,
+    "groupId" : "org.hamcrest",
+    "artifactId" : "hamcrest-core",
+    "version" : "1.3",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.plugin-testing:maven-plugin-testing-tools:jar",
+    "numericId" : 78,
+    "groupId" : "org.apache.maven.plugin-testing",
+    "artifactId" : "maven-plugin-testing-tools",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.shared:maven-invoker:jar",
+    "numericId" : 79,
+    "groupId" : "org.apache.maven.shared",
+    "artifactId" : "maven-invoker",
+    "version" : "2.0.11",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven.plugin-testing:maven-plugin-testing-harness:jar",
+    "numericId" : 80,
+    "groupId" : "org.apache.maven.plugin-testing",
+    "artifactId" : "maven-plugin-testing-harness",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.mockito:mockito-core:jar",
+    "numericId" : 81,
+    "groupId" : "org.mockito",
+    "artifactId" : "mockito-core",
+    "version" : "4.3.1",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "net.bytebuddy:byte-buddy:jar",
+    "numericId" : 82,
+    "groupId" : "net.bytebuddy",
+    "artifactId" : "byte-buddy",
+    "version" : "1.12.7",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "net.bytebuddy:byte-buddy-agent:jar",
+    "numericId" : 83,
+    "groupId" : "net.bytebuddy",
+    "artifactId" : "byte-buddy-agent",
+    "version" : "1.12.7",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.objenesis:objenesis:jar",
+    "numericId" : 84,
+    "groupId" : "org.objenesis",
+    "artifactId" : "objenesis",
+    "version" : "3.2",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.codehaus.plexus:plexus-interpolation:jar",
+    "numericId" : 85,
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-interpolation",
+    "version" : "1.26",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.maven:maven-compat:jar",
+    "numericId" : 86,
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-compat",
+    "version" : "3.1.1",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.jetty:jetty-server:jar",
+    "numericId" : 87,
+    "groupId" : "org.eclipse.jetty",
+    "artifactId" : "jetty-server",
+    "version" : "9.4.45.v20220203",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "javax.servlet:javax.servlet-api:jar",
+    "numericId" : 88,
+    "groupId" : "javax.servlet",
+    "artifactId" : "javax.servlet-api",
+    "version" : "3.1.0",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.jetty:jetty-http:jar",
+    "numericId" : 89,
+    "groupId" : "org.eclipse.jetty",
+    "artifactId" : "jetty-http",
+    "version" : "9.4.45.v20220203",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.jetty:jetty-io:jar",
+    "numericId" : 90,
+    "groupId" : "org.eclipse.jetty",
+    "artifactId" : "jetty-io",
+    "version" : "9.4.45.v20220203",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.jetty:jetty-util:jar",
+    "numericId" : 91,
+    "groupId" : "org.eclipse.jetty",
+    "artifactId" : "jetty-util",
+    "version" : "9.4.45.v20220203",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.eclipse.jetty:jetty-security:jar",
+    "numericId" : 92,
+    "groupId" : "org.eclipse.jetty",
+    "artifactId" : "jetty-security",
+    "version" : "9.4.45.v20220203",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.slf4j:slf4j-simple:jar",
+    "numericId" : 93,
+    "groupId" : "org.slf4j",
+    "artifactId" : "slf4j-simple",
+    "version" : "1.7.36",
+    "optional" : false,
+    "scopes" : [ "test" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-beanutils:commons-beanutils:jar",
+    "numericId" : 94,
+    "groupId" : "commons-beanutils",
+    "artifactId" : "commons-beanutils",
+    "version" : "1.9.4",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-logging:commons-logging:jar",
+    "numericId" : 95,
+    "groupId" : "commons-logging",
+    "artifactId" : "commons-logging",
+    "version" : "1.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "commons-collections:commons-collections:jar",
+    "numericId" : 96,
+    "groupId" : "commons-collections",
+    "artifactId" : "commons-collections",
+    "version" : "3.2.2",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  } ],
+  "dependencies" : [ {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-artifact:jar",
+    "numericFrom" : 0,
+    "numericTo" : 1,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "javax.enterprise:cdi-api:jar",
+    "to" : "javax.annotation:jsr250-api:jar",
+    "numericFrom" : 2,
+    "numericTo" : 3,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "javax.enterprise:cdi-api:jar",
+    "to" : "javax.inject:javax.inject:jar",
+    "numericFrom" : 2,
+    "numericTo" : 4,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "to" : "javax.enterprise:cdi-api:jar",
+    "numericFrom" : 5,
+    "numericTo" : 2,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "com.google.guava:guava:jar",
+    "to" : "com.google.code.findbugs:jsr305:jar",
+    "numericFrom" : 6,
+    "numericTo" : 7,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "to" : "com.google.guava:guava:jar",
+    "numericFrom" : 5,
+    "numericTo" : 6,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.sonatype.sisu:sisu-guice:jar:no_aop",
+    "to" : "aopalliance:aopalliance:jar",
+    "numericFrom" : 8,
+    "numericTo" : 9,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "to" : "org.sonatype.sisu:sisu-guice:jar:no_aop",
+    "numericFrom" : 5,
+    "numericTo" : 8,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "to" : "org.eclipse.sisu:org.eclipse.sisu.inject:jar",
+    "numericFrom" : 5,
+    "numericTo" : 10,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-plugin-api:jar",
+    "to" : "org.eclipse.sisu:org.eclipse.sisu.plexus:jar",
+    "numericFrom" : 11,
+    "numericTo" : 5,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-plugin-api:jar",
+    "numericFrom" : 0,
+    "numericTo" : 11,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-model:jar",
+    "numericFrom" : 0,
+    "numericTo" : 12,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.apache.maven:maven-settings-builder:jar",
+    "numericFrom" : 13,
+    "numericTo" : 14,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.apache.maven:maven-model-builder:jar",
+    "numericFrom" : 13,
+    "numericTo" : 15,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.eclipse.aether:aether-impl:jar",
+    "numericFrom" : 13,
+    "numericTo" : 16,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.codehaus.plexus:plexus-classworlds:jar",
+    "numericFrom" : 13,
+    "numericTo" : 17,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.codehaus.plexus:plexus-component-annotations:jar",
+    "numericFrom" : 13,
+    "numericTo" : 18,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.sonatype.plexus:plexus-sec-dispatcher:jar",
+    "to" : "org.sonatype.plexus:plexus-cipher:jar",
+    "numericFrom" : 19,
+    "numericTo" : 20,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-core:jar",
+    "to" : "org.sonatype.plexus:plexus-sec-dispatcher:jar",
+    "numericFrom" : 13,
+    "numericTo" : 19,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-core:jar",
+    "numericFrom" : 0,
+    "numericTo" : 13,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-repository-metadata:jar",
+    "numericFrom" : 0,
+    "numericTo" : 21,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-settings:jar",
+    "numericFrom" : 0,
+    "numericTo" : 22,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven:maven-aether-provider:jar",
+    "to" : "org.eclipse.aether:aether-spi:jar",
+    "numericFrom" : 23,
+    "numericTo" : 24,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-aether-provider:jar",
+    "numericFrom" : 0,
+    "numericTo" : 23,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "to" : "org.apache.maven.reporting:maven-reporting-api:jar",
+    "numericFrom" : 25,
+    "numericTo" : 26,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-sink-api:jar",
+    "to" : "org.apache.maven.doxia:doxia-logging-api:jar",
+    "numericFrom" : 27,
+    "numericTo" : 28,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "to" : "org.apache.maven.doxia:doxia-sink-api:jar",
+    "numericFrom" : 25,
+    "numericTo" : 27,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "to" : "org.apache.maven.doxia:doxia-decoration-model:jar",
+    "numericFrom" : 25,
+    "numericTo" : 29,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.codehaus.plexus:plexus-container-default:jar",
+    "to" : "org.apache.xbean:xbean-reflect:jar",
+    "numericFrom" : 30,
+    "numericTo" : 31,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.codehaus.plexus:plexus-container-default:jar",
+    "to" : "com.google.collections:google-collections:jar",
+    "numericFrom" : 30,
+    "numericTo" : 32,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-core:jar",
+    "to" : "org.codehaus.plexus:plexus-container-default:jar",
+    "numericFrom" : 33,
+    "numericTo" : 30,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-core:jar",
+    "to" : "org.apache.commons:commons-text:jar",
+    "numericFrom" : 33,
+    "numericTo" : 34,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.httpcomponents:httpclient:jar",
+    "to" : "commons-codec:commons-codec:jar",
+    "numericFrom" : 35,
+    "numericTo" : 36,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-core:jar",
+    "to" : "org.apache.httpcomponents:httpclient:jar",
+    "numericFrom" : 33,
+    "numericTo" : 35,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-core:jar",
+    "to" : "org.apache.httpcomponents:httpcore:jar",
+    "numericFrom" : 33,
+    "numericTo" : 37,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "to" : "org.apache.maven.doxia:doxia-core:jar",
+    "numericFrom" : 25,
+    "numericTo" : 33,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.apache.maven.doxia:doxia-skin-model:jar",
+    "numericFrom" : 38,
+    "numericTo" : 39,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.apache.maven.doxia:doxia-module-xhtml:jar",
+    "numericFrom" : 38,
+    "numericTo" : 40,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.apache.maven.doxia:doxia-module-xhtml5:jar",
+    "numericFrom" : 38,
+    "numericTo" : 41,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.codehaus.plexus:plexus-i18n:jar",
+    "numericFrom" : 38,
+    "numericTo" : 42,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.codehaus.plexus:plexus-velocity:jar",
+    "numericFrom" : 38,
+    "numericTo" : 43,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.velocity:velocity:jar",
+    "to" : "commons-lang:commons-lang:jar",
+    "numericFrom" : 44,
+    "numericTo" : 45,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.apache.velocity:velocity:jar",
+    "numericFrom" : 38,
+    "numericTo" : 44,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.velocity:velocity-tools:jar",
+    "to" : "commons-digester:commons-digester:jar",
+    "numericFrom" : 46,
+    "numericTo" : 47,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.velocity:velocity-tools:jar",
+    "to" : "commons-chain:commons-chain:jar",
+    "numericFrom" : 46,
+    "numericTo" : 48,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.velocity:velocity-tools:jar",
+    "to" : "dom4j:dom4j:jar",
+    "numericFrom" : 46,
+    "numericTo" : 49,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.velocity:velocity-tools:jar",
+    "to" : "oro:oro:jar",
+    "numericFrom" : 46,
+    "numericTo" : 50,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "to" : "org.apache.velocity:velocity-tools:jar",
+    "numericFrom" : 38,
+    "numericTo" : 46,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "to" : "org.apache.maven.doxia:doxia-site-renderer:jar",
+    "numericFrom" : 25,
+    "numericTo" : 38,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.reporting:maven-reporting-impl:jar",
+    "numericFrom" : 0,
+    "numericTo" : 25,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "commons-io:commons-io:jar",
+    "numericFrom" : 0,
+    "numericTo" : 51,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.codehaus.plexus:plexus-archiver:jar",
+    "to" : "org.apache.commons:commons-compress:jar",
+    "numericFrom" : 52,
+    "numericTo" : 53,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.codehaus.plexus:plexus-archiver:jar",
+    "to" : "org.iq80.snappy:snappy:jar",
+    "numericFrom" : 52,
+    "numericTo" : 54,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.codehaus.plexus:plexus-archiver:jar",
+    "to" : "org.tukaani:xz:jar",
+    "numericFrom" : 52,
+    "numericTo" : 55,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.codehaus.plexus:plexus-archiver:jar",
+    "numericFrom" : 0,
+    "numericTo" : 52,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.codehaus.plexus:plexus-utils:jar",
+    "numericFrom" : 0,
+    "numericTo" : 56,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.codehaus.plexus:plexus-io:jar",
+    "numericFrom" : 0,
+    "numericTo" : 57,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.shared:maven-dependency-analyzer:jar",
+    "to" : "org.ow2.asm:asm:jar",
+    "numericFrom" : 58,
+    "numericTo" : 59,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.shared:maven-dependency-analyzer:jar",
+    "numericFrom" : 0,
+    "numericTo" : 58,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.shared:maven-dependency-tree:jar",
+    "numericFrom" : 0,
+    "numericTo" : 60,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.shared:maven-common-artifact-filters:jar",
+    "numericFrom" : 0,
+    "numericTo" : 61,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.shared:maven-artifact-transfer:jar",
+    "to" : "org.slf4j:slf4j-api:jar",
+    "numericFrom" : 62,
+    "numericTo" : 63,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.shared:maven-artifact-transfer:jar",
+    "numericFrom" : 0,
+    "numericTo" : 62,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.shared:maven-shared-utils:jar",
+    "numericFrom" : 0,
+    "numericTo" : 64,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.commons:commons-lang3:jar",
+    "numericFrom" : 0,
+    "numericTo" : 65,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.commons:commons-collections4:jar",
+    "numericFrom" : 0,
+    "numericTo" : 66,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.plugin-tools:maven-plugin-annotations:jar",
+    "numericFrom" : 0,
+    "numericTo" : 67,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.aether:aether-api:jar",
+    "numericFrom" : 0,
+    "numericTo" : 68,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.aether:aether-util:jar",
+    "numericFrom" : 0,
+    "numericTo" : 69,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.aether:aether-connector-wagon:jar",
+    "to" : "org.apache.maven.wagon:wagon-provider-api:jar",
+    "numericFrom" : 70,
+    "numericTo" : 71,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.aether:aether-connector-wagon:jar",
+    "numericFrom" : 0,
+    "numericTo" : 70,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.wagon:wagon-http-shared:jar",
+    "to" : "org.jsoup:jsoup:jar",
+    "numericFrom" : 72,
+    "numericTo" : 73,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.wagon:wagon-http-lightweight:jar",
+    "to" : "org.apache.maven.wagon:wagon-http-shared:jar",
+    "numericFrom" : 74,
+    "numericTo" : 72,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.wagon:wagon-http-lightweight:jar",
+    "numericFrom" : 0,
+    "numericTo" : 74,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "junit:junit:jar",
+    "to" : "org.hamcrest:hamcrest-core:jar",
+    "numericFrom" : 75,
+    "numericTo" : 76,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "junit:junit:jar",
+    "numericFrom" : 0,
+    "numericTo" : 75,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugin-testing:maven-plugin-testing-tools:jar",
+    "to" : "org.apache.maven.shared:maven-invoker:jar",
+    "numericFrom" : 77,
+    "numericTo" : 78,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.plugin-testing:maven-plugin-testing-tools:jar",
+    "numericFrom" : 0,
+    "numericTo" : 77,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven.plugin-testing:maven-plugin-testing-harness:jar",
+    "numericFrom" : 0,
+    "numericTo" : 79,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.mockito:mockito-core:jar",
+    "to" : "net.bytebuddy:byte-buddy:jar",
+    "numericFrom" : 80,
+    "numericTo" : 81,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.mockito:mockito-core:jar",
+    "to" : "net.bytebuddy:byte-buddy-agent:jar",
+    "numericFrom" : 80,
+    "numericTo" : 82,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.mockito:mockito-core:jar",
+    "to" : "org.objenesis:objenesis:jar",
+    "numericFrom" : 80,
+    "numericTo" : 83,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.mockito:mockito-core:jar",
+    "numericFrom" : 0,
+    "numericTo" : 80,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.codehaus.plexus:plexus-interpolation:jar",
+    "numericFrom" : 0,
+    "numericTo" : 84,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.apache.maven:maven-compat:jar",
+    "numericFrom" : 0,
+    "numericTo" : 85,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.jetty:jetty-server:jar",
+    "to" : "javax.servlet:javax.servlet-api:jar",
+    "numericFrom" : 86,
+    "numericTo" : 87,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.jetty:jetty-server:jar",
+    "to" : "org.eclipse.jetty:jetty-http:jar",
+    "numericFrom" : 86,
+    "numericTo" : 88,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.eclipse.jetty:jetty-server:jar",
+    "to" : "org.eclipse.jetty:jetty-io:jar",
+    "numericFrom" : 86,
+    "numericTo" : 89,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.jetty:jetty-server:jar",
+    "numericFrom" : 0,
+    "numericTo" : 86,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.jetty:jetty-util:jar",
+    "numericFrom" : 0,
+    "numericTo" : 90,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.eclipse.jetty:jetty-security:jar",
+    "numericFrom" : 0,
+    "numericTo" : 91,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "org.slf4j:slf4j-simple:jar",
+    "numericFrom" : 0,
+    "numericTo" : 92,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "commons-beanutils:commons-beanutils:jar",
+    "to" : "commons-logging:commons-logging:jar",
+    "numericFrom" : 93,
+    "numericTo" : 94,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "commons-beanutils:commons-beanutils:jar",
+    "to" : "commons-collections:commons-collections:jar",
+    "numericFrom" : 93,
+    "numericTo" : 95,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.maven.plugins:maven-dependency-plugin:maven-plugin",
+    "to" : "commons-beanutils:commons-beanutils:jar",
+    "numericFrom" : 0,
+    "numericTo" : 93,
+    "resolution" : "INCLUDED"
+  } ]
+}

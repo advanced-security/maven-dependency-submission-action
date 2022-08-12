@@ -1,0 +1,17 @@
+name: Maven Dependency Tree Dependency Submission
+description: A GitHub Action for Maven project to submit a complete dependency tree to populate the GitHub Dependency Graph
+
+inputs:
+  directory:
+    description: The directory that contains the maven project
+    type: string
+    default: ${{ github.workspace }}
+
+  token:
+    description: The GitHub token to use to submit the depedency snapshot to the repository
+    type: string
+    default: ${{ github.token }}
+
+runs:
+  using: node16
+  main: dist/index.js
