@@ -1,0 +1,24 @@
+name: Test Local Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        type: string
+        default: test-data/maven/simple
+        required: true
+
+jobs:
+  test:
+    name: Test
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run local Action
+        uses: ./
+        with:
+          directory: ${{ inputs.directory }}
