@@ -303,8 +303,8 @@ function generateSnapshot(directory) {
 exports.generateSnapshot = generateSnapshot;
 function getDetector() {
     return {
-        name: 'maven-dependency-tree-detector',
-        url: 'https://github.com/octodemo/maven-dependency-tree-action',
+        name: 'maven-dependency-tree-action',
+        url: 'https://github.com/advanced-security/maven-dependency-tree-action',
         version: version
     };
 }
@@ -13960,7 +13960,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"1.0.0"};
+module.exports = {"i8":"1.0.1"};
 
 /***/ })
 
