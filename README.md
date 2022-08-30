@@ -39,7 +39,7 @@ Currently the action is limited to single module Maven projects, with a future u
 
 ## Development
 
-To develop on this project, a Codespace has been provided that will provide all the necessary tools and installation of a JDK and Maven for the test suite to pass. Just opne a Codespace and you can start to develop in the quickest possible timeframe.
+To develop on this project, a Codespace has been provided that will provide all the necessary tools and installation of a JDK and Maven for the test suite to pass. Just open a Codespace and you can start to develop in the quickest possible timeframe.
 
 The codebase is in TypeScript to make it easier for maintenance.
 
