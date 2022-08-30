@@ -1,6 +1,10 @@
 name: Maven Dependency Tree Dependency Submission
 description: A GitHub Action for Maven project to submit a complete dependency tree to populate the GitHub Dependency Graph
 
+branding:
+  icon: alert-triangle
+  color: red
+
 inputs:
   directory:
     description: The directory that contains the maven project
