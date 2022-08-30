@@ -27,8 +27,8 @@ export async function generateSnapshot(directory: string) {
 
 function getDetector() {
   return {
-    name: 'maven-dependency-tree-detector',
-    url: 'https://github.com/octodemo/maven-dependency-tree-action',
+    name: 'maven-dependency-tree-action',
+    url: 'https://github.com/advanced-security/maven-dependency-tree-action',
     version: version
   };
 }
