@@ -15698,7 +15698,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"1.0.1"};
+module.exports = {"i8":"1.1.0"};
 
 /***/ })
 
