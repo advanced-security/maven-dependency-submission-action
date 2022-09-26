@@ -8,7 +8,7 @@ program.version(pkg.version);
 
 program.requiredOption('-t, --token <token>', 'GitHub access token');
 program.requiredOption('-r --repository <repository>', 'GitHub repository, owner/repo_name format');
-program.requiredOption('-b --branch-ref <ref>', 'GitHub repository branch reference');
+program.requiredOption('-b --branch-ref <ref>', 'GitHub repository branch reference, e.g. /refs/heads/main');
 program.requiredOption('-s --sha <commitSha>', 'GitHub repository commit SHA');
 
 program.option('-d --directory <maven-project-directory>', 'the directory containing the Maven POM file', '.');

@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 4622:
+/***/ 8047:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -174,7 +174,7 @@ function getDirectDependencies(rootPackageNumericId, dependencies) {
 
 /***/ }),
 
-/***/ 4822:
+/***/ 9726:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -214,7 +214,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
-const snapshot_generator_1 = __nccwpck_require__(7987);
+const snapshot_generator_1 = __nccwpck_require__(2963);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let snapshot;
@@ -241,7 +241,7 @@ run();
 
 /***/ }),
 
-/***/ 7987:
+/***/ 2963:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -284,8 +284,8 @@ const exec = __importStar(__nccwpck_require__(1514));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
-const depgraph_1 = __nccwpck_require__(4622);
-const version = (__nccwpck_require__(4147)/* .version */ .i8);
+const depgraph_1 = __nccwpck_require__(8047);
+const version = (__nccwpck_require__(2876)/* .version */ .i8);
 function generateSnapshot(directory, context, job) {
     return __awaiter(this, void 0, void 0, function* () {
         const depgraph = yield generateDependencyGraph(directory);
@@ -15694,7 +15694,7 @@ module.exports = require("zlib");
 
 /***/ }),
 
-/***/ 4147:
+/***/ 2876:
 /***/ ((module) => {
 
 "use strict";
@@ -15744,7 +15744,7 @@ module.exports = {"i8":"1.1.0"};
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(4822);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(9726);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()

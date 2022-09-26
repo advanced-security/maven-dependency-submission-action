@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm ci && tsc && npm exec -- @vercel/ncc build --source-map lib/index.js",
-    "pre-build-exe": "npm ci && tsc && npm exec -- @vercel/ncc build lib/executable/cli.js -o runtime",
+    "base-build": "npm ci && tsc",
+    "build": "npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js",
+    "pre-build-exe": "npm run base-build && npm exec -- @vercel/ncc build lib/src/executable/cli.js -o runtime",
     "build-exe-linux-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t linux-x64-14.15.3 -o cli/maven-dependency-submission-linux-x64",
     "test": "jest"
   },
