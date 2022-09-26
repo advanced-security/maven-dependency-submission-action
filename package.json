@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "npm ci && tsc && npm exec -- @vercel/ncc build --source-map lib/index.js",
+    "pre-build-exe": "npm run build && npm exec -- @vercel/ncc build lib/executable/cli.js -o runtime",
+    "build-exe-linux-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t linux-x64-14.15.3 -o cli/maven-dependency-submission-linux-x64",
     "test": "jest"
   },
   "repository": {
@@ -20,7 +22,8 @@
   "homepage": "https://github.com/advanced-security/maven-dependency-tree-action#readme",
   "dependencies": {
     "@actions/core": "^1.9.1",
-    "@github/dependency-submission-toolkit": "^1.2.2",
+    "@github/dependency-submission-toolkit": "^1.2.3",
+    "commander": "^9.4.0",
     "packageurl-js": "^0.0.7"
   },
   "devDependencies": {
@@ -29,6 +32,7 @@
     "@vercel/ncc": "^0.34.0",
     "chai": "^4.3.6",
     "jest": "^28.1.3",
+    "nexe": "^4.0.0-rc.1",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.8.2",
     "typescript": "^4.7.4"

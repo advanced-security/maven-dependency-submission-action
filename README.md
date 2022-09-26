@@ -37,6 +37,33 @@ Upon success it will generate a snapshot captured from Maven POM like;
 Currently the action is limited to single module Maven projects, with a future update that will add support for multi-module based projects.
 
 
+## Command Line Usage
+
+There are experimental command line clients, Linux only for now that will provide the same functionality as the GitHub Action but can be embedded into your existing CI tooling and invoked from the commandline to upload a dpendency snapshot.
+
+You can obtain the executables from the [cli](./cli) directory of the repository for now.
+
+### Parameters
+
+Run the command line tool with the `--help` option to display all the possible configuration options;
+
+```
+Usage: maven-dependency-submission [options]
+
+Options:
+  -V, --version                             output the version number
+  -t, --token <token>                       GitHub access token
+  -r --repository <repository>              GitHub repository, owner/repo_name format
+  -b --branch-ref <ref>                     GitHub repository branch reference
+  -s --sha <commitSha>                      GitHub repository commit SHA
+  -d --directory <maven-project-directory>  the directory containing the Maven POM file (default: ".")
+  --github-api-url <url>                    GitHub API URL (default: "https://api.github.com")
+  -j --job-name <jobName>                   Optional name for the activity creating and submitting the graph (default: "maven-dependency-submission-cli")
+  -i --run-id <jobName>                     Optional Run ID number for the activity that is providing the graph
+  -h, --help                                display help for command
+```
+
+
 ## Development
 
 To develop on this project, a Codespace has been provided that will provide all the necessary tools and installation of a JDK and Maven for the test suite to pass. Just open a Codespace and you can start to develop in the quickest possible timeframe.

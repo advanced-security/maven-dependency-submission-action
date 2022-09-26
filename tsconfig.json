@@ -1,19 +1,20 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "CommonJS",
-      "outDir": "./lib",
-      "rootDir": "./src",
-      "strict": true,
-      "sourceMap": true,
-      "noImplicitAny": false,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "moduleResolution": "node"
-    },
-    "exclude": [
-      "node_modules",
-      "**/*.test.ts"
-    ]
+  "compilerOptions": {
+    "target": "es6",
+    "module": "CommonJS",
+    "outDir": "./lib",
+    "sourceRoot": "./src",
+    "strict": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts"
+  ]
 }

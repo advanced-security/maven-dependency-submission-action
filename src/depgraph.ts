@@ -71,9 +71,10 @@ export class MavenDependencyGraph {
     return this.cache.countPackages();
   }
 
-  createManifest(): Manifest {
-    const manifest = new Manifest(this.getProjectName());
-
+  createManifest(filePath?: string): Manifest {
+    // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
+    // which is more beneficial at this point.
+    const manifest = new Manifest(this.getProjectName(), filePath);
     const packageUrlToArtifact = this.packageUrlToArtifact;
 
     this.directDependencies.forEach(depPackage => {
@@ -107,7 +108,7 @@ export class MavenDependencyGraph {
     let rootPackageNumericId = 0;
 
     const dependencyIdMap = dependencyMap(graph.dependencies);
-    const idToPackageCachePackage : Map<string, Package> = new Map<string, Package>();
+    const idToPackageCachePackage: Map<string, Package> = new Map<string, Package>();
 
     // Create the packages for all known artifacts
     graph.artifacts.forEach((artifact: DepgraphArtifact) => {
@@ -144,7 +145,7 @@ export class MavenDependencyGraph {
         });
       }
     });
-    this.directDependencies = getDirectDependencies(rootPackageNumericId, graph.dependencies).map(id => {return idToPackageCachePackage[id]});
+    this.directDependencies = getDirectDependencies(rootPackageNumericId, graph.dependencies).map(id => { return idToPackageCachePackage[id] });
   }
 }
 
@@ -154,10 +155,10 @@ export function parseDependencyJson(file: string): Depgraph {
     try {
       const depGraph: Depgraph = JSON.parse(data.toString('utf-8'));
       return depGraph;
-    } catch(err: any) {
+    } catch (err: any) {
       throw new Error(`Failed to parse JSON payload: ${err.message}`);
     }
-  } catch(err: any) {
+  } catch (err: any) {
     throw new Error(`Failed to load file ${file}: ${err}`);
   }
 }

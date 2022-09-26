@@ -3,19 +3,18 @@ import * as core from '@actions/core';
 
 import * as path from 'path';
 
-import {Snapshot} from '@github/dependency-submission-toolkit';
+import { Snapshot } from '@github/dependency-submission-toolkit';
 import { MavenDependencyGraph, parseDependencyJson } from './depgraph';
 
 const version = require('../package.json')['version'];
 
-
-export async function generateSnapshot(directory: string) {
+export async function generateSnapshot(directory: string, context?: any, job?: any) {
   const depgraph = await generateDependencyGraph(directory);
 
   try {
     const mavenDependencies = new MavenDependencyGraph(depgraph);
-    const manifest = mavenDependencies.createManifest();
-    const snapshot = new Snapshot(getDetector());
+    const manifest = mavenDependencies.createManifest(path.join(directory, 'pom.xml'));
+    const snapshot = new Snapshot(getDetector(), context, job);
     snapshot.addManifest(manifest);
 
     return snapshot;
@@ -61,7 +60,7 @@ export async function generateDependencyGraph(directory: string) {
     core.info(executionOutput);
     core.info(errors);
     core.endGroup();
-  } catch(err: any) {
+  } catch (err: any) {
     core.error(err);
     throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
   }
