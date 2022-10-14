@@ -1,26 +1,4 @@
 {
-<<<<<<< HEAD
-    "debug.onTaskErrors": "showErrors",
-    "files.trimTrailingWhitespace": true,
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "[javascript]": {
-      "editor.tabSize": 2
-    },
-    "[json]": {
-      "editor.tabSize": 2
-    },
-    "[yaml]": {
-      "editor.tabSize": 2
-    },
-    "[html]": {
-      "editor.tabSize": 2
-    },
-    // GitHub Codespace Theme
-    "workbench.colorTheme": "GitHub Dark Dimmed"
-  }
-=======
   "debug.onTaskErrors": "showErrors",
   "files.trimTrailingWhitespace": true,
   "editor.tabSize": 2,
@@ -45,4 +23,3 @@
     "onSave": "test-file"
   }
 }
->>>>>>> 4b5ca60 (Initial commit)
