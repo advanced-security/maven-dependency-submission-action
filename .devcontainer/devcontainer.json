@@ -1,9 +1,16 @@
 {
-  "image": "ghcr.io/octodemo/container-nodejs-development:base-20220830",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "extensions": [
     "Orta.vscode-jest",
   ],
-  // Install JDK and Maven for testing purposes
-  "postCreateCommand": ".devcontainer/install_maven.sh",
-  "postStartCommand": "npm install"
+  "postStartCommand": "npm install",
+  "features": {
+    "node": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "latest",
+      "installMaven": true
+    }
+  }
 }
