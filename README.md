@@ -2,7 +2,7 @@
 
 This is a GitHub Action that will generate a complete dependency graph for a Maven project and submit the graph to the GitHub repository so that the graph is complete and includes all the transitive dependencies.
 
-The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:4.0.1` plugin to generate JSON output of the complete dependency graph, which is then processed and submitted using the [Dependency Submission Toolkit](https://github.com/github/dependency-submission-toolkit) to the GitHub repository.
+The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:4.0.2` plugin to generate JSON output of the complete dependency graph, which is then processed and submitted using the [Dependency Submission Toolkit](https://github.com/github/dependency-submission-toolkit) to the GitHub repository.
 
 > **Warning** The dependency submission APIs and toolkit are still currently in beta and as such subject to changes in future releases.
 
@@ -34,8 +34,7 @@ Upon success it will generate a snapshot captured from Maven POM like;
 
 ## Limitations
 
-Currently the action is limited to single module Maven projects, with a future update that will add support for multi-module based projects.
-
+The action does not properly populate the dependency graph listing which dependency requires a subdependency. Instead it just creates a flat list of all dependencies the project has.
 
 ## Command Line Usage
 
