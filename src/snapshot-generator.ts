@@ -50,7 +50,7 @@ export async function generateDependencyGraph(directory: string) {
     };
 
     const mavenArguments = [
-      'com.github.ferstl:depgraph-maven-plugin:4.0.1:graph',
+      'com.github.ferstl:depgraph-maven-plugin:4.0.2:aggregate',
       '-DgraphFormat=json',
     ];
 
@@ -64,8 +64,6 @@ export async function generateDependencyGraph(directory: string) {
     core.error(err);
     throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
   }
-
-  //TODO need to account for multi module projects
 
   // Now we have the target/dependency-graph.json file to process
   const file = path.join(directory, 'target', 'dependency-graph.json');
