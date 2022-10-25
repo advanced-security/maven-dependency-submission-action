@@ -1,26 +1,4 @@
 {
-<<<<<<< HEAD
-    "debug.onTaskErrors": "showErrors",
-    "files.trimTrailingWhitespace": true,
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "[javascript]": {
-      "editor.tabSize": 2
-    },
-    "[json]": {
-      "editor.tabSize": 2
-    },
-    "[yaml]": {
-      "editor.tabSize": 2
-    },
-    "[html]": {
-      "editor.tabSize": 2
-    },
-    // GitHub Codespace Theme
-    "workbench.colorTheme": "GitHub Dark Dimmed"
-  }
-=======
   "debug.onTaskErrors": "showErrors",
   "files.trimTrailingWhitespace": true,
   "editor.tabSize": 2,
@@ -41,8 +19,6 @@
   // GitHub Codespace Theme
   "workbench.colorTheme": "GitHub Dark Dimmed",
   "jest.autoRun": {
-    "watch": false,
-    "onSave": "test-file"
+    "watch": false
   }
 }
->>>>>>> 4b5ca60 (Initial commit)

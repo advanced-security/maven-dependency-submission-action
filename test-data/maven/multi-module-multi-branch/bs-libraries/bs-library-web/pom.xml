@@ -3,22 +3,17 @@
 
     <parent>
       <groupId>com.github.octodemo</groupId>
-      <artifactId>bs-parent</artifactId>
+      <artifactId>bs-libraries</artifactId>
       <version>${revision}${changelist}${sha1}</version>
     </parent>
 
-    <artifactId>bs-application</artifactId>
+    <artifactId>bs-library-web</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bs-library</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty.http2</groupId>
+        <artifactId>http2-http-client-transport</artifactId>
+      </dependency>
     </dependencies>
 </project>

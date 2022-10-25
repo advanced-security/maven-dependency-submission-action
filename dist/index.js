@@ -35,8 +35,6 @@ const fs = __importStar(__nccwpck_require__(7147));
 const packageurl_js_1 = __nccwpck_require__(8915);
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
 class MavenDependencyGraph {
-    // //@ ts-ignore
-    // private rootPackage: DepgraphArtifact;
     constructor(graph) {
         this.depGraph = graph;
         this.cache = new dependency_submission_toolkit_1.PackageCache();
@@ -85,9 +83,9 @@ class MavenDependencyGraph {
     parseDependencies() {
         const graph = this.depGraph;
         const cache = this.cache;
-        const rootPackageArtifactId = graph.graphName;
-        let rootPackageNumericId = 0;
+        const rootArtifactIds = [];
         const dependencyIdMap = dependencyMap(graph.dependencies);
+        const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(graph.dependencies);
         const idToPackageCachePackage = new Map();
         // Create the packages for all known artifacts
         graph.artifacts.forEach((artifact) => {
@@ -96,8 +94,8 @@ class MavenDependencyGraph {
             idToPackageCachePackage[artifact.id] = pkg;
             // Store a reference from the package URL to the original artifact as the artifact has extra metadata we need later for scopes and optionality
             this.packageUrlToArtifact[artifactUrl.toString()] = artifact;
-            if (artifact.artifactId === rootPackageArtifactId) {
-                rootPackageNumericId = artifact.numericId - 1;
+            if (dependencyArtifactIdsWithParents.indexOf(artifact.id) === -1) {
+                rootArtifactIds.push(artifact.id);
             }
         });
         // Now that all packages are known, process the dependencies for each and link them
@@ -118,15 +116,27 @@ class MavenDependencyGraph {
                 });
             }
         });
-        this.directDependencies = getDirectDependencies(rootPackageNumericId, graph.dependencies).map(id => { return idToPackageCachePackage[id]; });
+        const uniqueRootArtifactDependencies = [];
+        rootArtifactIds.forEach(rootArtifactId => {
+            const dependencyIds = getDirectDependencies(rootArtifactId, graph.dependencies);
+            if (dependencyIds) {
+                dependencyIds.forEach(dependencyId => {
+                    if (uniqueRootArtifactDependencies.indexOf(dependencyId) === -1) {
+                        uniqueRootArtifactDependencies.push(dependencyId);
+                    }
+                });
+            }
+        });
+        this.directDependencies = uniqueRootArtifactDependencies.map(depId => idToPackageCachePackage[depId]);
     }
 }
 exports.MavenDependencyGraph = MavenDependencyGraph;
-function parseDependencyJson(file) {
+function parseDependencyJson(file, isMultiModule = false) {
     try {
         const data = fs.readFileSync(file);
         try {
             const depGraph = JSON.parse(data.toString('utf-8'));
+            depGraph.isMultiModule = isMultiModule;
             return depGraph;
         }
         catch (err) {
@@ -153,6 +163,9 @@ function getDependencyScopeForMavenScope(mavenScopes) {
     // The default scope for now as we only have runtime and development currently
     return 'runtime';
 }
+function extractDependencyArtifactIdsWithParents(dependencies) {
+    return dependencies.map(dependency => { return dependency.to; });
+}
 function dependencyMap(dependencies) {
     const map = new Map();
     dependencies.forEach(dependency => {
@@ -166,8 +179,8 @@ function dependencyMap(dependencies) {
     });
     return map;
 }
-function getDirectDependencies(rootPackageNumericId, dependencies) {
-    const topLevel = dependencies.filter(dependency => { return dependency.numericFrom === rootPackageNumericId; });
+function getDirectDependencies(artifactId, dependencies) {
+    const topLevel = dependencies.filter(dependency => { return dependency.from === artifactId; });
     return topLevel.map(dep => { return dep.to; });
 }
 //# sourceMappingURL=depgraph.js.map
@@ -283,9 +296,11 @@ exports.generateDependencyGraph = exports.generateSnapshot = void 0;
 const exec = __importStar(__nccwpck_require__(1514));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
+const fs = __importStar(__nccwpck_require__(7147));
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
 const depgraph_1 = __nccwpck_require__(8047);
 const version = (__nccwpck_require__(2876)/* .version */ .i8);
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
 function generateSnapshot(directory, context, job) {
     return __awaiter(this, void 0, void 0, function* () {
         const depgraph = yield generateDependencyGraph(directory);
@@ -326,12 +341,23 @@ function generateDependencyGraph(directory) {
                     }
                 }
             };
-            const mavenArguments = [
-                'com.github.ferstl:depgraph-maven-plugin:4.0.1:graph',
+            core.startGroup('depgraph-maven-plugin:reactor');
+            const mavenReactorArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
                 '-DgraphFormat=json',
+                '-DoutputFileName=reactor.json'
             ];
-            core.startGroup('depgraph-maven-plugin');
-            yield exec.exec('mvn', mavenArguments, options);
+            yield exec.exec('mvn', mavenReactorArguments, options);
+            core.info(executionOutput);
+            core.info(errors);
+            core.endGroup();
+            core.startGroup('depgraph-maven-plugin:aggregate');
+            const mavenAggregateArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
+                '-DgraphFormat=json',
+                '-DoutputFileName=aggregate-depgraph.json'
+            ];
+            yield exec.exec('mvn', mavenAggregateArguments, options);
             core.info(executionOutput);
             core.info(errors);
             core.endGroup();
@@ -340,11 +366,12 @@ function generateDependencyGraph(directory) {
             core.error(err);
             throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
         }
-        //TODO need to account for multi module projects
-        // Now we have the target/dependency-graph.json file to process
-        const file = path.join(directory, 'target', 'dependency-graph.json');
+        const targetPath = path.join(directory, 'target');
+        const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
+        // Now we have the aggregate dependency graph file to process
+        const file = path.join(targetPath, 'aggregate-depgraph.json');
         try {
-            return (0, depgraph_1.parseDependencyJson)(file);
+            return (0, depgraph_1.parseDependencyJson)(file, isMultiModule);
         }
         catch (err) {
             core.error(err);
@@ -353,6 +380,22 @@ function generateDependencyGraph(directory) {
     });
 }
 exports.generateDependencyGraph = generateDependencyGraph;
+function checkForMultiModule(reactorJsonFile) {
+    try {
+        const data = fs.readFileSync(reactorJsonFile);
+        try {
+            const reactor = JSON.parse(data.toString('utf-8'));
+            // The reactor file will have an array of artifacts making up the parent and child modules if it is a multi module project
+            return reactor.artifacts && reactor.artifacts.length > 0;
+        }
+        catch (err) {
+            throw new Error(`Failed to parse reactor JSON payload: ${err.message}`);
+        }
+    }
+    catch (err) {
+        throw new Error(`Failed to load file ${reactorJsonFile}: ${err}`);
+    }
+}
 //# sourceMappingURL=snapshot-generator.js.map
 
 /***/ }),
@@ -15647,7 +15690,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"2.0.1"};
+module.exports = {"i8":"3.0.0"};
 
 /***/ })
 

@@ -9,7 +9,7 @@
     <description>A Java example project to demonstrate a Java development stack with Maven, GitHub Actions, GitHub Package Registry and Azure.</description>
 
     <modules>
-      <module>bs-library</module>
+      <module>bs-libraries</module>
       <module>bs-application</module>
       <module>bs-other</module>
     </modules>
@@ -46,7 +46,13 @@
 
             <dependency>
               <groupId>${project.groupId}</groupId>
-              <artifactId>bs-library</artifactId>
+              <artifactId>bs-library-web</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>bs-library-logging</artifactId>
               <version>${project.version}</version>
             </dependency>
 
@@ -56,6 +62,13 @@
                 <version>${log4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- This is overwritten in the bs-libraries versions -->
+            <dependency>
+              <groupId>org.postgresql</groupId>
+              <artifactId>postgresql</artifactId>
+              <version>42.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -7,18 +7,18 @@
       <version>${revision}${changelist}${sha1}</version>
     </parent>
 
-    <artifactId>bs-application</artifactId>
+    <artifactId>bs-library</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
+          <groupId>org.eclipse.jetty.http2</groupId>
+          <artifactId>http2-http-client-transport</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bs-library</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
         </dependency>
     </dependencies>
 </project>

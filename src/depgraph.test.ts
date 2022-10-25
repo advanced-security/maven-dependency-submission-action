@@ -30,7 +30,7 @@ describe('depgraph', () => {
 
       beforeAll(() => {
         depGraph = parseDependencyJson(getTestDataFile('maven-plugin'));
-      })
+      });
 
       it('should parse out the top level dependencies', () => {
         const mavenDependencies = new MavenDependencyGraph(depGraph);
@@ -94,7 +94,7 @@ describe('depgraph', () => {
 
       beforeAll(() => {
         depGraph = parseDependencyJson(getTestDataFile('bookstore-v3'));
-      })
+      });
 
       it('should parse out the top level dependencies', () => {
         const mavenDependencies = new MavenDependencyGraph(depGraph);
@@ -110,6 +110,30 @@ describe('depgraph', () => {
           "pkg:maven/org.json/json@20210307",
           "pkg:maven/org.xerial/sqlite-jdbc@3.32.3.2",
           "pkg:maven/org.apache.logging.log4j/log4j-slf4j18-impl@2.17.2",
+          "pkg:maven/junit/junit@4.13"
+        ]);
+      });
+    });
+
+
+    describe('bs-parent-dep-tree', () => {
+
+      let depGraph;
+
+      beforeAll(() => {
+        depGraph = parseDependencyJson(getTestDataFile('bs-parent-dep-tree'));
+      });
+
+      it('should parse out the top level dependencies', () => {
+        const mavenDependencies = new MavenDependencyGraph(depGraph);
+        const topLevelDependencies = mavenDependencies.getDirectDependencies();
+
+        expect(mavenDependencies.getPackageCount()).to.equal(19);
+
+        const topLevelNames = topLevelDependencies.map(pkg => pkg.packageID());
+        expect(topLevelNames).to.have.members([
+          "pkg:maven/org.eclipse.jetty/jetty-server@10.0.10",
+          "pkg:maven/com.github.octodemo/bs-library@1.0.0-SNAPSHOT",
           "pkg:maven/junit/junit@4.13"
         ]);
       });

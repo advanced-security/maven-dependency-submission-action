@@ -16,6 +16,11 @@ inputs:
     type: string
     default: ${{ github.token }}
 
+  github-api-url:
+    description: The URL to the GitHub API to use to publish the results to, defaults to reading this from the Actions environment
+    type: string
+    required: false
+
 runs:
   using: node16
   main: dist/index.js

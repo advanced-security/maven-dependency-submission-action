@@ -11,14 +11,19 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+      </dependency>
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bs-library</artifactId>
-        </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>bs-library-web</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>bs-library-web</artifactId>
+      </dependency>
     </dependencies>
 </project>
