@@ -401,8 +401,9 @@ function checkForMultiModule(reactorJsonFile) {
 // TODO this is assuming the checkout was made into the base path of the workspace...
 function getRepositoryRelativePath(file) {
     const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
-    const fileResolved = path.dirname(path.resolve(file));
-    if (fileResolved.startsWith(workspaceDirectory)) {
+    const fileResolved = path.resolve(file);
+    const fileDirectory = path.dirname(fileResolved);
+    if (fileDirectory.startsWith(workspaceDirectory)) {
         return fileResolved.substring(workspaceDirectory.length + path.sep.length);
     }
     else {
