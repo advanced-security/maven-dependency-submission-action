@@ -306,7 +306,9 @@ function generateSnapshot(directory, context, job) {
         const depgraph = yield generateDependencyGraph(directory);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
-            const manifest = mavenDependencies.createManifest(path.join(directory, 'pom.xml'));
+            // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
+            const pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
+            const manifest = mavenDependencies.createManifest(pomFile);
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), context, job);
             snapshot.addManifest(manifest);
             return snapshot;
@@ -394,6 +396,17 @@ function checkForMultiModule(reactorJsonFile) {
     }
     catch (err) {
         throw new Error(`Failed to load file ${reactorJsonFile}: ${err}`);
+    }
+}
+// TODO this is assuming the checkout was made into the base path of the workspace...
+function getRepositoryRelativePath(file) {
+    const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
+    const fileResolved = path.dirname(path.resolve(file));
+    if (fileResolved.startsWith(workspaceDirectory)) {
+        return fileResolved.substring(workspaceDirectory.length + path.sep.length);
+    }
+    else {
+        return path.resolve(file);
     }
 }
 //# sourceMappingURL=snapshot-generator.js.map
