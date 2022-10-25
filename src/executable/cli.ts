@@ -1,5 +1,3 @@
-import { Snapshot, submitSnapshot } from '@github/dependency-submission-toolkit';
-import { generateSnapshot } from '../snapshot-generator';
 import pkg from '../../package.json';
 
 const { program } = require('commander');
@@ -18,12 +16,21 @@ program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity
 
 program.parse(process.argv);
 
+const opts = program.opts();
+
+// Inject some required environment variables like the Actions INPUTs and special environment variables
+process.env['INPUT_TOKEN'] = opts.token;
+process.env['GITHUB_REPOSITORY'] = opts.repository;
+if (opts.githubApiUrl) {
+  process.env['GITHUB_API_URL'] = opts.githubApiUrl;
+}
+
+// Import dependency-submission-toolkit after setting GITHUB_API_URL
+import { Snapshot, submitSnapshot } from '@github/dependency-submission-toolkit';
+import { generateSnapshot } from '../snapshot-generator';
+
 async function execute() {
   const opts = program.opts();
-
-  // Inject some required environment variables like the Actions INPUTs and special environment variables
-  process.env['INPUT_TOKEN'] = opts.token;
-  process.env['GITHUB_REPOSITORY'] = opts.repository;
 
   let snapshot: Snapshot | undefined;
   try {
