@@ -1,4 +1,4 @@
-import * as path from 'path';
+import { getMavenProjectDirectory } from './utils/test-util';
 import { generateDependencyGraph, generateSnapshot } from './snapshot-generator';
 
 describe('snapshot-generator', () => {
@@ -42,9 +42,14 @@ describe('snapshot-generator', () => {
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['bs-parent'].countDependencies()).toBe(20);
     });
+
+    it('should generate a snapshot for a maven-wrapper project', async () => {
+      const projectDir = getMavenProjectDirectory('maven-wrapper');
+      const snapshot = await generateSnapshot(projectDir);
+
+      expect(snapshot.manifests['maven-wrapper-test']).toBeDefined();
+      expect(snapshot.detector.version).toBe(version);
+      expect(snapshot.manifests['maven-wrapper-test'].countDependencies()).toBe(0);
+    });
   });
 });
-
-function getMavenProjectDirectory(name: string): string {
-  return path.join(__dirname, '..', 'test-data', 'maven', name);
-}

@@ -38,7 +38,9 @@ async function execute() {
       id: `${opts.runId || Date.now()}`
     };
 
-    snapshot = await generateSnapshot(opts.directory, context, job);
+    const mvnConfig = {};
+
+    snapshot = await generateSnapshot(opts.directory, mvnConfig, context, job);
 
   } catch (err: any) {
     console.error(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);

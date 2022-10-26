@@ -2,38 +2,15 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 8047:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.artifactToPackageURL = exports.parseDependencyJson = exports.MavenDependencyGraph = void 0;
-const fs = __importStar(__nccwpck_require__(7147));
 const packageurl_js_1 = __nccwpck_require__(8915);
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
+const file_utils_1 = __nccwpck_require__(799);
 class MavenDependencyGraph {
     constructor(graph) {
         this.depGraph = graph;
@@ -83,9 +60,10 @@ class MavenDependencyGraph {
     parseDependencies() {
         const graph = this.depGraph;
         const cache = this.cache;
+        const dependencies = graph.dependencies || [];
         const rootArtifactIds = [];
-        const dependencyIdMap = dependencyMap(graph.dependencies);
-        const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(graph.dependencies);
+        const dependencyIdMap = dependencyMap(dependencies);
+        const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(dependencies);
         const idToPackageCachePackage = new Map();
         // Create the packages for all known artifacts
         graph.artifacts.forEach((artifact) => {
@@ -118,7 +96,7 @@ class MavenDependencyGraph {
         });
         const uniqueRootArtifactDependencies = [];
         rootArtifactIds.forEach(rootArtifactId => {
-            const dependencyIds = getDirectDependencies(rootArtifactId, graph.dependencies);
+            const dependencyIds = getDirectDependencies(rootArtifactId, dependencies);
             if (dependencyIds) {
                 dependencyIds.forEach(dependencyId => {
                     if (uniqueRootArtifactDependencies.indexOf(dependencyId) === -1) {
@@ -132,19 +110,22 @@ class MavenDependencyGraph {
 }
 exports.MavenDependencyGraph = MavenDependencyGraph;
 function parseDependencyJson(file, isMultiModule = false) {
+    const data = (0, file_utils_1.loadFileContents)(file);
+    if (!data) {
+        return {
+            graphName: 'empty',
+            artifacts: [],
+            dependencies: [],
+            isMultiModule: isMultiModule
+        };
+    }
     try {
-        const data = fs.readFileSync(file);
-        try {
-            const depGraph = JSON.parse(data.toString('utf-8'));
-            depGraph.isMultiModule = isMultiModule;
-            return depGraph;
-        }
-        catch (err) {
-            throw new Error(`Failed to parse JSON payload: ${err.message}`);
-        }
+        const depGraph = JSON.parse(data);
+        depGraph.isMultiModule = isMultiModule;
+        return depGraph;
     }
     catch (err) {
-        throw new Error(`Failed to load file ${file}: ${err}`);
+        throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
     }
 }
 exports.parseDependencyJson = parseDependencyJson;
@@ -164,19 +145,24 @@ function getDependencyScopeForMavenScope(mavenScopes) {
     return 'runtime';
 }
 function extractDependencyArtifactIdsWithParents(dependencies) {
-    return dependencies.map(dependency => { return dependency.to; });
+    if (dependencies) {
+        return dependencies.map(dependency => { return dependency.to; });
+    }
+    return [];
 }
 function dependencyMap(dependencies) {
     const map = new Map();
-    dependencies.forEach(dependency => {
-        const fromUrl = dependency.from;
-        let deps = map[fromUrl];
-        if (!deps) {
-            deps = [];
-            map[fromUrl] = deps;
-        }
-        deps.push(dependency.to);
-    });
+    if (dependencies) {
+        dependencies.forEach(dependency => {
+            const fromUrl = dependency.from;
+            let deps = map[fromUrl];
+            if (!deps) {
+                deps = [];
+                map[fromUrl] = deps;
+            }
+            deps.push(dependency.to);
+        });
+    }
     return map;
 }
 function getDirectDependencies(artifactId, dependencies) {
@@ -233,7 +219,12 @@ function run() {
         let snapshot;
         try {
             const directory = core.getInput('directory', { required: true });
-            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory);
+            const mavenConfig = {
+                ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
+                settingsFile: core.getInput('settings-file'),
+                mavenArgs: core.getInput('maven-args') || '',
+            };
+            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig);
         }
         catch (err) {
             core.error(err);
@@ -251,6 +242,160 @@ function run() {
 }
 run();
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 7433:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MavenRunner = void 0;
+const exec = __importStar(__nccwpck_require__(1514));
+const core = __importStar(__nccwpck_require__(2186));
+const path = __importStar(__nccwpck_require__(1017));
+const file_utils_1 = __nccwpck_require__(799);
+class MavenRunner {
+    constructor(directory, settingsFile, ingoreWrapper = false, mavenArguments = '') {
+        this.mavenExecutable = resolveMavenExecutable(directory, ingoreWrapper);
+        if (settingsFile) {
+            if ((0, file_utils_1.fileExists)(settingsFile)) {
+                this.settings = settingsFile;
+            }
+            else {
+                throw new Error(`The specified settings file '${settingsFile}' does not exist`);
+            }
+        }
+        this.additionalArguments = [];
+        if (mavenArguments.trim().length > 0) {
+            this.additionalArguments = mavenArguments.trim().split(' ');
+        }
+    }
+    get configuration() {
+        return {
+            executable: this.mavenExecutable,
+            settingsFile: this.settings
+        };
+    }
+    exec(cwd, parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const commandArgs = [];
+            // implictly run in batch mode, might need to make this configurable in the future
+            commandArgs.push('-B');
+            if (this.settings) {
+                commandArgs.push('--settings');
+                commandArgs.push(this.settings);
+            }
+            // Only append the additional arguments they are not empty values
+            if (this.additionalArguments && this.additionalArguments.length > 0) {
+                this.additionalArguments.forEach(arg => {
+                    if (arg.trim().length > 0) {
+                        commandArgs.push(arg);
+                    }
+                });
+            }
+            Array.prototype.push.apply(commandArgs, parameters);
+            let executionOutput = '';
+            let executionErrors = '';
+            const options = {
+                cwd: cwd,
+                listeners: {
+                    stdout: (data) => {
+                        executionOutput += data.toString();
+                    },
+                    stderr: (data) => {
+                        executionErrors += data.toString();
+                    }
+                }
+            };
+            try {
+                const exitCode = yield exec.exec(this.mavenExecutable, commandArgs, options);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: exitCode
+                };
+            }
+            catch (err) {
+                //TODO possibly throw a wrapped error here
+                core.warning(`Error encountered executing maven: ${err.message}`);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: -1
+                };
+            }
+        });
+    }
+}
+exports.MavenRunner = MavenRunner;
+function resolveMavenExecutable(directory, ignoreWrapper = false) {
+    if (ignoreWrapper) {
+        return getMavenExecutable();
+    }
+    const wrapper = getMavenWrapper(directory);
+    // Return the matche maven wrapper script or otherwise fall back to mvn on the path
+    return wrapper || getMavenExecutable();
+}
+function getMavenWrapper(directory) {
+    if (!directory) {
+        return undefined;
+    }
+    const mavenWrapperFilename = path.join(directory, getMavenWrapperExecutable());
+    if ((0, file_utils_1.fileExists)(mavenWrapperFilename)) {
+        return mavenWrapperFilename;
+    }
+    return undefined;
+}
+function getMavenWrapperExecutable() {
+    if (isWindows()) {
+        return 'mvnw.cmd';
+    }
+    return 'mvnw';
+}
+function getMavenExecutable() {
+    if (isWindows()) {
+        return 'mvn.cmd';
+    }
+    return 'mvn';
+}
+function isWindows() {
+    return process.platform === 'win32';
+}
+//# sourceMappingURL=maven-runner.js.map
 
 /***/ }),
 
@@ -293,17 +438,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateDependencyGraph = exports.generateSnapshot = void 0;
-const exec = __importStar(__nccwpck_require__(1514));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
-const fs = __importStar(__nccwpck_require__(7147));
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
 const depgraph_1 = __nccwpck_require__(8047);
+const maven_runner_1 = __nccwpck_require__(7433);
+const file_utils_1 = __nccwpck_require__(799);
 const version = (__nccwpck_require__(2876)/* .version */ .i8);
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
-function generateSnapshot(directory, context, job) {
+function generateSnapshot(directory, mvnConfig, context, job) {
     return __awaiter(this, void 0, void 0, function* () {
-        const depgraph = yield generateDependencyGraph(directory);
+        const depgraph = yield generateDependencyGraph(directory, mvnConfig);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
             // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
@@ -327,42 +472,36 @@ function getDetector() {
         version: version
     };
 }
-function generateDependencyGraph(directory) {
+function generateDependencyGraph(directory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let executionOutput = '';
-            let errors = '';
-            const options = {
-                cwd: directory,
-                listeners: {
-                    stdout: (data) => {
-                        executionOutput += data.toString();
-                    },
-                    stderr: (data) => {
-                        errors += data.toString();
-                    }
-                }
-            };
+            const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper);
             core.startGroup('depgraph-maven-plugin:reactor');
             const mavenReactorArguments = [
                 `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
                 '-DgraphFormat=json',
                 '-DoutputFileName=reactor.json'
             ];
-            yield exec.exec('mvn', mavenReactorArguments, options);
-            core.info(executionOutput);
-            core.info(errors);
+            const reactorResults = yield mvn.exec(directory, mavenReactorArguments);
+            core.info(reactorResults.stdout);
+            core.info(reactorResults.stderr);
             core.endGroup();
+            if (reactorResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
+            }
             core.startGroup('depgraph-maven-plugin:aggregate');
             const mavenAggregateArguments = [
                 `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
                 '-DgraphFormat=json',
                 '-DoutputFileName=aggregate-depgraph.json'
             ];
-            yield exec.exec('mvn', mavenAggregateArguments, options);
-            core.info(executionOutput);
-            core.info(errors);
+            const aggregateResults = yield mvn.exec(directory, mavenAggregateArguments);
+            core.info(aggregateResults.stdout);
+            core.info(aggregateResults.stderr);
             core.endGroup();
+            if (aggregateResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`);
+            }
         }
         catch (err) {
             core.error(err);
@@ -371,22 +510,22 @@ function generateDependencyGraph(directory) {
         const targetPath = path.join(directory, 'target');
         const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
         // Now we have the aggregate dependency graph file to process
-        const file = path.join(targetPath, 'aggregate-depgraph.json');
+        const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
         try {
-            return (0, depgraph_1.parseDependencyJson)(file, isMultiModule);
+            return (0, depgraph_1.parseDependencyJson)(aggregateGraphFile, isMultiModule);
         }
         catch (err) {
             core.error(err);
-            throw new Error(`Could not parse maven dependency file, '${file}': ${err.message}`);
+            throw new Error(`Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`);
         }
     });
 }
 exports.generateDependencyGraph = generateDependencyGraph;
 function checkForMultiModule(reactorJsonFile) {
-    try {
-        const data = fs.readFileSync(reactorJsonFile);
+    const data = (0, file_utils_1.loadFileContents)(reactorJsonFile);
+    if (data) {
         try {
-            const reactor = JSON.parse(data.toString('utf-8'));
+            const reactor = JSON.parse(data);
             // The reactor file will have an array of artifacts making up the parent and child modules if it is a multi module project
             return reactor.artifacts && reactor.artifacts.length > 0;
         }
@@ -394,9 +533,8 @@ function checkForMultiModule(reactorJsonFile) {
             throw new Error(`Failed to parse reactor JSON payload: ${err.message}`);
         }
     }
-    catch (err) {
-        throw new Error(`Failed to load file ${reactorJsonFile}: ${err}`);
-    }
+    // If no data report that it is not a multi module project
+    return false;
 }
 // TODO this is assuming the checkout was made into the base path of the workspace...
 function getRepositoryRelativePath(file) {
@@ -411,6 +549,71 @@ function getRepositoryRelativePath(file) {
     }
 }
 //# sourceMappingURL=snapshot-generator.js.map
+
+/***/ }),
+
+/***/ 799:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fileExists = exports.loadFileContents = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+function loadFileContents(file) {
+    if (!fileExists(file)) {
+        return undefined;
+    }
+    try {
+        const data = fs.readFileSync(file);
+        return data.toString('utf8');
+    }
+    catch (err) {
+        throw new Error(`Failed to load file contents ${file}: ${err}`);
+    }
+}
+exports.loadFileContents = loadFileContents;
+function fileExists(file) {
+    if (!file) {
+        return false;
+    }
+    try {
+        const wrapperFileStats = fs.statSync(file);
+        // TODO might need to deal with a linked file, but ingoring that for now
+        return wrapperFileStats && wrapperFileStats.isFile();
+    }
+    catch (err) {
+        if (err.code == 'ENOENT') {
+            return false;
+        }
+        throw err;
+    }
+}
+exports.fileExists = fileExists;
+//# sourceMappingURL=file-utils.js.map
 
 /***/ }),
 

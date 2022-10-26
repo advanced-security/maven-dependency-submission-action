@@ -1,17 +1,16 @@
-import * as fs from 'fs';
-
 import { PackageURL } from 'packageurl-js'
 import { PackageCache, Package, Manifest } from '@github/dependency-submission-toolkit';
 import { DependencyScope } from '@github/dependency-submission-toolkit/dist/manifest';
+import { loadFileContents } from './utils/file-utils';
 
-type Depgraph = {
+export type Depgraph = {
   graphName: string,
   artifacts: DepgraphArtifact[],
   dependencies: DepgraphDependency[],
   isMultiModule: boolean,
 }
 
-type DepgraphArtifact = {
+export type DepgraphArtifact = {
   id: string,
   numericId: number,
   groupId: string,
@@ -22,7 +21,7 @@ type DepgraphArtifact = {
   types?: string[],
 }
 
-type DepgraphDependency = {
+export type DepgraphDependency = {
   from: string,
   to: string,
   numericFrom: number,
@@ -102,9 +101,11 @@ export class MavenDependencyGraph {
     const graph = this.depGraph;
     const cache = this.cache;
 
+    const dependencies = graph.dependencies || [];
+
     const rootArtifactIds: string[] = [];
-    const dependencyIdMap = dependencyMap(graph.dependencies);
-    const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(graph.dependencies);
+    const dependencyIdMap = dependencyMap(dependencies);
+    const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(dependencies);
     const idToPackageCachePackage: Map<string, Package> = new Map<string, Package>();
 
     // Create the packages for all known artifacts
@@ -145,7 +146,7 @@ export class MavenDependencyGraph {
 
     const uniqueRootArtifactDependencies: string[] = [];
     rootArtifactIds.forEach(rootArtifactId => {
-      const dependencyIds = getDirectDependencies(rootArtifactId, graph.dependencies);
+      const dependencyIds = getDirectDependencies(rootArtifactId, dependencies);
       if (dependencyIds) {
         dependencyIds.forEach(dependencyId => {
           if (uniqueRootArtifactDependencies.indexOf(dependencyId) === -1) {
@@ -160,17 +161,23 @@ export class MavenDependencyGraph {
 }
 
 export function parseDependencyJson(file: string, isMultiModule: boolean = false): Depgraph {
+  const data = loadFileContents(file);
+
+  if (!data) {
+    return {
+      graphName: 'empty',
+      artifacts: [],
+      dependencies: [],
+      isMultiModule: isMultiModule
+    };
+  }
+
   try {
-    const data: Buffer = fs.readFileSync(file);
-    try {
-      const depGraph: Depgraph = JSON.parse(data.toString('utf-8'));
-      depGraph.isMultiModule = isMultiModule;
-      return depGraph;
-    } catch (err: any) {
-      throw new Error(`Failed to parse JSON payload: ${err.message}`);
-    }
+    const depGraph: Depgraph = JSON.parse(data);
+    depGraph.isMultiModule = isMultiModule;
+    return depGraph;
   } catch (err: any) {
-    throw new Error(`Failed to load file ${file}: ${err}`);
+    throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
   }
 }
 
@@ -199,23 +206,28 @@ function getDependencyScopeForMavenScope(mavenScopes: string[] | undefined | nul
 }
 
 function extractDependencyArtifactIdsWithParents(dependencies: DepgraphDependency[]): string[] {
-  return dependencies.map(dependency => { return dependency.to; })
+  if (dependencies) {
+    return dependencies.map(dependency => { return dependency.to; })
+  }
+  return [];
 }
 
 function dependencyMap(dependencies: DepgraphDependency[]): Map<string, string[] | undefined> {
   const map = new Map<string, string[]>();
 
-  dependencies.forEach(dependency => {
-    const fromUrl = dependency.from;
+  if (dependencies) {
+    dependencies.forEach(dependency => {
+      const fromUrl = dependency.from;
 
-    let deps = map[fromUrl];
-    if (!deps) {
-      deps = [];
-      map[fromUrl] = deps;
-    }
+      let deps = map[fromUrl];
+      if (!deps) {
+        deps = [];
+        map[fromUrl] = deps;
+      }
 
-    deps.push(dependency.to);
-  });
+      deps.push(dependency.to);
+    });
+  }
 
   return map;
 }
