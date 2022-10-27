@@ -18,7 +18,7 @@ jobs:
           npm run build-exe
 
       - name: Attach artifacts
-        uses: actions/upload-artifacts@v3
+        uses: actions/upload-artifact@v3
         with:
           name: executables
           path: cli/*
