@@ -35,9 +35,10 @@ class MavenDependencyGraph {
         return this.cache.countPackages();
     }
     createManifest(filePath) {
-        // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
-        // which is more beneficial at this point.
-        const manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName(), filePath);
+        // // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
+        // // which is more beneficial at this point.
+        // const manifest = new Manifest(this.getProjectName(), filePath);
+        const manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName());
         const packageUrlToArtifact = this.packageUrlToArtifact;
         this.directDependencies.forEach(depPackage => {
             const artifact = this.packageUrlToArtifact[depPackage.packageURL.toString()];
