@@ -69,10 +69,13 @@ export class MavenDependencyGraph {
   }
 
   createManifest(filePath?: string): Manifest {
-    // // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
-    // // which is more beneficial at this point.
-    // const manifest = new Manifest(this.getProjectName(), filePath);
-    const manifest = new Manifest(this.getProjectName());
+    let manifest: Manifest;
+    if (filePath) {
+      manifest = new Manifest(this.getProjectName(), filePath);
+    } else {
+      manifest = new Manifest(this.getProjectName());
+    }
+    
     const packageUrlToArtifact = this.packageUrlToArtifact;
 
     this.directDependencies.forEach(depPackage => {

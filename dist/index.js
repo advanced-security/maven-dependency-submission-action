@@ -35,10 +35,13 @@ class MavenDependencyGraph {
         return this.cache.countPackages();
     }
     createManifest(filePath) {
-        // // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
-        // // which is more beneficial at this point.
-        // const manifest = new Manifest(this.getProjectName(), filePath);
-        const manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName());
+        let manifest;
+        if (filePath) {
+            manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName(), filePath);
+        }
+        else {
+            manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName());
+        }
         const packageUrlToArtifact = this.packageUrlToArtifact;
         this.directDependencies.forEach(depPackage => {
             const artifact = this.packageUrlToArtifact[depPackage.packageURL.toString()];
@@ -225,7 +228,9 @@ function run() {
                 settingsFile: core.getInput('settings-file'),
                 mavenArgs: core.getInput('maven-args') || '',
             };
-            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig);
+            const includeFilename = core.getBooleanInput('snapshot-include-file-name');
+            const manifestFilename = core.getInput('snapshot-dependency-file-name');
+            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename });
         }
         catch (err) {
             core.error(err);
@@ -447,15 +452,27 @@ const maven_runner_1 = __nccwpck_require__(7433);
 const file_utils_1 = __nccwpck_require__(799);
 const version = (__nccwpck_require__(2876)/* .version */ .i8);
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
-function generateSnapshot(directory, mvnConfig, context, job) {
+function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         const depgraph = yield generateDependencyGraph(directory, mvnConfig);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
-            // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-            const pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
-            const manifest = mavenDependencies.createManifest(pomFile);
-            const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), context, job);
+            let manifest;
+            if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.includeManifestFile) {
+                let pomFile;
+                if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.manifestFile) {
+                    pomFile = snapshotConfig.manifestFile;
+                }
+                else {
+                    // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
+                    pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
+                }
+                manifest = mavenDependencies.createManifest(pomFile);
+            }
+            else {
+                manifest = mavenDependencies.createManifest();
+            }
+            const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
             return snapshot;
         }
@@ -542,12 +559,15 @@ function getRepositoryRelativePath(file) {
     const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
     const fileResolved = path.resolve(file);
     const fileDirectory = path.dirname(fileResolved);
+    core.debug(`Workspace directory   =  ${workspaceDirectory}`);
+    core.debug(`Snapshot file         =  ${fileResolved}`);
+    core.debug(`Snapshot directory    =  ${fileDirectory}`);
+    let result = fileResolved;
     if (fileDirectory.startsWith(workspaceDirectory)) {
-        return fileResolved.substring(workspaceDirectory.length + path.sep.length);
+        result = fileResolved.substring(workspaceDirectory.length + path.sep.length);
     }
-    else {
-        return path.resolve(file);
-    }
+    core.debug(`Snapshot relative file =  ${result}`);
+    return result;
 }
 //# sourceMappingURL=snapshot-generator.js.map
 

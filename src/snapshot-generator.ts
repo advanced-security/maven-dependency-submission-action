@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as path from 'path';
 
-import { Snapshot } from '@github/dependency-submission-toolkit';
+import { Manifest, Snapshot } from '@github/dependency-submission-toolkit';
 import { Depgraph, MavenDependencyGraph, parseDependencyJson } from './depgraph';
 import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
@@ -16,15 +16,34 @@ export type MavenConfiguration = {
   mavenArgs?: string;
 }
 
-export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, context?: any, job?: any) {
+export type SnapshotConfig = {
+  includeManifestFile?: boolean;
+  manifestFile?: string;
+  context?: any;
+  job?: any
+};
+
+export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
   const depgraph = await generateDependencyGraph(directory, mvnConfig);
 
   try {
     const mavenDependencies = new MavenDependencyGraph(depgraph);
-    // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-    const pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
-    const manifest = mavenDependencies.createManifest(pomFile);
-    const snapshot = new Snapshot(getDetector(), context, job);
+
+    let manifest: Manifest;
+    if (snapshotConfig?.includeManifestFile) {
+      let pomFile;
+      if (snapshotConfig?.manifestFile) {
+        pomFile = snapshotConfig.manifestFile;
+      } else {
+        // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
+        pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
+      }
+      manifest = mavenDependencies.createManifest(pomFile);
+    } else {
+      manifest = mavenDependencies.createManifest();
+    }
+
+    const snapshot = new Snapshot(getDetector(), snapshotConfig?.context, snapshotConfig?.job);
     snapshot.addManifest(manifest);
 
     return snapshot;
@@ -118,9 +137,15 @@ function getRepositoryRelativePath(file) {
   const fileResolved = path.resolve(file);
   const fileDirectory = path.dirname(fileResolved);
 
+  core.debug(`Workspace directory   =  ${workspaceDirectory}`);
+  core.debug(`Snapshot file         =  ${fileResolved}`);
+  core.debug(`Snapshot directory    =  ${fileDirectory}`);
+
+  let result = fileResolved;
   if (fileDirectory.startsWith(workspaceDirectory)) {
-    return fileResolved.substring(workspaceDirectory.length + path.sep.length);
-  } else {
-    return path.resolve(file);
+    result = fileResolved.substring(workspaceDirectory.length + path.sep.length);
   }
+
+  core.debug(`Snapshot relative file =  ${result}`);
+  return result;
 }

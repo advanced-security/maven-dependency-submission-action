@@ -59,7 +59,12 @@ async function execute() {
       mavenArgs: opts.mavenArgs
     };
 
-    snapshot = await generateSnapshot(opts.directory, mvnConfig, context, job);
+    const snapshotConfig = {
+      context,
+      job,
+    }
+
+    snapshot = await generateSnapshot(opts.directory, mvnConfig, snapshotConfig);
 
   } catch (err: any) {
     console.error(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);

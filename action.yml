@@ -25,6 +25,16 @@ inputs:
     type: string
     default: ''
 
+  snapshot-include-file-name:
+    description: Optionally include the file name in the dependency snapshot report to GitHub
+    type: boolean
+    default: false
+
+  snapshot-dependency-file-name:
+    description: An optional override to specify the path to the file in the repository that the snapshot should be associated with.
+    type: string
+    required: false
+
   token:
     description: The GitHub token to use to submit the depedency snapshot to the repository
     type: string
