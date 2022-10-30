@@ -30,6 +30,10 @@ Custom maven `settings.xml` can now be specified as an input parameter to the ac
 
 * `maven-args` - An optional string value (space separated) options to pass to the maven command line when generating the dependency snapshot. This is empty by default.
 
+* `snapshot-include-file-name`: Optional flag to control whether or no the path and file name of the pom.xml is provided with the snapshot submission. Defaults to `false` as the file name currently overwrites the POM artifactId
+
+* `snapshot-dependency-file-name`: An optional user control file path to the POM file, requires `snapshot-include-file-name` to be `true` for the value to be submitted.
+
 
 ## Examples
 
