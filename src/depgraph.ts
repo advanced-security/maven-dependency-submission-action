@@ -141,7 +141,9 @@ export class MavenDependencyGraph {
           if (!dependencyPkg) {
             throw new Error(`Failed to find a dependency package for '${dependencyId}'`);
           }
-          pkg.dependsOn(dependencyPkg);
+          if (pkg.packageURL.namespace != dependencyPkg.packageURL.namespace || pkg.packageURL.name != dependencyPkg.packageURL.name ) {
+            pkg.dependsOn(dependencyPkg);
+          }
         });
       }
     });

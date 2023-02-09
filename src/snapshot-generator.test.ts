@@ -10,7 +10,7 @@ describe('snapshot-generator', () => {
     it('should generate a snapshot for a simple project', async () => {
       const projectDir = getMavenProjectDirectory('simple');
       const depGraph = await generateDependencyGraph(projectDir);
-      expect(depGraph.dependencies.length).toBe(20);
+      expect(depGraph.dependencies.length).toBe(27);
     });
   });
 
