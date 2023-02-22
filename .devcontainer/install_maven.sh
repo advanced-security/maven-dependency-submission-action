@@ -5,7 +5,7 @@ echo -x
 JDK_VERSION="18.0.2.1"
 JDK_INSTALLER="/tmp/openjdk.tar.gz"
 
-MVN_VERSION="3.8.6"
+MVN_VERSION="3.9.0"
 MVN_INSTALLER="/tmp/mvn.tar.gz"
 
 wget https://download.java.net/java/GA/jdk${JDK_VERSION}/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-${JDK_VERSION}_linux-x64_bin.tar.gz -O ${JDK_INSTALLER}
