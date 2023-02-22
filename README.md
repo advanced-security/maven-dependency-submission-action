@@ -30,7 +30,7 @@ Custom maven `settings.xml` can now be specified as an input parameter to the ac
 
 * `maven-args` - An optional string value (space separated) options to pass to the maven command line when generating the dependency snapshot. This is empty by default.
 
-* `snapshot-include-file-name`: Optional flag to control whether or no the path and file name of the pom.xml is provided with the snapshot submission. Defaults to `false` as the file name currently overwrites the POM artifactId
+* `snapshot-include-file-name`: Optional flag to control whether or no the path and file name of the pom.xml is provided with the snapshot submission. Defaults to `true` so as to create a link to the repository file from the dependency tree view, but at the cost of losing the POM `artifactId` when it renders.
 
 * `snapshot-dependency-file-name`: An optional user control file path to the POM file, requires `snapshot-include-file-name` to be `true` for the value to be submitted.
 
@@ -51,9 +51,9 @@ Upon success it will generate a snapshot captured from Maven POM like;
 
 ## Command Line Usage
 
-There are experimental command line clients, Linux only for now that will provide the same functionality as the GitHub Action but can be embedded into your existing CI tooling and invoked from the commandline to upload a dpendency snapshot.
+There are experimental command line clients, Linux only for now that will provide the same functionality as the GitHub Action but can be embedded into your existing CI tooling and invoked from the commandline to upload a dependency snapshot.
 
-You can obtain the executables from the [cli](./cli) directory of the repository for now.
+You can obtain the executables from the latest actions workflow run https://github.com/advanced-security/maven-dependency-submission-action/actions/workflows/publish_executables.yml.
 
 ### Parameters
 

@@ -26,9 +26,9 @@ inputs:
     default: ''
 
   snapshot-include-file-name:
-    description: Optionally include the file name in the dependency snapshot report to GitHub
+    description: Optionally include the file name in the dependency snapshot report to GitHub. This is required to be true if you want the results in the dependency tree to have a working link.
     type: boolean
-    default: false
+    default: true
 
   snapshot-dependency-file-name:
     description: An optional override to specify the path to the file in the repository that the snapshot should be associated with.
