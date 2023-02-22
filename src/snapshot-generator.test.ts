@@ -51,5 +51,14 @@ describe('snapshot-generator', () => {
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['maven-wrapper-test'].countDependencies()).toBe(0);
     });
+
+    it('should generate a snapshot for an artifact with classifiers project', async () => {
+      const projectDir = getMavenProjectDirectory('artifact-with-classifiers');
+      const snapshot = await generateSnapshot(projectDir);
+
+      expect(snapshot.manifests['artifact-with-classifiers']).toBeDefined();
+      expect(snapshot.detector.version).toBe(version);
+      expect(snapshot.manifests['artifact-with-classifiers'].countDependencies()).toBe(7);
+    });
   });
 });

@@ -134,9 +134,26 @@ function parseDependencyJson(file, isMultiModule = false) {
 }
 exports.parseDependencyJson = parseDependencyJson;
 function artifactToPackageURL(artifact) {
-    return new packageurl_js_1.PackageURL('maven', artifact.groupId, artifact.artifactId, artifact.version, undefined, undefined);
+    const qualifiers = getArtifactQualifiers(artifact);
+    return new packageurl_js_1.PackageURL('maven', artifact.groupId, artifact.artifactId, artifact.version, qualifiers, undefined);
 }
 exports.artifactToPackageURL = artifactToPackageURL;
+function getArtifactQualifiers(artifact) {
+    let qualifiers = undefined;
+    if (artifact.types && artifact.types.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['type'] = artifact.types[0];
+    }
+    if (artifact.classifiers && artifact.classifiers.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['classifier'] = artifact.classifiers[0];
+    }
+    return qualifiers;
+}
 function getDependencyScopeForMavenScope(mavenScopes) {
     // Once the API scopes are improved and expanded we should be able to perform better mapping here from Maven to cater for
     // provided, runtime, compile, test, system, etc... in the future.

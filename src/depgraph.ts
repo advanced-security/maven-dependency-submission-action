@@ -19,6 +19,7 @@ export type DepgraphArtifact = {
   optional?: boolean,
   scopes?: string[],
   types?: string[],
+  classifiers?: string[],
 }
 
 export type DepgraphDependency = {
@@ -75,7 +76,7 @@ export class MavenDependencyGraph {
     } else {
       manifest = new Manifest(this.getProjectName());
     }
-    
+
     const packageUrlToArtifact = this.packageUrlToArtifact;
 
     this.directDependencies.forEach(depPackage => {
@@ -186,14 +187,35 @@ export function parseDependencyJson(file: string, isMultiModule: boolean = false
 }
 
 export function artifactToPackageURL(artifact: DepgraphArtifact): PackageURL {
+  const qualifiers = getArtifactQualifiers(artifact);
   return new PackageURL(
     'maven',
     artifact.groupId,
     artifact.artifactId,
     artifact.version,
-    undefined,
+    qualifiers,
     undefined
   );
+}
+
+function getArtifactQualifiers(artifact: DepgraphArtifact): { [key: string]: string; } | undefined {
+  let qualifiers: { [key: string]: string; } | undefined = undefined;
+
+  if (artifact.types && artifact.types.length > 0) {
+    if (!qualifiers) {
+      qualifiers = {};
+    }
+    qualifiers['type'] = artifact.types[0];
+  }
+
+  if (artifact.classifiers && artifact.classifiers.length > 0) {
+    if (!qualifiers) {
+      qualifiers = {};
+    }
+    qualifiers['classifier'] = artifact.classifiers[0];
+  }
+
+  return qualifiers;
 }
 
 function getDependencyScopeForMavenScope(mavenScopes: string[] | undefined | null): DependencyScope {
