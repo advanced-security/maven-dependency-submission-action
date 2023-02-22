@@ -1,0 +1,427 @@
+{
+  "graphName": "bs-parent",
+  "artifacts": [
+    {
+      "id": "org.eclipse.jetty:jetty-http:jar:compile",
+      "numericId": 1,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-http",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-util:jar:compile",
+      "numericId": 2,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-util",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-client:jar:compile",
+      "numericId": 3,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-client",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-io:jar:compile",
+      "numericId": 4,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-io",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-alpn-client:jar:compile",
+      "numericId": 5,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-alpn-client",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "numericId": 6,
+      "groupId": "org.eclipse.jetty.http2",
+      "artifactId": "http2-http-client-transport",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty.http2:http2-common:jar:compile",
+      "numericId": 7,
+      "groupId": "org.eclipse.jetty.http2",
+      "artifactId": "http2-common",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty.http2:http2-hpack:jar:compile",
+      "numericId": 8,
+      "groupId": "org.eclipse.jetty.http2",
+      "artifactId": "http2-hpack",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty.http2:http2-client:jar:compile",
+      "numericId": 9,
+      "groupId": "org.eclipse.jetty.http2",
+      "artifactId": "http2-client",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-alpn-java-client:jar:compile",
+      "numericId": 10,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-alpn-java-client",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.slf4j:slf4j-api:jar:compile",
+      "numericId": 11,
+      "groupId": "org.slf4j",
+      "artifactId": "slf4j-api",
+      "version": "2.0.0-alpha6",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "com.github.octodemo:bs-library:jar:compile",
+      "numericId": 12,
+      "groupId": "com.github.octodemo",
+      "artifactId": "bs-library",
+      "version": "1.0.0-SNAPSHOT",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.apache.logging.log4j:log4j-api:jar:compile",
+      "numericId": 13,
+      "groupId": "org.apache.logging.log4j",
+      "artifactId": "log4j-api",
+      "version": "2.19.0",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "junit:junit:jar:test",
+      "numericId": 14,
+      "groupId": "junit",
+      "artifactId": "junit",
+      "version": "4.13",
+      "optional": false,
+      "scopes": [
+        "test"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.hamcrest:hamcrest-core:jar:test",
+      "numericId": 15,
+      "groupId": "org.hamcrest",
+      "artifactId": "hamcrest-core",
+      "version": "1.3",
+      "optional": false,
+      "scopes": [
+        "test"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty:jetty-server:jar:compile",
+      "numericId": 16,
+      "groupId": "org.eclipse.jetty",
+      "artifactId": "jetty-server",
+      "version": "10.0.10",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "org.eclipse.jetty.toolchain:jetty-servlet-api:jar:compile",
+      "numericId": 17,
+      "groupId": "org.eclipse.jetty.toolchain",
+      "artifactId": "jetty-servlet-api",
+      "version": "4.0.6",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "com.github.octodemo:bs-application:jar:compile",
+      "numericId": 18,
+      "groupId": "com.github.octodemo",
+      "artifactId": "bs-application",
+      "version": "1.0.0-SNAPSHOT",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    },
+    {
+      "id": "com.github.octodemo:bs-other:jar:compile",
+      "numericId": 19,
+      "groupId": "com.github.octodemo",
+      "artifactId": "bs-other",
+      "version": "1.0.0-SNAPSHOT",
+      "optional": false,
+      "scopes": [
+        "compile"
+      ],
+      "types": [
+        "jar"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "org.eclipse.jetty:jetty-http:jar:compile",
+      "to": "org.eclipse.jetty:jetty-util:jar:compile",
+      "numericFrom": 0,
+      "numericTo": 1,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-client:jar:compile",
+      "to": "org.eclipse.jetty:jetty-http:jar:compile",
+      "numericFrom": 2,
+      "numericTo": 0,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-client:jar:compile",
+      "to": "org.eclipse.jetty:jetty-io:jar:compile",
+      "numericFrom": 2,
+      "numericTo": 3,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-client:jar:compile",
+      "to": "org.eclipse.jetty:jetty-alpn-client:jar:compile",
+      "numericFrom": 2,
+      "numericTo": 4,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "to": "org.eclipse.jetty:jetty-client:jar:compile",
+      "numericFrom": 5,
+      "numericTo": 2,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-common:jar:compile",
+      "to": "org.eclipse.jetty.http2:http2-hpack:jar:compile",
+      "numericFrom": 6,
+      "numericTo": 7,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-client:jar:compile",
+      "to": "org.eclipse.jetty.http2:http2-common:jar:compile",
+      "numericFrom": 8,
+      "numericTo": 6,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "to": "org.eclipse.jetty.http2:http2-client:jar:compile",
+      "numericFrom": 5,
+      "numericTo": 8,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "to": "org.eclipse.jetty:jetty-alpn-java-client:jar:compile",
+      "numericFrom": 5,
+      "numericTo": 9,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "to": "org.slf4j:slf4j-api:jar:compile",
+      "numericFrom": 5,
+      "numericTo": 10,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-library:jar:compile",
+      "to": "org.eclipse.jetty.http2:http2-http-client-transport:jar:compile",
+      "numericFrom": 11,
+      "numericTo": 5,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-library:jar:compile",
+      "to": "org.apache.logging.log4j:log4j-api:jar:compile",
+      "numericFrom": 11,
+      "numericTo": 12,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "junit:junit:jar:test",
+      "to": "org.hamcrest:hamcrest-core:jar:test",
+      "numericFrom": 13,
+      "numericTo": 14,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-library:jar:compile",
+      "to": "junit:junit:jar:test",
+      "numericFrom": 11,
+      "numericTo": 13,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-server:jar:compile",
+      "to": "org.eclipse.jetty.toolchain:jetty-servlet-api:jar:compile",
+      "numericFrom": 15,
+      "numericTo": 16,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-server:jar:compile",
+      "to": "org.eclipse.jetty:jetty-http:jar:compile",
+      "numericFrom": 15,
+      "numericTo": 0,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-server:jar:compile",
+      "to": "org.eclipse.jetty:jetty-io:jar:compile",
+      "numericFrom": 15,
+      "numericTo": 3,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "org.eclipse.jetty:jetty-server:jar:compile",
+      "to": "org.slf4j:slf4j-api:jar:compile",
+      "numericFrom": 15,
+      "numericTo": 10,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-application:jar:compile",
+      "to": "org.eclipse.jetty:jetty-server:jar:compile",
+      "numericFrom": 17,
+      "numericTo": 15,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-application:jar:compile",
+      "to": "com.github.octodemo:bs-library:jar:compile",
+      "numericFrom": 17,
+      "numericTo": 11,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-application:jar:compile",
+      "to": "junit:junit:jar:test",
+      "numericFrom": 17,
+      "numericTo": 13,
+      "resolution": "INCLUDED"
+    },
+    {
+      "from": "com.github.octodemo:bs-other:jar:compile",
+      "to": "junit:junit:jar:test",
+      "numericFrom": 18,
+      "numericTo": 13,
+      "resolution": "INCLUDED"
+    }
+  ]
+}

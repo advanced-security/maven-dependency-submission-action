@@ -1,7 +1,7 @@
 {
   "graphName" : "bookstore-v3",
   "artifacts" : [ {
-    "id" : "org.eclipse.jetty:jetty-server:jar",
+    "id" : "org.eclipse.jetty:jetty-server:jar:compile",
     "numericId" : 1,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-server",
@@ -10,7 +10,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty.toolchain:jetty-servlet-api:jar",
+    "id" : "org.eclipse.jetty.toolchain:jetty-servlet-api:jar:compile",
     "numericId" : 2,
     "groupId" : "org.eclipse.jetty.toolchain",
     "artifactId" : "jetty-servlet-api",
@@ -19,7 +19,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty:jetty-http:jar",
+    "id" : "org.eclipse.jetty:jetty-http:jar:compile",
     "numericId" : 3,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-http",
@@ -28,7 +28,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty:jetty-util:jar",
+    "id" : "org.eclipse.jetty:jetty-util:jar:compile",
     "numericId" : 4,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-util",
@@ -37,7 +37,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty:jetty-io:jar",
+    "id" : "org.eclipse.jetty:jetty-io:jar:compile",
     "numericId" : 5,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-io",
@@ -46,7 +46,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.slf4j:slf4j-api:jar",
+    "id" : "org.slf4j:slf4j-api:jar:compile",
     "numericId" : 6,
     "groupId" : "org.slf4j",
     "artifactId" : "slf4j-api",
@@ -55,7 +55,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "com.github.octodemo:bookstore-v3:jar",
+    "id" : "com.github.octodemo:bookstore-v3:jar:compile",
     "numericId" : 7,
     "groupId" : "com.github.octodemo",
     "artifactId" : "bookstore-v3",
@@ -64,7 +64,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty:jetty-servlet:jar",
+    "id" : "org.eclipse.jetty:jetty-servlet:jar:compile",
     "numericId" : 8,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-servlet",
@@ -73,7 +73,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.eclipse.jetty:jetty-security:jar",
+    "id" : "org.eclipse.jetty:jetty-security:jar:compile",
     "numericId" : 9,
     "groupId" : "org.eclipse.jetty",
     "artifactId" : "jetty-security",
@@ -82,7 +82,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "ognl:ognl:jar",
+    "id" : "ognl:ognl:jar:compile",
     "numericId" : 10,
     "groupId" : "ognl",
     "artifactId" : "ognl",
@@ -91,7 +91,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.javassist:javassist:jar",
+    "id" : "org.javassist:javassist:jar:compile",
     "numericId" : 11,
     "groupId" : "org.javassist",
     "artifactId" : "javassist",
@@ -100,7 +100,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.thymeleaf:thymeleaf:jar",
+    "id" : "org.thymeleaf:thymeleaf:jar:compile",
     "numericId" : 12,
     "groupId" : "org.thymeleaf",
     "artifactId" : "thymeleaf",
@@ -109,7 +109,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.attoparser:attoparser:jar",
+    "id" : "org.attoparser:attoparser:jar:compile",
     "numericId" : 13,
     "groupId" : "org.attoparser",
     "artifactId" : "attoparser",
@@ -118,7 +118,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.unbescape:unbescape:jar",
+    "id" : "org.unbescape:unbescape:jar:compile",
     "numericId" : 14,
     "groupId" : "org.unbescape",
     "artifactId" : "unbescape",
@@ -127,7 +127,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.json:json:jar",
+    "id" : "org.json:json:jar:compile",
     "numericId" : 15,
     "groupId" : "org.json",
     "artifactId" : "json",
@@ -136,7 +136,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.xerial:sqlite-jdbc:jar",
+    "id" : "org.xerial:sqlite-jdbc:jar:compile",
     "numericId" : 16,
     "groupId" : "org.xerial",
     "artifactId" : "sqlite-jdbc",
@@ -145,7 +145,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar",
+    "id" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar:compile",
     "numericId" : 17,
     "groupId" : "org.apache.logging.log4j",
     "artifactId" : "log4j-slf4j18-impl",
@@ -154,7 +154,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.apache.logging.log4j:log4j-api:jar",
+    "id" : "org.apache.logging.log4j:log4j-api:jar:compile",
     "numericId" : 18,
     "groupId" : "org.apache.logging.log4j",
     "artifactId" : "log4j-api",
@@ -163,7 +163,7 @@
     "scopes" : [ "compile" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.apache.logging.log4j:log4j-core:jar",
+    "id" : "org.apache.logging.log4j:log4j-core:jar:runtime",
     "numericId" : 19,
     "groupId" : "org.apache.logging.log4j",
     "artifactId" : "log4j-core",
@@ -172,7 +172,7 @@
     "scopes" : [ "runtime" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "junit:junit:jar",
+    "id" : "junit:junit:jar:test",
     "numericId" : 20,
     "groupId" : "junit",
     "artifactId" : "junit",
@@ -181,7 +181,7 @@
     "scopes" : [ "test" ],
     "types" : [ "jar" ]
   }, {
-    "id" : "org.hamcrest:hamcrest-core:jar",
+    "id" : "org.hamcrest:hamcrest-core:jar:test",
     "numericId" : 21,
     "groupId" : "org.hamcrest",
     "artifactId" : "hamcrest-core",
@@ -191,122 +191,122 @@
     "types" : [ "jar" ]
   } ],
   "dependencies" : [ {
-    "from" : "org.eclipse.jetty:jetty-server:jar",
-    "to" : "org.eclipse.jetty.toolchain:jetty-servlet-api:jar",
+    "from" : "org.eclipse.jetty:jetty-server:jar:compile",
+    "to" : "org.eclipse.jetty.toolchain:jetty-servlet-api:jar:compile",
     "numericFrom" : 0,
     "numericTo" : 1,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.eclipse.jetty:jetty-http:jar",
-    "to" : "org.eclipse.jetty:jetty-util:jar",
+    "from" : "org.eclipse.jetty:jetty-http:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-util:jar:compile",
     "numericFrom" : 2,
     "numericTo" : 3,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.eclipse.jetty:jetty-server:jar",
-    "to" : "org.eclipse.jetty:jetty-http:jar",
+    "from" : "org.eclipse.jetty:jetty-server:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-http:jar:compile",
     "numericFrom" : 0,
     "numericTo" : 2,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.eclipse.jetty:jetty-server:jar",
-    "to" : "org.eclipse.jetty:jetty-io:jar",
+    "from" : "org.eclipse.jetty:jetty-server:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-io:jar:compile",
     "numericFrom" : 0,
     "numericTo" : 4,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.eclipse.jetty:jetty-server:jar",
-    "to" : "org.slf4j:slf4j-api:jar",
+    "from" : "org.eclipse.jetty:jetty-server:jar:compile",
+    "to" : "org.slf4j:slf4j-api:jar:compile",
     "numericFrom" : 0,
     "numericTo" : 5,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.eclipse.jetty:jetty-server:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-server:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 0,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.eclipse.jetty:jetty-servlet:jar",
-    "to" : "org.eclipse.jetty:jetty-security:jar",
+    "from" : "org.eclipse.jetty:jetty-servlet:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-security:jar:compile",
     "numericFrom" : 7,
     "numericTo" : 8,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.eclipse.jetty:jetty-servlet:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.eclipse.jetty:jetty-servlet:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 7,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "ognl:ognl:jar",
-    "to" : "org.javassist:javassist:jar",
+    "from" : "ognl:ognl:jar:compile",
+    "to" : "org.javassist:javassist:jar:compile",
     "numericFrom" : 9,
     "numericTo" : 10,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.thymeleaf:thymeleaf:jar",
-    "to" : "ognl:ognl:jar",
+    "from" : "org.thymeleaf:thymeleaf:jar:compile",
+    "to" : "ognl:ognl:jar:compile",
     "numericFrom" : 11,
     "numericTo" : 9,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.thymeleaf:thymeleaf:jar",
-    "to" : "org.attoparser:attoparser:jar",
+    "from" : "org.thymeleaf:thymeleaf:jar:compile",
+    "to" : "org.attoparser:attoparser:jar:compile",
     "numericFrom" : 11,
     "numericTo" : 12,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.thymeleaf:thymeleaf:jar",
-    "to" : "org.unbescape:unbescape:jar",
+    "from" : "org.thymeleaf:thymeleaf:jar:compile",
+    "to" : "org.unbescape:unbescape:jar:compile",
     "numericFrom" : 11,
     "numericTo" : 13,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.thymeleaf:thymeleaf:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.thymeleaf:thymeleaf:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 11,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.json:json:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.json:json:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 14,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.xerial:sqlite-jdbc:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.xerial:sqlite-jdbc:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 15,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar",
-    "to" : "org.apache.logging.log4j:log4j-api:jar",
+    "from" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar:compile",
+    "to" : "org.apache.logging.log4j:log4j-api:jar:compile",
     "numericFrom" : 16,
     "numericTo" : 17,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar",
-    "to" : "org.apache.logging.log4j:log4j-core:jar",
+    "from" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar:compile",
+    "to" : "org.apache.logging.log4j:log4j-core:jar:runtime",
     "numericFrom" : 16,
     "numericTo" : 18,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "org.apache.logging.log4j:log4j-slf4j18-impl:jar:compile",
     "numericFrom" : 6,
     "numericTo" : 16,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "junit:junit:jar",
-    "to" : "org.hamcrest:hamcrest-core:jar",
+    "from" : "junit:junit:jar:test",
+    "to" : "org.hamcrest:hamcrest-core:jar:test",
     "numericFrom" : 19,
     "numericTo" : 20,
     "resolution" : "INCLUDED"
   }, {
-    "from" : "com.github.octodemo:bookstore-v3:jar",
-    "to" : "junit:junit:jar",
+    "from" : "com.github.octodemo:bookstore-v3:jar:compile",
+    "to" : "junit:junit:jar:test",
     "numericFrom" : 6,
     "numericTo" : 19,
     "resolution" : "INCLUDED"

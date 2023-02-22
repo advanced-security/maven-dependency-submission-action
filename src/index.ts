@@ -2,14 +2,20 @@ import * as core from '@actions/core';
 import {Snapshot, submitSnapshot} from '@github/dependency-submission-toolkit';
 import { generateSnapshot } from './snapshot-generator';
 
-
 async function run() {
   let snapshot: Snapshot | undefined;
 
   try {
     const directory = core.getInput('directory', { required: true });
-    snapshot = await generateSnapshot(directory);
+    const mavenConfig = {
+      ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
+      settingsFile: core.getInput('settings-file'),
+      mavenArgs: core.getInput('maven-args') || '',
+    }
+    const includeFilename = core.getBooleanInput('snapshot-include-file-name');
+    const manifestFilename = core.getInput('snapshot-dependency-file-name');
 
+    snapshot = await generateSnapshot(directory, mavenConfig, {includeManifestFile: includeFilename, manifestFile: manifestFilename});
   } catch (err: any) {
     core.error(err);
     core.setFailed(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);

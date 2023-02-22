@@ -2,41 +2,16 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 8047:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.artifactToPackageURL = exports.parseDependencyJson = exports.MavenDependencyGraph = void 0;
-const fs = __importStar(__nccwpck_require__(7147));
 const packageurl_js_1 = __nccwpck_require__(8915);
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
+const file_utils_1 = __nccwpck_require__(799);
 class MavenDependencyGraph {
-    // //@ ts-ignore
-    // private rootPackage: DepgraphArtifact;
     constructor(graph) {
         this.depGraph = graph;
         this.cache = new dependency_submission_toolkit_1.PackageCache();
@@ -60,9 +35,13 @@ class MavenDependencyGraph {
         return this.cache.countPackages();
     }
     createManifest(filePath) {
-        // The project name is not shown in the UI when you utilize a file path currently, but the file path is required to link up to the repository file
-        // which is more beneficial at this point.
-        const manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName(), filePath);
+        let manifest;
+        if (filePath) {
+            manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName(), filePath);
+        }
+        else {
+            manifest = new dependency_submission_toolkit_1.Manifest(this.getProjectName());
+        }
         const packageUrlToArtifact = this.packageUrlToArtifact;
         this.directDependencies.forEach(depPackage => {
             const artifact = this.packageUrlToArtifact[depPackage.packageURL.toString()];
@@ -85,9 +64,10 @@ class MavenDependencyGraph {
     parseDependencies() {
         const graph = this.depGraph;
         const cache = this.cache;
-        const rootPackageArtifactId = graph.graphName;
-        let rootPackageNumericId = 0;
-        const dependencyIdMap = dependencyMap(graph.dependencies);
+        const dependencies = graph.dependencies || [];
+        const rootArtifactIds = [];
+        const dependencyIdMap = dependencyMap(dependencies);
+        const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(dependencies);
         const idToPackageCachePackage = new Map();
         // Create the packages for all known artifacts
         graph.artifacts.forEach((artifact) => {
@@ -96,8 +76,8 @@ class MavenDependencyGraph {
             idToPackageCachePackage[artifact.id] = pkg;
             // Store a reference from the package URL to the original artifact as the artifact has extra metadata we need later for scopes and optionality
             this.packageUrlToArtifact[artifactUrl.toString()] = artifact;
-            if (artifact.artifactId === rootPackageArtifactId) {
-                rootPackageNumericId = artifact.numericId - 1;
+            if (dependencyArtifactIdsWithParents.indexOf(artifact.id) === -1) {
+                rootArtifactIds.push(artifact.id);
             }
         });
         // Now that all packages are known, process the dependencies for each and link them
@@ -118,30 +98,62 @@ class MavenDependencyGraph {
                 });
             }
         });
-        this.directDependencies = getDirectDependencies(rootPackageNumericId, graph.dependencies).map(id => { return idToPackageCachePackage[id]; });
+        const uniqueRootArtifactDependencies = [];
+        rootArtifactIds.forEach(rootArtifactId => {
+            const dependencyIds = getDirectDependencies(rootArtifactId, dependencies);
+            if (dependencyIds) {
+                dependencyIds.forEach(dependencyId => {
+                    if (uniqueRootArtifactDependencies.indexOf(dependencyId) === -1) {
+                        uniqueRootArtifactDependencies.push(dependencyId);
+                    }
+                });
+            }
+        });
+        this.directDependencies = uniqueRootArtifactDependencies.map(depId => idToPackageCachePackage[depId]);
     }
 }
 exports.MavenDependencyGraph = MavenDependencyGraph;
-function parseDependencyJson(file) {
+function parseDependencyJson(file, isMultiModule = false) {
+    const data = (0, file_utils_1.loadFileContents)(file);
+    if (!data) {
+        return {
+            graphName: 'empty',
+            artifacts: [],
+            dependencies: [],
+            isMultiModule: isMultiModule
+        };
+    }
     try {
-        const data = fs.readFileSync(file);
-        try {
-            const depGraph = JSON.parse(data.toString('utf-8'));
-            return depGraph;
-        }
-        catch (err) {
-            throw new Error(`Failed to parse JSON payload: ${err.message}`);
-        }
+        const depGraph = JSON.parse(data);
+        depGraph.isMultiModule = isMultiModule;
+        return depGraph;
     }
     catch (err) {
-        throw new Error(`Failed to load file ${file}: ${err}`);
+        throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
     }
 }
 exports.parseDependencyJson = parseDependencyJson;
 function artifactToPackageURL(artifact) {
-    return new packageurl_js_1.PackageURL('maven', artifact.groupId, artifact.artifactId, artifact.version, undefined, undefined);
+    const qualifiers = getArtifactQualifiers(artifact);
+    return new packageurl_js_1.PackageURL('maven', artifact.groupId, artifact.artifactId, artifact.version, qualifiers, undefined);
 }
 exports.artifactToPackageURL = artifactToPackageURL;
+function getArtifactQualifiers(artifact) {
+    let qualifiers = undefined;
+    if (artifact.types && artifact.types.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['type'] = artifact.types[0];
+    }
+    if (artifact.classifiers && artifact.classifiers.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['classifier'] = artifact.classifiers[0];
+    }
+    return qualifiers;
+}
 function getDependencyScopeForMavenScope(mavenScopes) {
     // Once the API scopes are improved and expanded we should be able to perform better mapping here from Maven to cater for
     // provided, runtime, compile, test, system, etc... in the future.
@@ -153,21 +165,29 @@ function getDependencyScopeForMavenScope(mavenScopes) {
     // The default scope for now as we only have runtime and development currently
     return 'runtime';
 }
+function extractDependencyArtifactIdsWithParents(dependencies) {
+    if (dependencies) {
+        return dependencies.map(dependency => { return dependency.to; });
+    }
+    return [];
+}
 function dependencyMap(dependencies) {
     const map = new Map();
-    dependencies.forEach(dependency => {
-        const fromUrl = dependency.from;
-        let deps = map[fromUrl];
-        if (!deps) {
-            deps = [];
-            map[fromUrl] = deps;
-        }
-        deps.push(dependency.to);
-    });
+    if (dependencies) {
+        dependencies.forEach(dependency => {
+            const fromUrl = dependency.from;
+            let deps = map[fromUrl];
+            if (!deps) {
+                deps = [];
+                map[fromUrl] = deps;
+            }
+            deps.push(dependency.to);
+        });
+    }
     return map;
 }
-function getDirectDependencies(rootPackageNumericId, dependencies) {
-    const topLevel = dependencies.filter(dependency => { return dependency.numericFrom === rootPackageNumericId; });
+function getDirectDependencies(artifactId, dependencies) {
+    const topLevel = dependencies.filter(dependency => { return dependency.from === artifactId; });
     return topLevel.map(dep => { return dep.to; });
 }
 //# sourceMappingURL=depgraph.js.map
@@ -220,7 +240,14 @@ function run() {
         let snapshot;
         try {
             const directory = core.getInput('directory', { required: true });
-            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory);
+            const mavenConfig = {
+                ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
+                settingsFile: core.getInput('settings-file'),
+                mavenArgs: core.getInput('maven-args') || '',
+            };
+            const includeFilename = core.getBooleanInput('snapshot-include-file-name');
+            const manifestFilename = core.getInput('snapshot-dependency-file-name');
+            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename });
         }
         catch (err) {
             core.error(err);
@@ -238,6 +265,160 @@ function run() {
 }
 run();
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 7433:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MavenRunner = void 0;
+const exec = __importStar(__nccwpck_require__(1514));
+const core = __importStar(__nccwpck_require__(2186));
+const path = __importStar(__nccwpck_require__(1017));
+const file_utils_1 = __nccwpck_require__(799);
+class MavenRunner {
+    constructor(directory, settingsFile, ingoreWrapper = false, mavenArguments = '') {
+        this.mavenExecutable = resolveMavenExecutable(directory, ingoreWrapper);
+        if (settingsFile) {
+            if ((0, file_utils_1.fileExists)(settingsFile)) {
+                this.settings = settingsFile;
+            }
+            else {
+                throw new Error(`The specified settings file '${settingsFile}' does not exist`);
+            }
+        }
+        this.additionalArguments = [];
+        if (mavenArguments.trim().length > 0) {
+            this.additionalArguments = mavenArguments.trim().split(' ');
+        }
+    }
+    get configuration() {
+        return {
+            executable: this.mavenExecutable,
+            settingsFile: this.settings
+        };
+    }
+    exec(cwd, parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const commandArgs = [];
+            // implictly run in batch mode, might need to make this configurable in the future
+            commandArgs.push('-B');
+            if (this.settings) {
+                commandArgs.push('--settings');
+                commandArgs.push(this.settings);
+            }
+            // Only append the additional arguments they are not empty values
+            if (this.additionalArguments && this.additionalArguments.length > 0) {
+                this.additionalArguments.forEach(arg => {
+                    if (arg.trim().length > 0) {
+                        commandArgs.push(arg);
+                    }
+                });
+            }
+            Array.prototype.push.apply(commandArgs, parameters);
+            let executionOutput = '';
+            let executionErrors = '';
+            const options = {
+                cwd: cwd,
+                listeners: {
+                    stdout: (data) => {
+                        executionOutput += data.toString();
+                    },
+                    stderr: (data) => {
+                        executionErrors += data.toString();
+                    }
+                }
+            };
+            try {
+                const exitCode = yield exec.exec(this.mavenExecutable, commandArgs, options);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: exitCode
+                };
+            }
+            catch (err) {
+                //TODO possibly throw a wrapped error here
+                core.warning(`Error encountered executing maven: ${err.message}`);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: -1
+                };
+            }
+        });
+    }
+}
+exports.MavenRunner = MavenRunner;
+function resolveMavenExecutable(directory, ignoreWrapper = false) {
+    if (ignoreWrapper) {
+        return getMavenExecutable();
+    }
+    const wrapper = getMavenWrapper(directory);
+    // Return the matche maven wrapper script or otherwise fall back to mvn on the path
+    return wrapper || getMavenExecutable();
+}
+function getMavenWrapper(directory) {
+    if (!directory) {
+        return undefined;
+    }
+    const mavenWrapperFilename = path.join(directory, getMavenWrapperExecutable());
+    if ((0, file_utils_1.fileExists)(mavenWrapperFilename)) {
+        return mavenWrapperFilename;
+    }
+    return undefined;
+}
+function getMavenWrapperExecutable() {
+    if (isWindows()) {
+        return 'mvnw.cmd';
+    }
+    return 'mvnw';
+}
+function getMavenExecutable() {
+    if (isWindows()) {
+        return 'mvn.cmd';
+    }
+    return 'mvn';
+}
+function isWindows() {
+    return process.platform === 'win32';
+}
+//# sourceMappingURL=maven-runner.js.map
 
 /***/ }),
 
@@ -280,19 +461,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.generateDependencyGraph = exports.generateSnapshot = void 0;
-const exec = __importStar(__nccwpck_require__(1514));
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const dependency_submission_toolkit_1 = __nccwpck_require__(9810);
 const depgraph_1 = __nccwpck_require__(8047);
+const maven_runner_1 = __nccwpck_require__(7433);
+const file_utils_1 = __nccwpck_require__(799);
 const version = (__nccwpck_require__(2876)/* .version */ .i8);
-function generateSnapshot(directory, context, job) {
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
+function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
-        const depgraph = yield generateDependencyGraph(directory);
+        const depgraph = yield generateDependencyGraph(directory, mvnConfig);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
-            const manifest = mavenDependencies.createManifest(path.join(directory, 'pom.xml'));
-            const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), context, job);
+            let manifest;
+            if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.includeManifestFile) {
+                let pomFile;
+                if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.manifestFile) {
+                    pomFile = snapshotConfig.manifestFile;
+                }
+                else {
+                    // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
+                    pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
+                }
+                manifest = mavenDependencies.createManifest(pomFile);
+            }
+            else {
+                manifest = mavenDependencies.createManifest();
+            }
+            const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
             return snapshot;
         }
@@ -310,50 +507,151 @@ function getDetector() {
         version: version
     };
 }
-function generateDependencyGraph(directory) {
+function generateDependencyGraph(directory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            let executionOutput = '';
-            let errors = '';
-            const options = {
-                cwd: directory,
-                listeners: {
-                    stdout: (data) => {
-                        executionOutput += data.toString();
-                    },
-                    stderr: (data) => {
-                        errors += data.toString();
-                    }
-                }
-            };
-            const mavenArguments = [
-                'com.github.ferstl:depgraph-maven-plugin:4.0.1:graph',
+            const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper);
+            core.startGroup('depgraph-maven-plugin:reactor');
+            const mavenReactorArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
                 '-DgraphFormat=json',
+                '-DoutputFileName=reactor.json'
             ];
-            core.startGroup('depgraph-maven-plugin');
-            yield exec.exec('mvn', mavenArguments, options);
-            core.info(executionOutput);
-            core.info(errors);
+            const reactorResults = yield mvn.exec(directory, mavenReactorArguments);
+            core.info(reactorResults.stdout);
+            core.info(reactorResults.stderr);
             core.endGroup();
+            if (reactorResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
+            }
+            core.startGroup('depgraph-maven-plugin:aggregate');
+            const mavenAggregateArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
+                '-DgraphFormat=json',
+                '-DoutputFileName=aggregate-depgraph.json'
+            ];
+            const aggregateResults = yield mvn.exec(directory, mavenAggregateArguments);
+            core.info(aggregateResults.stdout);
+            core.info(aggregateResults.stderr);
+            core.endGroup();
+            if (aggregateResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`);
+            }
         }
         catch (err) {
             core.error(err);
             throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
         }
-        //TODO need to account for multi module projects
-        // Now we have the target/dependency-graph.json file to process
-        const file = path.join(directory, 'target', 'dependency-graph.json');
+        const targetPath = path.join(directory, 'target');
+        const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
+        // Now we have the aggregate dependency graph file to process
+        const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
         try {
-            return (0, depgraph_1.parseDependencyJson)(file);
+            return (0, depgraph_1.parseDependencyJson)(aggregateGraphFile, isMultiModule);
         }
         catch (err) {
             core.error(err);
-            throw new Error(`Could not parse maven dependency file, '${file}': ${err.message}`);
+            throw new Error(`Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`);
         }
     });
 }
 exports.generateDependencyGraph = generateDependencyGraph;
+function checkForMultiModule(reactorJsonFile) {
+    const data = (0, file_utils_1.loadFileContents)(reactorJsonFile);
+    if (data) {
+        try {
+            const reactor = JSON.parse(data);
+            // The reactor file will have an array of artifacts making up the parent and child modules if it is a multi module project
+            return reactor.artifacts && reactor.artifacts.length > 0;
+        }
+        catch (err) {
+            throw new Error(`Failed to parse reactor JSON payload: ${err.message}`);
+        }
+    }
+    // If no data report that it is not a multi module project
+    return false;
+}
+// TODO this is assuming the checkout was made into the base path of the workspace...
+function getRepositoryRelativePath(file) {
+    const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
+    const fileResolved = path.resolve(file);
+    const fileDirectory = path.dirname(fileResolved);
+    core.debug(`Workspace directory   =  ${workspaceDirectory}`);
+    core.debug(`Snapshot file         =  ${fileResolved}`);
+    core.debug(`Snapshot directory    =  ${fileDirectory}`);
+    let result = fileResolved;
+    if (fileDirectory.startsWith(workspaceDirectory)) {
+        result = fileResolved.substring(workspaceDirectory.length + path.sep.length);
+    }
+    core.debug(`Snapshot relative file =  ${result}`);
+    return result;
+}
 //# sourceMappingURL=snapshot-generator.js.map
+
+/***/ }),
+
+/***/ 799:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fileExists = exports.loadFileContents = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
+function loadFileContents(file) {
+    if (!fileExists(file)) {
+        return undefined;
+    }
+    try {
+        const data = fs.readFileSync(file);
+        return data.toString('utf8');
+    }
+    catch (err) {
+        throw new Error(`Failed to load file contents ${file}: ${err}`);
+    }
+}
+exports.loadFileContents = loadFileContents;
+function fileExists(file) {
+    if (!file) {
+        return false;
+    }
+    try {
+        const wrapperFileStats = fs.statSync(file);
+        // TODO might need to deal with a linked file, but ingoring that for now
+        return wrapperFileStats && wrapperFileStats.isFile();
+    }
+    catch (err) {
+        if (err.code == 'ENOENT') {
+            return false;
+        }
+        throw err;
+    }
+}
+exports.fileExists = fileExists;
+//# sourceMappingURL=file-utils.js.map
 
 /***/ }),
 
@@ -4031,7 +4329,6 @@ const file_command_1 = __nccwpck_require2_(717);
 const utils_1 = __nccwpck_require2_(5278);
 const os = __importStar(__nccwpck_require2_(2087));
 const path = __importStar(__nccwpck_require2_(5622));
-const uuid_1 = __nccwpck_require2_(5840);
 const oidc_utils_1 = __nccwpck_require2_(8041);
 /**
  * The code to exit an action
@@ -4061,20 +4358,9 @@ function exportVariable(name, val) {
     process.env[name] = convertedVal;
     const filePath = process.env['GITHUB_ENV'] || '';
     if (filePath) {
-        const delimiter = `ghadelimiter_${uuid_1.v4()}`;
-        // These should realistically never happen, but just in case someone finds a way to exploit uuid generation let's not allow keys or values that contain the delimiter.
-        if (name.includes(delimiter)) {
-            throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`);
-        }
-        if (convertedVal.includes(delimiter)) {
-            throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
-        }
-        const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;
-        file_command_1.issueCommand('ENV', commandValue);
+        return file_command_1.issueFileCommand('ENV', file_command_1.prepareKeyValueMessage(name, val));
     }
-    else {
-        command_1.issueCommand('set-env', { name }, convertedVal);
-    }
+    command_1.issueCommand('set-env', { name }, convertedVal);
 }
 exports.exportVariable = exportVariable;
 /**
@@ -4092,7 +4378,7 @@ exports.setSecret = setSecret;
 function addPath(inputPath) {
     const filePath = process.env['GITHUB_PATH'] || '';
     if (filePath) {
-        file_command_1.issueCommand('PATH', inputPath);
+        file_command_1.issueFileCommand('PATH', inputPath);
     }
     else {
         command_1.issueCommand('add-path', {}, inputPath);
@@ -4132,7 +4418,10 @@ function getMultilineInput(name, options) {
     const inputs = getInput(name, options)
         .split('\n')
         .filter(x => x !== '');
-    return inputs;
+    if (options && options.trimWhitespace === false) {
+        return inputs;
+    }
+    return inputs.map(input => input.trim());
 }
 exports.getMultilineInput = getMultilineInput;
 /**
@@ -4165,8 +4454,12 @@ exports.getBooleanInput = getBooleanInput;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
+    const filePath = process.env['GITHUB_OUTPUT'] || '';
+    if (filePath) {
+        return file_command_1.issueFileCommand('OUTPUT', file_command_1.prepareKeyValueMessage(name, value));
+    }
     process.stdout.write(os.EOL);
-    command_1.issueCommand('set-output', { name }, value);
+    command_1.issueCommand('set-output', { name }, utils_1.toCommandValue(value));
 }
 exports.setOutput = setOutput;
 /**
@@ -4295,7 +4588,11 @@ exports.group = group;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function saveState(name, value) {
-    command_1.issueCommand('save-state', { name }, value);
+    const filePath = process.env['GITHUB_STATE'] || '';
+    if (filePath) {
+        return file_command_1.issueFileCommand('STATE', file_command_1.prepareKeyValueMessage(name, value));
+    }
+    command_1.issueCommand('save-state', { name }, utils_1.toCommandValue(value));
 }
 exports.saveState = saveState;
 /**
@@ -4361,13 +4658,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.issueCommand = void 0;
+exports.prepareKeyValueMessage = exports.issueFileCommand = void 0;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const fs = __importStar(__nccwpck_require2_(5747));
 const os = __importStar(__nccwpck_require2_(2087));
+const uuid_1 = __nccwpck_require2_(5840);
 const utils_1 = __nccwpck_require2_(5278);
-function issueCommand(command, message) {
+function issueFileCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
         throw new Error(`Unable to find environment variable for file command ${command}`);
@@ -4379,7 +4677,22 @@ function issueCommand(command, message) {
         encoding: 'utf8'
     });
 }
-exports.issueCommand = issueCommand;
+exports.issueFileCommand = issueFileCommand;
+function prepareKeyValueMessage(key, value) {
+    const delimiter = `ghadelimiter_${uuid_1.v4()}`;
+    const convertedValue = utils_1.toCommandValue(value);
+    // These should realistically never happen, but just in case someone finds a
+    // way to exploit uuid generation let's not allow keys or values that contain
+    // the delimiter.
+    if (key.includes(delimiter)) {
+        throw new Error(`Unexpected input: name should not contain the delimiter "${delimiter}"`);
+    }
+    if (convertedValue.includes(delimiter)) {
+        throw new Error(`Unexpected input: value should not contain the delimiter "${delimiter}"`);
+    }
+    return `${key}<<${delimiter}${os.EOL}${convertedValue}${os.EOL}${delimiter}`;
+}
+exports.prepareKeyValueMessage = prepareKeyValueMessage;
 //# sourceMappingURL=file-command.js.map
 
 /***/ }),
@@ -15647,7 +15960,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"2.0.1"};
+module.exports = {"i8":"3.0.0"};
 
 /***/ })
 

@@ -1,0 +1,24 @@
+name: Publish Executables
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build executables
+        run: |
+          npm run base-build
+          npm run build-exe
+
+      - name: Attach artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: executables
+          path: cli/*
