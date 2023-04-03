@@ -26,7 +26,7 @@ Custom maven `settings.xml` can now be specified as an input parameter to the ac
 
 * `settings-file` - An optional path to a Maven settings.xml file that you want to use to provide additional configuration to Maven.
 
-* `ingore-maven-wrapper` - An optional `true`/`false` flag parameter to ignore the Maven wrapper (if present) in the maven project directory and instead use the version of Maven from the `PATH`. This is set to `false` by default to use the wrapper if one is present.
+* `ignore-maven-wrapper` - An optional `true`/`false` flag parameter to ignore the Maven wrapper (if present) in the maven project directory and instead use the version of Maven from the `PATH`. This is set to `false` by default to use the wrapper if one is present.
 
 * `maven-args` - An optional string value (space separated) options to pass to the maven command line when generating the dependency snapshot. This is empty by default.
 
