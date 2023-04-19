@@ -34,8 +34,9 @@ async function execute() {
   let snapshot: Snapshot | undefined;
 
   // The dependency submission API requires a formatted ref reference so check early fo now
-  if (`/^refs\//`.match(opts.branchRef) === null) {
+  if (/^refs\//.exec(opts.branchRef) === null) {
     console.error(`Branch reference must be in path form, e.g. 'refs/heads/main' for the 'main' branch.`);
+    console.error(`  provided value was: '${opts.branchRef}'`);
     program.help({ error: true });
     process.exit(1);
   }

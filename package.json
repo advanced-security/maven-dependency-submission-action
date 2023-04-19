@@ -6,7 +6,7 @@
   "scripts": {
     "base-build": "npm ci && tsc",
     "build": "npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js",
-    "build-exe": "pkg package.json --compress Gzip",
+    "build-exe": "npm run build && pkg package.json --compress Gzip",
     "test": "jest"
   },
   "repository": {
