@@ -17,6 +17,7 @@ For this action to work properly, you must have the Maven available on PATH (`mv
 
 Custom maven `settings.xml` can now be specified as an input parameter to the action.
 
+This action writes informations in the repository dependency graph, so if you are using the default token, you need to set the `contents: write` permission to the workflow or job. If you are using a personal access token, this token must have the `repo` scope. ([API used by this action](https://docs.github.com/en/rest/dependency-graph/dependency-submission#create-a-snapshot-of-dependencies-for-a-repository))
 
 ### Inputs
 
