@@ -63,7 +63,7 @@ function getDetector() {
 
 export async function generateDependencyGraph(directory: string, config?: MavenConfiguration): Promise<Depgraph> {
   try {
-    const mvn = new MavenRunner(directory, config?.settingsFile, config?.ignoreMavenWrapper);
+    const mvn = new MavenRunner(directory, config?.settingsFile, config?.ignoreMavenWrapper, config?.mavenArgs);
 
     core.startGroup('depgraph-maven-plugin:reactor');
     const mavenReactorArguments = [
