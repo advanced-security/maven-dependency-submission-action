@@ -18,14 +18,7 @@ export function fileExists(file?: string): boolean {
     return false;
   }
 
-  try {
-    const wrapperFileStats = fs.statSync(file);
-    // TODO might need to deal with a linked file, but ingoring that for now
-    return wrapperFileStats && wrapperFileStats.isFile();
-  } catch (err: any) {
-    if (err.code == 'ENOENT') {
-      return false;
-    }
-    throw err;
-  }
+  const wrapperFileStats = fs.statSync(file, {throwIfNoEntry: false});
+  // TODO might need to deal with a linked file, but ingoring that for now
+  return wrapperFileStats && wrapperFileStats.isFile();
 }
