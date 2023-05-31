@@ -510,7 +510,7 @@ function getDetector() {
 function generateDependencyGraph(directory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper);
+            const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper, config === null || config === void 0 ? void 0 : config.mavenArgs);
             core.startGroup('depgraph-maven-plugin:reactor');
             const mavenReactorArguments = [
                 `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
@@ -15518,7 +15518,7 @@ module.exports = require("zlib");
 /***/ ((module) => {
 
 "use strict";
-module.exports = {"i8":"3.0.0"};
+module.exports = {"i8":"3.0.2"};
 
 /***/ })
 

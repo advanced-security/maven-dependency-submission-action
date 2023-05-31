@@ -1,6 +1,6 @@
 {
   "name": "maven-dependency-tree-submission",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/advanced-security/maven-dependency-tree-action#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
-    "@github/dependency-submission-toolkit": "^1.2.8",
+    "@github/dependency-submission-toolkit": "^1.2.10",
     "commander": "^9.4.0",
     "packageurl-js": "^0.0.7"
   },
