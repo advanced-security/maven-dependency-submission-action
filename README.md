@@ -42,6 +42,7 @@ Generating and submitting a dependency snapshot using the defaults:
 
 ```
 - name: Submit Dependency Snapshot
+  if: ${{ github.event_name == 'push' }}
   uses: advanced-security/maven-dependency-submission-action@v3
 ```
 
