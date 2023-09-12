@@ -85,6 +85,17 @@ describe('maven-runner', () => {
         // by running with quiet mode there should be no output
         expect(results.stdout.length).toBe(0);
       });
+
+      it('should run path provided maven with additional arguments', async () => {
+        const projectDir = getMavenProjectDirectory('simple');
+        const additionalMavenArgs = ' -X -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn';
+        const runner = new MavenRunner(projectDir, undefined, false, additionalMavenArgs);
+
+        const results = await runner.exec(projectDir, ['validate']);
+        expect(results.exitCode).toBe(0);
+        // by running with quiet mode there should be no output
+        expect(results.stdout.length).toBe(0);
+      });
     });
 
     describe('with settings', () => {

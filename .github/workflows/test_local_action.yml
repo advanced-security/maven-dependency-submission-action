@@ -22,3 +22,18 @@ jobs:
         uses: ./
         with:
           directory: ${{ inputs.directory }}
+
+  test_with_arguments:
+    name: Test
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run local Action
+        uses: ./
+        with:
+          directory: ${{ inputs.directory }}
+          maven-args: ' -X -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
