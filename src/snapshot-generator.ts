@@ -55,8 +55,8 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
 
 function getDetector() {
   return {
-    name: 'maven-dependency-tree-action',
-    url: 'https://github.com/advanced-security/maven-dependency-tree-action',
+    name: 'maven-dependency-submission-action',
+    url: 'https://github.com/advanced-security/maven-dependency-submission-action',
     version: version
   };
 }
