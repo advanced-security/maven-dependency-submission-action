@@ -1,6 +1,6 @@
 {
   "name": "maven-dependency-tree-submission",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
