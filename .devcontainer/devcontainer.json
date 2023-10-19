@@ -1,8 +1,14 @@
 {
-  "image": "ghcr.io/octodemo/container-nodejs-development:base-20220830",
-  "extensions": [
-    "Orta.vscode-jest",
-  ],
+  "image": "ghcr.io/octodemo/development-containers/javascript:base-20230923",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Orta.vscode-jest",
+        "GitHub.copilot"
+      ]
+    }
+  },
+
   // Install JDK and Maven for testing purposes
   "postCreateCommand": ".devcontainer/install_maven.sh",
   "postStartCommand": "npm install"

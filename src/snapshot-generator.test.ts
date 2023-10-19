@@ -60,5 +60,14 @@ describe('snapshot-generator', () => {
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['artifact-with-classifiers'].countDependencies()).toBe(7);
     });
+
+    it('should process a problematic dependecy-tree 2602', async() => {
+      const projectDir = getMavenProjectDirectory('dependency-graph-2602');
+      const snapshot = await generateSnapshot(projectDir);
+
+      expect(snapshot.manifests['problem-dependency-graph-2602']).toBeDefined();
+      expect(snapshot.detector.version).toBe(version);
+      expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(230);
+    });
   });
 });

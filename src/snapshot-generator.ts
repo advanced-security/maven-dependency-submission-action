@@ -85,6 +85,7 @@ export async function generateDependencyGraph(directory: string, config?: MavenC
     const mavenAggregateArguments = [
       `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
       '-DgraphFormat=json',
+      '-DoutputDirectory=target',
       '-DoutputFileName=aggregate-depgraph.json'
     ];
     const aggregateResults = await mvn.exec(directory, mavenAggregateArguments);
