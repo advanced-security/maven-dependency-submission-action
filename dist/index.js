@@ -265,7 +265,7 @@ function run() {
                 context.sha = syntheticSha;
                 context.ref = syntheticRef;
                 context.eventName = ''; // left empty so the sdk uses the provided sha and ref
-                core.debug(`Using synthetic context`);
+                core.debug(`Using synthetic context ${JSON.stringify(context)}`);
             }
             snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
         }

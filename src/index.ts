@@ -33,11 +33,12 @@ async function run() {
 
       // create a deep clone of the context object
       context = JSON.parse(JSON.stringify(github.context)) as typeof github.context;
+
       context.sha = syntheticSha;
       context.ref = syntheticRef;
       context.eventName = '' // left empty so the sdk uses the provided sha and ref
 
-      core.debug(`Using synthetic context`);
+      core.debug(`Using synthetic context ${JSON.stringify(context)}`);
     }
 
     snapshot = await generateSnapshot(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
