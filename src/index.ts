@@ -32,6 +32,7 @@ async function run() {
         ref: core.getInput('ref'),
         eventName: '' // usually github.context.eventName, let it empty so the sdk uses the provided sha and ref
       }
+      core.info(`Using synthetic context: ${JSON.stringify(context)}`);
     }
 
     snapshot = await generateSnapshot(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
