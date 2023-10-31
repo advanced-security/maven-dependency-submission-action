@@ -43,9 +43,7 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
       manifest = mavenDependencies.createManifest();
     }
 
-    core.debug("Create Snapshot");
     const snapshot = new Snapshot(getDetector(), snapshotConfig?.context, snapshotConfig?.job);
-    core.debug("Add Manifest")
     snapshot.addManifest(manifest);
 
     return snapshot;

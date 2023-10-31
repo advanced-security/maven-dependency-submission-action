@@ -265,7 +265,7 @@ function run() {
                 context.sha = syntheticSha;
                 context.ref = syntheticRef;
                 context.eventName = ''; // left empty so the sdk uses the provided sha and ref
-                core.debug(`Using synthetic context: ${JSON.stringify(context)}`);
+                core.debug(`Using synthetic context`);
             }
             snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
         }
@@ -510,9 +510,7 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             else {
                 manifest = mavenDependencies.createManifest();
             }
-            core.debug("Create Snapshot");
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
-            core.debug("Add Manifest");
             snapshot.addManifest(manifest);
             return snapshot;
         }
