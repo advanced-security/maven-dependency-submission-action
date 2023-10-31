@@ -241,32 +241,36 @@ function run() {
         let snapshot;
         let context;
         try {
-            const directory = core.getInput('directory', { required: true });
+            const directory = core.getInput("directory", { required: true });
             const mavenConfig = {
-                ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
-                settingsFile: core.getInput('settings-file'),
-                mavenArgs: core.getInput('maven-args') || '',
+                ignoreMavenWrapper: core.getBooleanInput("ignore-maven-wrapper"),
+                settingsFile: core.getInput("settings-file"),
+                mavenArgs: core.getInput("maven-args") || "",
             };
-            const includeFilename = core.getBooleanInput('snapshot-include-file-name');
-            const manifestFilename = core.getInput('snapshot-dependency-file-name');
-            const syntheticSha = core.getInput('sha');
-            const syntheticRef = core.getInput('ref');
+            const includeFilename = core.getBooleanInput("snapshot-include-file-name");
+            const manifestFilename = core.getInput("snapshot-dependency-file-name");
+            const syntheticSha = core.getInput("sha");
+            const syntheticRef = core.getInput("ref");
             core.debug(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
             if (syntheticSha || syntheticRef) {
                 // build synthetic context when sha and ref are provided
                 if (!syntheticSha) {
-                    throw ('sha is required when providing ref');
+                    throw "sha is required when providing ref";
                 }
                 if (!syntheticRef) {
-                    throw ('ref is required when providing sha');
+                    throw "ref is required when providing sha";
                 }
                 context = github.context;
                 context.sha = syntheticSha;
                 context.ref = syntheticRef;
-                context.eventName = ''; // left empty so the sdk uses the provided sha and ref
+                context.eventName = ""; // left empty so the sdk uses the provided sha and ref
                 core.debug(`Using synthetic context ${JSON.stringify(context)}`);
             }
-            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
+            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, {
+                includeManifestFile: includeFilename,
+                manifestFile: manifestFilename,
+                context: context,
+            });
         }
         catch (err) {
             core.error(err);
@@ -515,7 +519,6 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
         }
         catch (err) {
             core.error(err);
-            core.debug(err.stack);
             throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
         }
     });

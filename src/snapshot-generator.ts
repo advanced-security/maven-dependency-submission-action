@@ -49,7 +49,6 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     return snapshot;
   } catch (err: any) {
     core.error(err);
-    core.debug(err.stack);
     throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
   }
 }
