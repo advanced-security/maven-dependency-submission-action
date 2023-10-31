@@ -241,19 +241,17 @@ function run() {
         let snapshot;
         let context;
         try {
-            core.startGroup("Inputs");
             const directory = core.getInput('directory', { required: true });
             const mavenConfig = {
                 ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
                 settingsFile: core.getInput('settings-file'),
                 mavenArgs: core.getInput('maven-args') || '',
             };
-            core.info(`mavenConfig: ${JSON.stringify(mavenConfig)}`);
             const includeFilename = core.getBooleanInput('snapshot-include-file-name');
             const manifestFilename = core.getInput('snapshot-dependency-file-name');
             const syntheticSha = core.getInput('sha');
             const syntheticRef = core.getInput('ref');
-            core.info(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
+            core.debug(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
             if (syntheticSha || syntheticRef) {
                 // build synthetic context when sha and ref are provided
                 if (!syntheticSha) {
@@ -276,15 +274,12 @@ function run() {
             core.error(err);
             core.setFailed(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);
         }
-        finally {
-            core.endGroup();
-        }
         if (snapshot) {
             core.startGroup(`Dependency Snapshot`);
             core.info(snapshot.prettyJSON());
             core.endGroup();
             core.info(`Submitting Snapshot...`);
-            core.info(`with context: ${JSON.stringify(context)}`);
+            core.debug(`with context: ${JSON.stringify(context)}`);
             yield (0, dependency_submission_toolkit_1.submitSnapshot)(snapshot, context);
             core.info(`completed.`);
         }
@@ -516,12 +511,15 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             else {
                 manifest = mavenDependencies.createManifest();
             }
+            core.debug("Create Snapshot");
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
+            core.debug("Add Manifest");
             snapshot.addManifest(manifest);
             return snapshot;
         }
         catch (err) {
             core.error(err);
+            core.debug(err.stack);
             throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
         }
     });

@@ -8,21 +8,19 @@ async function run() {
   let context: any | undefined;
 
   try {
-    core.startGroup("Inputs");
     const directory = core.getInput('directory', { required: true });
     const mavenConfig = {
       ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
       settingsFile: core.getInput('settings-file'),
       mavenArgs: core.getInput('maven-args') || '',
     }
-    core.info(`mavenConfig: ${JSON.stringify(mavenConfig)}`);
     const includeFilename = core.getBooleanInput('snapshot-include-file-name');
     const manifestFilename = core.getInput('snapshot-dependency-file-name');
 
     const syntheticSha = core.getInput('sha');
     const syntheticRef = core.getInput('ref');
 
-    core.info(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
+    core.debug(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
 
     if (syntheticSha || syntheticRef) {
       // build synthetic context when sha and ref are provided
@@ -46,8 +44,6 @@ async function run() {
   } catch (err: any) {
     core.error(err);
     core.setFailed(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);
-  } finally {
-    core.endGroup();
   }
 
   if (snapshot) {
@@ -56,7 +52,7 @@ async function run() {
     core.endGroup();
 
     core.info(`Submitting Snapshot...`);
-    core.info(`with context: ${JSON.stringify(context)}`);
+    core.debug(`with context: ${JSON.stringify(context)}`);
     await submitSnapshot(snapshot, context);
     core.info(`completed.`)
   }
