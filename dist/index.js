@@ -260,8 +260,7 @@ function run() {
                 if (!syntheticRef) {
                     throw ('ref is required when providing sha');
                 }
-                // create a deep clone of the context object
-                context = JSON.parse(JSON.stringify(github.context));
+                context = github.context;
                 context.sha = syntheticSha;
                 context.ref = syntheticRef;
                 context.eventName = ''; // left empty so the sdk uses the provided sha and ref

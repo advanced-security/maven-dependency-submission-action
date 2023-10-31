@@ -31,8 +31,7 @@ async function run() {
         throw ('ref is required when providing sha');
       }
 
-      // create a deep clone of the context object
-      context = JSON.parse(JSON.stringify(github.context)) as typeof github.context;
+      context = github.context;
 
       context.sha = syntheticSha;
       context.ref = syntheticRef;
