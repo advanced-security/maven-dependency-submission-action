@@ -17,19 +17,24 @@ async function run() {
     const includeFilename = core.getBooleanInput('snapshot-include-file-name');
     const manifestFilename = core.getInput('snapshot-dependency-file-name');
 
-    if (core.getInput('sha') || core.getInput('ref')) {
+    const syntheticSha = core.getInput('sha');
+    const syntheticRef = core.getInput('ref');
+
+    core.info(`Testing sha & ref: ${syntheticSha} ${syntheticRef}`);
+
+    if (syntheticSha || syntheticRef) {
       // build synthetic context when sha and ref are provided
-      if (!core.getInput('sha')) {
+      if (!syntheticSha) {
         throw ('sha is required when providing ref');
       }
-      if (!core.getInput('ref')) {
+      if (!syntheticRef) {
         throw ('ref is required when providing sha');
       }
 
       context = {
         repo: github.context.repo,
-        sha: core.getInput('sha'),
-        ref: core.getInput('ref'),
+        sha: syntheticSha,
+        ref: syntheticRef,
         eventName: '' // usually github.context.eventName, let it empty so the sdk uses the provided sha and ref
       }
       core.info(`Using synthetic context: ${JSON.stringify(context)}`);
