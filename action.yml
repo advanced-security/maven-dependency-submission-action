@@ -40,6 +40,16 @@ inputs:
     type: string
     default: ${{ github.token }}
 
+  ref:
+    description: The ref to use when submitting the dependency snapshot to the repository, leave blank to use the current ref
+    type: string
+    required: false
+
+  sha:
+    description: The sha to use when submitting the dependency snapshot to the repository, leave blank to use the current sha
+    type: string
+    required: false
+
 runs:
   using: node16
   main: dist/index.js
