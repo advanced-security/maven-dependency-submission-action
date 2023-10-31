@@ -52,7 +52,6 @@ async function run() {
     core.endGroup();
 
     core.info(`Submitting Snapshot...`);
-    core.debug(`with context: ${JSON.stringify(context)}`);
     await submitSnapshot(snapshot, context);
     core.info(`completed.`)
   }
