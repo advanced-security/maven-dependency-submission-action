@@ -20,7 +20,9 @@ export type SnapshotConfig = {
   includeManifestFile?: boolean;
   manifestFile?: string;
   context?: any;
-  job?: any
+  job?: any;
+  sha?: any;
+  ref?: any;
 };
 
 export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
@@ -45,6 +47,16 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
 
     const snapshot = new Snapshot(getDetector(), snapshotConfig?.context, snapshotConfig?.job);
     snapshot.addManifest(manifest);
+
+    const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);
+    if (specifiedRef) {
+      snapshot.ref = specifiedRef;
+    }
+
+    const specifiedSha = getNonEmtptyValue(snapshot?.sha);
+    if (specifiedSha) {
+      snapshot.sha = specifiedSha;
+    }
 
     return snapshot;
   } catch (err: any) {
@@ -149,4 +161,14 @@ function getRepositoryRelativePath(file) {
 
   core.debug(`Snapshot relative file =  ${result}`);
   return result;
+}
+
+function getNonEmtptyValue(str?: string) {
+  if (str) {
+    const trimmed = str.trim();
+    if (trimmed.length > 0) {
+      return trimmed;
+    }
+  }
+  return undefined;
 }

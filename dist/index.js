@@ -245,9 +245,13 @@ function run() {
                 settingsFile: core.getInput('settings-file'),
                 mavenArgs: core.getInput('maven-args') || '',
             };
-            const includeFilename = core.getBooleanInput('snapshot-include-file-name');
-            const manifestFilename = core.getInput('snapshot-dependency-file-name');
-            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename });
+            const snapshotConfig = {
+                includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
+                manifestFile: core.getInput('snapshot-dependency-file-name'),
+                targetSHA: core.getInput('snapshot-sha'),
+                targetRef: core.getInput('snapshot-ref'),
+            };
+            snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, snapshotConfig);
         }
         catch (err) {
             core.error(err);
@@ -491,6 +495,14 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             }
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
+            const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
+            if (specifiedRef) {
+                snapshot.ref = specifiedRef;
+            }
+            const specifiedSha = getNonEmtptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
+            if (specifiedSha) {
+                snapshot.sha = specifiedSha;
+            }
             return snapshot;
         }
         catch (err) {
@@ -586,6 +598,15 @@ function getRepositoryRelativePath(file) {
     }
     core.debug(`Snapshot relative file =  ${result}`);
     return result;
+}
+function getNonEmtptyValue(str) {
+    if (str) {
+        const trimmed = str.trim();
+        if (trimmed.length > 0) {
+            return trimmed;
+        }
+    }
+    return undefined;
 }
 //# sourceMappingURL=snapshot-generator.js.map
 

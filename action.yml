@@ -40,6 +40,19 @@ inputs:
     type: string
     default: ${{ github.token }}
 
+  snapshot-sha:
+    description: The SHA that the results will be linked to in the dependency snapshot
+    type: string
+    required: false
+    default: ''
+
+  snapshot-ref:
+    description: The ref tha tthe results will be linked to in the dependency snapshot
+    type: string
+    required: false
+    default: ''
+
+
 runs:
   using: node16
   main: dist/index.js
