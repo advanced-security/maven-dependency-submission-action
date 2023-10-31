@@ -55,7 +55,8 @@ async function run() {
     core.info(snapshot.prettyJSON())
     core.endGroup();
 
-    core.info(`Submitting Snapshot... ${JSON.stringify(context)}`)
+    core.info(`Submitting Snapshot...`);
+    core.info(`with context: ${JSON.stringify(context)}`);
     await submitSnapshot(snapshot, context);
     core.info(`completed.`)
   }
