@@ -31,13 +31,13 @@ async function run() {
         throw ('ref is required when providing sha');
       }
 
-      context = {
-        repo: github.context.repo,
-        sha: syntheticSha,
-        ref: syntheticRef,
-        eventName: '' // usually github.context.eventName, let it empty so the sdk uses the provided sha and ref
-      }
-      core.info(`Using synthetic context: ${JSON.stringify(context)}`);
+      // create a deep clone of the context object
+      context = JSON.parse(JSON.stringify(github.context)) as typeof github.context;
+      context.sha = syntheticSha;
+      context.ref = syntheticRef;
+      context.eventName = '' // left empty so the sdk uses the provided sha and ref
+
+      core.debug(`Using synthetic context: ${JSON.stringify(context)}`);
     }
 
     snapshot = await generateSnapshot(directory, mavenConfig, { includeManifestFile: includeFilename, manifestFile: manifestFilename, context: context });
