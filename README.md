@@ -35,6 +35,9 @@ This action writes informations in the repository dependency graph, so if you ar
 
 * `snapshot-dependency-file-name`: An optional user control file path to the POM file, requires `snapshot-include-file-name` to be `true` for the value to be submitted.
 
+* `ref`: an optional ref to use when you need to overwrite the current ref. Leave it empty to use the current ref. This field need to be used with `sha` field. It is useful in edge cases where you need to submit a dependency graph for a ref that is not the current one, for example when running the action on a pull_request_target event, when you want to compare the pull request branch with the base branch.
+
+* `sha`: the sha to use when you need to overwrite the current sha. Leave it empty to use the current sha. This field need to be used with `ref` field.
 
 ## Examples
 
@@ -48,7 +51,56 @@ Generating and submitting a dependency snapshot using the defaults:
 Upon success it will generate a snapshot captured from Maven POM like;
 ![Screenshot 2022-08-15 at 09 33 47](https://user-images.githubusercontent.com/681306/184603264-3cd69fda-75ff-4a46-b014-630acab60fab.png)
 
+Generating and submitting a dependency snapshot when the PR comes from a forked repository:
 
+```yaml
+name: Tree submit
+on:
+  pull_request_target:
+    types: [ opened, synchronize, reopened, labeled, edited ]
+
+permissions:
+  contents: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to submit the dependency graph
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    steps:
+      - name: Get User Permission # check if the user has write access to the repo
+        id: checkAccess
+        uses: actions-cool/check-user-permission@v2
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check User Permission # fail when the user does not have write access
+        if: steps.checkAccess.outputs.require-result == 'false'
+        run: |
+          echo "${{ github.triggering_actor }} does not have permissions on this repo."
+          echo "Current permission level is ${{ steps.checkAccess.outputs.user-permission }}"
+          echo "Job originally triggered by ${{ github.actor }}"
+          exit 1
+
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{  github.event.pull_request.head.sha }} # Use the PR head instead of the main head
+
+      - name: Submit Dependency Snapshot
+        uses: advanced-security/maven-dependency-submission-action@main
+        with:
+          directory: ${{ github.workspace }}/todo
+          sha: ${{ github.event.pull_request.head.sha }}
+          ref: "refs/pull/${{ github.event.pull_request.number }}/merge"
+
+      # This is an example of an action that needs the dependency snapshot to be submitted before it can run
+      - name: 'Dependency Review for the Pull Request'
+        uses: actions/dependency-review-action@v3
+```
 
 ## Command Line Usage
 
