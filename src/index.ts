@@ -8,12 +8,14 @@ async function run() {
   let context: any | undefined;
 
   try {
+    core.startGroup("Inputs");
     const directory = core.getInput('directory', { required: true });
     const mavenConfig = {
       ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
       settingsFile: core.getInput('settings-file'),
       mavenArgs: core.getInput('maven-args') || '',
     }
+    core.info(`mavenConfig: ${JSON.stringify(mavenConfig)}`);
     const includeFilename = core.getBooleanInput('snapshot-include-file-name');
     const manifestFilename = core.getInput('snapshot-dependency-file-name');
 
@@ -44,6 +46,8 @@ async function run() {
   } catch (err: any) {
     core.error(err);
     core.setFailed(`Failed to generate a dependency snapshot, check logs for more details, ${err}`);
+  } finally {
+    core.endGroup();
   }
 
   if (snapshot) {
