@@ -21,8 +21,8 @@ export type SnapshotConfig = {
   manifestFile?: string;
   context?: any;
   job?: any;
-  sha?: any;
-  ref?: any;
+  targetSHA?: any;
+  targetRef?: any;
 };
 
 export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
@@ -48,12 +48,12 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     const snapshot = new Snapshot(getDetector(), snapshotConfig?.context, snapshotConfig?.job);
     snapshot.addManifest(manifest);
 
-    const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);
+    const specifiedRef = getNonEmtptyValue(snapshotConfig?.targetRef);
     if (specifiedRef) {
       snapshot.ref = specifiedRef;
     }
 
-    const specifiedSha = getNonEmtptyValue(snapshot?.sha);
+    const specifiedSha = getNonEmtptyValue(snapshotConfig?.targetSHA);
     if (specifiedSha) {
       snapshot.sha = specifiedSha;
     }

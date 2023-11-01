@@ -495,11 +495,11 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             }
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
-            const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
+            const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.targetRef);
             if (specifiedRef) {
                 snapshot.ref = specifiedRef;
             }
-            const specifiedSha = getNonEmtptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
+            const specifiedSha = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.targetSHA);
             if (specifiedSha) {
                 snapshot.sha = specifiedSha;
             }
