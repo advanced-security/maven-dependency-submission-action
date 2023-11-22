@@ -47,7 +47,7 @@ inputs:
     default: ''
 
   snapshot-ref:
-    description: The ref tha tthe results will be linked to in the dependency snapshot
+    description: The ref that the results will be linked to in the dependency snapshot
     type: string
     required: false
     default: ''
