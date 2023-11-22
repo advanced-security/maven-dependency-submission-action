@@ -28,7 +28,7 @@ process.env['GITHUB_API_URL'] = opts.githubApiUrl;
 
 // The above injection of environment variables is required before the submission APIs are imported
 import { Snapshot, submitSnapshot } from '@github/dependency-submission-toolkit';
-import { generateSnapshot } from '../snapshot-generator';
+import { SnapshotConfig, generateSnapshot } from '../snapshot-generator';
 
 async function execute() {
   let snapshot: Snapshot | undefined;
@@ -60,7 +60,7 @@ async function execute() {
       mavenArgs: opts.mavenArgs
     };
 
-    const snapshotConfig = {
+    const snapshotConfig: SnapshotConfig = {
       context,
       job,
     }
