@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import {Snapshot, submitSnapshot} from '@github/dependency-submission-toolkit';
-import { generateSnapshot } from './snapshot-generator';
+import { SnapshotConfig, generateSnapshot } from './snapshot-generator';
 
 async function run() {
   let snapshot: Snapshot | undefined;
@@ -12,11 +12,11 @@ async function run() {
       settingsFile: core.getInput('settings-file'),
       mavenArgs: core.getInput('maven-args') || '',
     }
-    const snapshotConfig = {
+    const snapshotConfig: SnapshotConfig = {
       includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
       manifestFile: core.getInput('snapshot-dependency-file-name'),
-      targetSHA: core.getInput('snapshot-sha'),
-      targetRef: core.getInput('snapshot-ref'),
+      sha: core.getInput('snapshot-sha'),
+      ref: core.getInput('snapshot-ref'),
     }
 
     snapshot = await generateSnapshot(directory, mavenConfig, snapshotConfig);

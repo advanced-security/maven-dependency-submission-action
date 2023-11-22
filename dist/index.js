@@ -248,8 +248,8 @@ function run() {
             const snapshotConfig = {
                 includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
                 manifestFile: core.getInput('snapshot-dependency-file-name'),
-                targetSHA: core.getInput('snapshot-sha'),
-                targetRef: core.getInput('snapshot-ref'),
+                sha: core.getInput('snapshot-sha'),
+                ref: core.getInput('snapshot-ref'),
             };
             snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, snapshotConfig);
         }
