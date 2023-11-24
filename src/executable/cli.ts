@@ -16,6 +16,7 @@ program.option('--maven-args <maven-args>', 'additional arguments to pass to Mav
 program.option('--github-api-url <url>', 'GitHub API URL', 'https://api.github.com');
 program.option('-j --job-name <jobName>', 'Optional name for the activity creating and submitting the graph', 'maven-dependency-submission-cli');
 program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity that is providing the graph');
+program.option('--includeManifestFile', 'include the POM file in the snapshot');
 
 program.parse(process.argv);
 
@@ -61,8 +62,9 @@ async function execute() {
     };
 
     const snapshotConfig: SnapshotConfig = {
-      context,
-      job,
+      includeManifestFile: opts.includeManifestFile,
+      context: context,
+      job: job,
     }
 
     snapshot = await generateSnapshot(opts.directory, mvnConfig, snapshotConfig);
