@@ -63,6 +63,8 @@ async function execute() {
     const snapshotConfig: SnapshotConfig = {
       context,
       job,
+      sha: opts.sha,
+      ref: opts.branchRef,
     }
 
     snapshot = await generateSnapshot(opts.directory, mvnConfig, snapshotConfig);
