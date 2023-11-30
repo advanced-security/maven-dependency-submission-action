@@ -1,7 +1,7 @@
 {
-  "name": "maven-dependency-tree-submission",
-  "version": "3.0.3",
-  "description": "",
+  "name": "maven-dependency-submission-action",
+  "version": "4.0.0",
+  "description": "Submit Maven dependencies to GitHub dependency submission API",
   "main": "index.js",
   "scripts": {
     "base-build": "npm ci && tsc",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/advanced-security/maven-dependency-tree-action.git"
+    "url": "git+https://github.com/advanced-security/maven-dependency-submission-action.git"
   },
   "keywords": [],
   "author": "GitHub, Inc",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/advanced-security/maven-dependency-tree-action/issues"
+    "url": "https://github.com/advanced-security/maven-dependency-submission-action/issues"
   },
-  "homepage": "https://github.com/advanced-security/maven-dependency-tree-action#readme",
+  "homepage": "https://github.com/advanced-security/maven-dependency-submission-action#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@github/dependency-submission-toolkit": "^1.2.10",
