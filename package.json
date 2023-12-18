@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/advanced-security/maven-dependency-submission-action/issues"
   },
-  "homepage": "https://github.com/advanced-security/maven-dependency-submission-action#readme",
+  "homepage": "https://github.com/advanced-security/maven-dependency-submission-action",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@github/dependency-submission-toolkit": "^1.2.10",

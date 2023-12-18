@@ -6,8 +6,7 @@ import { Depgraph, MavenDependencyGraph, parseDependencyJson } from './depgraph'
 import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
 
-const version = require('../package.json')['version'];
-
+const packageData = require('../package.json');
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
 
 export type MavenConfiguration = {
@@ -67,9 +66,9 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
 
 function getDetector() {
   return {
-    name: 'maven-dependency-submission-action',
-    url: 'https://github.com/advanced-security/maven-dependency-submission-action',
-    version: version
+    name: packageData.name,
+    url: packageData.homepage,
+    version: packageData.version
   };
 }
 
