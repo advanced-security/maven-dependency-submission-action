@@ -14,7 +14,7 @@ jobs:
 
       - name: Build executables
         run: |
-          npm run base-build
+          npm run build
           npm run build-exe
 
       - name: Attach artifacts

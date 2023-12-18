@@ -17,6 +17,9 @@ program.option('--github-api-url <url>', 'GitHub API URL', 'https://api.github.c
 program.option('-j --job-name <jobName>', 'Optional name for the activity creating and submitting the graph', 'maven-dependency-submission-cli');
 program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity that is providing the graph');
 
+program.option('--snapshot-exclude-file-name', 'exclude the file name in the dependency snapshot report. If false the name of the artifactor from the POM will be used, but any links in GitHub will not work.');
+program.option('--snapshot-dependency-file-name <fileName>', 'optional override to specificy the path to the file that the snapshot will be associated with in the repository');
+
 program.parse(process.argv);
 
 const opts = program.opts();
@@ -65,6 +68,9 @@ async function execute() {
       job,
       sha: opts.sha,
       ref: opts.branchRef,
+
+      manifestFile: opts.snapshotDependencyFileName,
+      includeManifestFile: !opts.snapshotExcludeFileName,
     }
 
     snapshot = await generateSnapshot(opts.directory, mvnConfig, snapshotConfig);
