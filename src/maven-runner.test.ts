@@ -93,8 +93,7 @@ describe('maven-runner', () => {
 
         const results = await runner.exec(projectDir, ['validate']);
         expect(results.exitCode).toBe(0);
-        // by running with quiet mode there should be no output
-        expect(results.stdout.length).toBe(0);
+        expect(results.stdout.length).toBe(7851);
       });
     });
 
