@@ -10,6 +10,6 @@
   },
 
   // Install JDK and Maven for testing purposes
-  "postCreateCommand": ".devcontainer/install_maven.sh",
+  "postCreateCommand": "sudo .devcontainer/install_maven.sh",
   "postStartCommand": "npm install"
 }
