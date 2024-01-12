@@ -22,7 +22,7 @@
   "homepage": "https://github.com/advanced-security/maven-dependency-submission-action",
   "dependencies": {
     "@actions/core": "^1.10.1",
-    "@github/dependency-submission-toolkit": "^1.2.10",
+    "@github/dependency-submission-toolkit": "^2.0.0",
     "commander": "^9.4.0",
     "packageurl-js": "^1.2.0"
   },
