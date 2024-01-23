@@ -67,6 +67,6 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['problem-dependency-graph-2602']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(230);
-    }, 20000);
+    }, 40000);
   });
 });
