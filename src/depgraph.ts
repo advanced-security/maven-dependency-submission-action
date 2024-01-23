@@ -1,6 +1,6 @@
 import { PackageURL } from 'packageurl-js'
 import { PackageCache, Package, Manifest } from '@github/dependency-submission-toolkit';
-import { DependencyScope } from '@github/dependency-submission-toolkit/dist/manifest';
+import { DependencyScope } from '@github/dependency-submission-toolkit';
 import { loadFileContents } from './utils/file-utils';
 
 export type Depgraph = {

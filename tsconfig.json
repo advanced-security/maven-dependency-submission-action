@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "CommonJS",
+    "module": "ES2020",
     "outDir": "./lib",
     "sourceRoot": "./src",
     "strict": true,

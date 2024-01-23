@@ -1,9 +1,8 @@
 import { getMavenProjectDirectory } from './utils/test-util';
 import { generateDependencyGraph, generateSnapshot } from './snapshot-generator';
+import {describe, it, expect} from 'vitest';
 
 describe('snapshot-generator', () => {
-
-  jest.setTimeout(20000);
 
   describe('#generateDependencyGraph()', () => {
 
@@ -11,7 +10,7 @@ describe('snapshot-generator', () => {
       const projectDir = getMavenProjectDirectory('simple');
       const depGraph = await generateDependencyGraph(projectDir);
       expect(depGraph.dependencies.length).toBe(20);
-    });
+    }, 20000);
   });
 
   describe('#generateSnapshot()', () => {
@@ -24,7 +23,7 @@ describe('snapshot-generator', () => {
 
       expect(snapshot.manifests['bookstore-v3']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
-    });
+    }, 20000);
 
     it('should generate a snapshot for a multi-module project', async () => {
       const projectDir = getMavenProjectDirectory('multi-module');
@@ -32,7 +31,7 @@ describe('snapshot-generator', () => {
 
       expect(snapshot.manifests['bs-parent']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
-    });
+    }, 20000);
 
     it('should generate a snapshot for a multi-module-multi-branch project', async () => {
       const projectDir = getMavenProjectDirectory('multi-module-multi-branch');
@@ -41,7 +40,7 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['bs-parent']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['bs-parent'].countDependencies()).toBe(20);
-    });
+    }, 20000);
 
     it('should generate a snapshot for a maven-wrapper project', async () => {
       const projectDir = getMavenProjectDirectory('maven-wrapper');
@@ -50,7 +49,7 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['maven-wrapper-test']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['maven-wrapper-test'].countDependencies()).toBe(0);
-    });
+    }, 20000);
 
     it('should generate a snapshot for an artifact with classifiers project', async () => {
       const projectDir = getMavenProjectDirectory('artifact-with-classifiers');
@@ -59,7 +58,7 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['artifact-with-classifiers']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['artifact-with-classifiers'].countDependencies()).toBe(7);
-    });
+    }, 20000);
 
     it('should process a problematic dependecy-tree 2602', async() => {
       const projectDir = getMavenProjectDirectory('dependency-graph-2602');
@@ -68,6 +67,6 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['problem-dependency-graph-2602']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
       expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(230);
-    });
+    }, 20000);
   });
 });

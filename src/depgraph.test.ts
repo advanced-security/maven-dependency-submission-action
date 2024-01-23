@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { parseDependencyJson, MavenDependencyGraph } from './depgraph';
 import * as path from 'path';
+import {describe, it, beforeAll} from 'vitest';
 
 describe('depgraph', () => {
 

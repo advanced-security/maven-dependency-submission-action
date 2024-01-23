@@ -1,10 +1,9 @@
 import * as path from 'path';
 import { getMavenProjectDirectory, getMavenSettingsFile } from './utils/test-util';
 import { MavenRunner } from './maven-runner';
+import {describe, it, expect} from 'vitest';
 
 describe('maven-runner', () => {
-
-  jest.setTimeout(20000);
 
   describe('create', () => {
 
@@ -16,7 +15,7 @@ describe('maven-runner', () => {
       expect(runner.configuration.executable).toBeDefined();
       expect(runner.configuration.executable).toBe('mvn');
       expect(runner.configuration.settingsFile).toBeUndefined();
-    });
+    }, 20000);
 
     it('should create a runner with wrapper', async () => {
       const projectDir = getMavenProjectDirectory('maven-wrapper');
@@ -26,7 +25,7 @@ describe('maven-runner', () => {
       expect(runner.configuration.executable).toBeDefined();
       expect(runner.configuration.executable).toBe(path.join(projectDir, 'mvnw'));
       expect(runner.configuration.settingsFile).toBeUndefined();
-    });
+    }, 20000);
 
     describe('with settings', () => {
 

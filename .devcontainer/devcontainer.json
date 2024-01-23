@@ -3,7 +3,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "Orta.vscode-jest",
+        "kingwl.vscode-vitest-runner",
         "GitHub.copilot"
       ]
     }
