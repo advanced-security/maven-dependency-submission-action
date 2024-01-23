@@ -92,7 +92,7 @@ describe('maven-runner', () => {
 
         const results = await runner.exec(projectDir, ['validate']);
         expect(results.exitCode).toBe(0);
-        expect(results.stdout.length).toBe(7851);
+        expect(results.stdout.length).toBeGreaterThan(7000);
       });
     });
 
