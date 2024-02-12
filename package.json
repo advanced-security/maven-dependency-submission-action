@@ -2,11 +2,13 @@
   "name": "maven-dependency-submission-action",
   "version": "4.0.0",
   "description": "Submit Maven dependencies to GitHub dependency submission API",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "base-build": "npm ci && tsc",
     "build": "npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js",
-    "build-exe": "npm run build && pkg package.json --compress Gzip",
+    "build:cli": "npm run base-build && npm exec -- rollup -c rollup.config.js",
+    "build-exe": "npm run build:cli && pkg output/cli.js --compress Gzip --out-path cli --targets node18-linux-x64,node18-macos-x64,node18-win-x64",
     "test": "vitest --run"
   },
   "repository": {
@@ -28,27 +30,19 @@
     "packageurl-js": "^1.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/chai": "^4.3.1",
     "@vercel/ncc": "^0.38.1",
     "chai": "^4.3.6",
     "pkg": "^5.8.0",
+    "rollup": "^4.10.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
   },
   "bin": {
     "cli": "lib/src/executable/cli.js"
-  },
-  "pkg": {
-    "targets": [
-      "node18-linux-x64",
-      "node18-win-x64",
-      "node18-macos-x64"
-    ],
-    "assets": [
-      "package.json"
-    ],
-    "publicPackages": "*",
-    "outputPath": "cli"
   }
 }
