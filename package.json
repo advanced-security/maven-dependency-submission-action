@@ -1,6 +1,6 @@
 {
   "name": "maven-dependency-submission-action",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Submit Maven dependencies to GitHub dependency submission API",
   "type": "module",
   "main": "index.js",
