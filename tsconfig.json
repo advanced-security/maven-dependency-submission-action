@@ -2,10 +2,6 @@
   "compilerOptions": {
     "target": "es6",
     "module": "ES2020",
-    "lib": [
-      "ES2020",
-    ],
-    "allowSyntheticDefaultImports": true,
     "outDir": "./lib",
     "sourceRoot": "./src",
     "strict": true,
