@@ -1,6 +1,6 @@
 import pkg from '../../package.json';
-import { program } from 'commander';
 
+const { program } = require('commander');
 program.name(pkg.name);
 program.version(pkg.version);
 
