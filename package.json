@@ -24,14 +24,14 @@
     "@actions/core": "^1.10.1",
     "@actions/exec": "^1.1.1",
     "@github/dependency-submission-toolkit": "^2.0.0",
-    "commander": "^9.4.0",
+    "commander": "^12.0.0",
     "packageurl-js": "^1.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
     "@vercel/ncc": "^0.38.1",
     "chai": "^4.3.6",
-    "pkg": "^5.8.0",
+    "@yao-pkg/pkg": "^5.11.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"
@@ -41,9 +41,9 @@
   },
   "pkg": {
     "targets": [
-      "node18-linux-x64",
-      "node18-win-x64",
-      "node18-macos-x64"
+      "node20-linux-x64",
+      "node20-win-x64",
+      "node20-macos-x64"
     ],
     "assets": [
       "package.json"
