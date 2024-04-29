@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build executables
         run: |
@@ -18,7 +18,7 @@ jobs:
           npm run build-exe
 
       - name: Attach artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: executables
           path: cli/*

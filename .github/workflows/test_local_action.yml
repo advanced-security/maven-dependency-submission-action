@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run local Action
         uses: ./
@@ -24,13 +24,13 @@ jobs:
           directory: ${{ inputs.directory }}
 
   test_with_arguments:
-    name: Test
+    name: Test with Arguments
 
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run local Action
         uses: ./

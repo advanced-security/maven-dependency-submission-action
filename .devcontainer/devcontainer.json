@@ -1,5 +1,5 @@
 {
-  "image": "ghcr.io/octodemo/development-containers/javascript:base-20230923",
+  "image": "ghcr.io/octodemo/development-containers/javascript:base-202401-r1",
   "customizations": {
     "vscode": {
       "extensions": [
