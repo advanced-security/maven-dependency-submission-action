@@ -1,8 +1,8 @@
 name: Sync fork
 on:
   schedule:
-    # Daily at midnight
-    - cron: "0 0 * * *"
+    # Daily at 4:24am
+    - cron: "24 4 * * *"
   workflow_dispatch: {}
 jobs:
   sync:
