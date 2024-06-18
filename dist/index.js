@@ -251,6 +251,10 @@ function run() {
                 sha: core.getInput('snapshot-sha'),
                 ref: core.getInput('snapshot-ref'),
             };
+            const correlator = core.getInput('correlator');
+            if (correlator) {
+                snapshotConfig.correlator = correlator;
+            }
             snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, snapshotConfig);
         }
         catch (err) {
@@ -475,6 +479,7 @@ const packageData = __nccwpck_require__(2876);
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
 function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const depgraph = yield generateDependencyGraph(directory, mvnConfig);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
@@ -495,6 +500,9 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             }
             const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
+            snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
+                ? `${snapshot.job.correlator}-${snapshotConfig.correlator}`
+                : (_a = snapshot.job) === null || _a === void 0 ? void 0 : _a.correlator;
             const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
             if (specifiedRef) {
                 snapshot.ref = specifiedRef;

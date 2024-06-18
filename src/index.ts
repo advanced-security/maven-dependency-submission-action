@@ -12,11 +12,17 @@ async function run() {
       settingsFile: core.getInput('settings-file'),
       mavenArgs: core.getInput('maven-args') || '',
     }
+
     const snapshotConfig: SnapshotConfig = {
       includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
       manifestFile: core.getInput('snapshot-dependency-file-name'),
       sha: core.getInput('snapshot-sha'),
       ref: core.getInput('snapshot-ref'),
+    }
+
+    const correlator = core.getInput('correlator');
+    if (correlator) {
+      snapshotConfig.correlator = correlator;
     }
 
     snapshot = await generateSnapshot(directory, mavenConfig, snapshotConfig);
