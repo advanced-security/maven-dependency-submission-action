@@ -12,4 +12,4 @@ jobs:
     steps:
       - run: gh repo sync actions/maven-dependency-submission-action -b main
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
