@@ -239,18 +239,26 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let snapshot;
         try {
-            const directory = core.getInput('directory', { required: true });
+            const directory = core.getInput("directory", { required: true });
             const mavenConfig = {
-                ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
-                settingsFile: core.getInput('settings-file'),
-                mavenArgs: core.getInput('maven-args') || '',
+                ignoreMavenWrapper: core.getBooleanInput("ignore-maven-wrapper"),
+                settingsFile: core.getInput("settings-file"),
+                mavenArgs: core.getInput("maven-args") || "",
             };
             const snapshotConfig = {
-                includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
-                manifestFile: core.getInput('snapshot-dependency-file-name'),
-                sha: core.getInput('snapshot-sha'),
-                ref: core.getInput('snapshot-ref'),
+                includeManifestFile: core.getBooleanInput("snapshot-include-file-name"),
+                manifestFile: core.getInput("snapshot-dependency-file-name"),
+                sha: core.getInput("snapshot-sha"),
+                ref: core.getInput("snapshot-ref"),
             };
+            const detectorName = core.getInput("detector-name");
+            if (detectorName == "") {
+                snapshotConfig.detector = {
+                    name: detectorName,
+                    url: core.getInput("detector-url"),
+                    version: core.getInput("detector-version"),
+                };
+            }
             snapshot = yield (0, snapshot_generator_1.generateSnapshot)(directory, mavenConfig, snapshotConfig);
         }
         catch (err) {
@@ -472,9 +480,10 @@ const depgraph_1 = __nccwpck_require__(8047);
 const maven_runner_1 = __nccwpck_require__(7433);
 const file_utils_1 = __nccwpck_require__(799);
 const packageData = __nccwpck_require__(2876);
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = "4.0.2";
 function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const depgraph = yield generateDependencyGraph(directory, mvnConfig);
         try {
             const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
@@ -486,14 +495,14 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
                 }
                 else {
                     // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-                    pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
+                    pomFile = getRepositoryRelativePath(path.join(directory, "pom.xml"));
                 }
                 manifest = mavenDependencies.createManifest(pomFile);
             }
             else {
                 manifest = mavenDependencies.createManifest();
             }
-            const snapshot = new dependency_submission_toolkit_1.Snapshot(getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
+            const snapshot = new dependency_submission_toolkit_1.Snapshot((_a = snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.detector) !== null && _a !== void 0 ? _a : getDetector(), snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
             const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
             if (specifiedRef) {
@@ -516,18 +525,18 @@ function getDetector() {
     return {
         name: packageData.name,
         url: packageData.homepage,
-        version: packageData.version
+        version: packageData.version,
     };
 }
 function generateDependencyGraph(directory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper, config === null || config === void 0 ? void 0 : config.mavenArgs);
-            core.startGroup('depgraph-maven-plugin:reactor');
+            core.startGroup("depgraph-maven-plugin:reactor");
             const mavenReactorArguments = [
                 `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
-                '-DgraphFormat=json',
-                '-DoutputFileName=reactor.json'
+                "-DgraphFormat=json",
+                "-DoutputFileName=reactor.json",
             ];
             const reactorResults = yield mvn.exec(directory, mavenReactorArguments);
             core.info(reactorResults.stdout);
@@ -536,12 +545,12 @@ function generateDependencyGraph(directory, config) {
             if (reactorResults.exitCode !== 0) {
                 throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
             }
-            core.startGroup('depgraph-maven-plugin:aggregate');
+            core.startGroup("depgraph-maven-plugin:aggregate");
             const mavenAggregateArguments = [
                 `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
-                '-DgraphFormat=json',
-                '-DoutputDirectory=target',
-                '-DoutputFileName=aggregate-depgraph.json'
+                "-DgraphFormat=json",
+                "-DoutputDirectory=target",
+                "-DoutputFileName=aggregate-depgraph.json",
             ];
             const aggregateResults = yield mvn.exec(directory, mavenAggregateArguments);
             core.info(aggregateResults.stdout);
@@ -555,10 +564,10 @@ function generateDependencyGraph(directory, config) {
             core.error(err);
             throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
         }
-        const targetPath = path.join(directory, 'target');
-        const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
+        const targetPath = path.join(directory, "target");
+        const isMultiModule = checkForMultiModule(path.join(targetPath, "reactor.json"));
         // Now we have the aggregate dependency graph file to process
-        const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
+        const aggregateGraphFile = path.join(targetPath, "aggregate-depgraph.json");
         try {
             return (0, depgraph_1.parseDependencyJson)(aggregateGraphFile, isMultiModule);
         }
@@ -586,7 +595,7 @@ function checkForMultiModule(reactorJsonFile) {
 }
 // TODO this is assuming the checkout was made into the base path of the workspace...
 function getRepositoryRelativePath(file) {
-    const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
+    const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || ".");
     const fileResolved = path.resolve(file);
     const fileDirectory = path.dirname(fileResolved);
     core.debug(`Workspace directory   =  ${workspaceDirectory}`);

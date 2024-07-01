@@ -52,6 +52,23 @@ inputs:
     required: false
     default: ''
 
+  detector-name:
+    description: The name of the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ''
+
+  detector-version:
+    description: The version of the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ''
+
+  detector-url:
+    description: The URL to the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ''
 
 runs:
   using: node20

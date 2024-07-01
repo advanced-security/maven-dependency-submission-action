@@ -2,7 +2,11 @@ import * as core from '@actions/core';
 import * as path from 'path';
 
 import { Manifest, Snapshot } from '@github/dependency-submission-toolkit';
-import { Depgraph, MavenDependencyGraph, parseDependencyJson } from './depgraph';
+import {
+  Depgraph,
+  MavenDependencyGraph,
+  parseDependencyJson,
+} from './depgraph';
 import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
 
@@ -13,7 +17,7 @@ export type MavenConfiguration = {
   ignoreMavenWrapper?: boolean;
   settingsFile?: string;
   mavenArgs?: string;
-}
+};
 
 export type SnapshotConfig = {
   includeManifestFile?: boolean;
@@ -22,9 +26,18 @@ export type SnapshotConfig = {
   job?: any;
   sha?: any;
   ref?: any;
+  detector?: {
+    name: string;
+    url: string;
+    version: string;
+  };
 };
 
-export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
+export async function generateSnapshot(
+  directory: string,
+  mvnConfig?: MavenConfiguration,
+  snapshotConfig?: SnapshotConfig,
+) {
   const depgraph = await generateDependencyGraph(directory, mvnConfig);
 
   try {
@@ -44,7 +57,11 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
       manifest = mavenDependencies.createManifest();
     }
 
-    const snapshot = new Snapshot(getDetector(), snapshotConfig?.context, snapshotConfig?.job);
+    const snapshot = new Snapshot(
+      snapshotConfig?.detector ?? getDetector(),
+      snapshotConfig?.context,
+      snapshotConfig?.job,
+    );
     snapshot.addManifest(manifest);
 
     const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);
@@ -60,7 +77,9 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     return snapshot;
   } catch (err: any) {
     core.error(err);
-    throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
+    throw new Error(
+      `Could not generate a snapshot of the dependencies; ${err.message}`,
+    );
   }
 }
 
@@ -68,19 +87,27 @@ function getDetector() {
   return {
     name: packageData.name,
     url: packageData.homepage,
-    version: packageData.version
+    version: packageData.version,
   };
 }
 
-export async function generateDependencyGraph(directory: string, config?: MavenConfiguration): Promise<Depgraph> {
+export async function generateDependencyGraph(
+  directory: string,
+  config?: MavenConfiguration,
+): Promise<Depgraph> {
   try {
-    const mvn = new MavenRunner(directory, config?.settingsFile, config?.ignoreMavenWrapper, config?.mavenArgs);
+    const mvn = new MavenRunner(
+      directory,
+      config?.settingsFile,
+      config?.ignoreMavenWrapper,
+      config?.mavenArgs,
+    );
 
     core.startGroup('depgraph-maven-plugin:reactor');
     const mavenReactorArguments = [
       `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
       '-DgraphFormat=json',
-      '-DoutputFileName=reactor.json'
+      '-DoutputFileName=reactor.json',
     ];
     const reactorResults = await mvn.exec(directory, mavenReactorArguments);
 
@@ -89,7 +116,9 @@ export async function generateDependencyGraph(directory: string, config?: MavenC
     core.endGroup();
 
     if (reactorResults.exitCode !== 0) {
-      throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
+      throw new Error(
+        `Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`,
+      );
     }
 
     core.startGroup('depgraph-maven-plugin:aggregate');
@@ -97,7 +126,7 @@ export async function generateDependencyGraph(directory: string, config?: MavenC
       `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
       '-DgraphFormat=json',
       '-DoutputDirectory=target',
-      '-DoutputFileName=aggregate-depgraph.json'
+      '-DoutputFileName=aggregate-depgraph.json',
     ];
     const aggregateResults = await mvn.exec(directory, mavenAggregateArguments);
 
@@ -106,15 +135,21 @@ export async function generateDependencyGraph(directory: string, config?: MavenC
     core.endGroup();
 
     if (aggregateResults.exitCode !== 0) {
-      throw new Error(`Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`);
+      throw new Error(
+        `Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`,
+      );
     }
   } catch (err: any) {
     core.error(err);
-    throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
+    throw new Error(
+      `A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`,
+    );
   }
 
   const targetPath = path.join(directory, 'target');
-  const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
+  const isMultiModule = checkForMultiModule(
+    path.join(targetPath, 'reactor.json'),
+  );
 
   // Now we have the aggregate dependency graph file to process
   const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
@@ -122,7 +157,9 @@ export async function generateDependencyGraph(directory: string, config?: MavenC
     return parseDependencyJson(aggregateGraphFile, isMultiModule);
   } catch (err: any) {
     core.error(err);
-    throw new Error(`Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`);
+    throw new Error(
+      `Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`,
+    );
   }
 }
 
@@ -155,7 +192,9 @@ function getRepositoryRelativePath(file) {
 
   let result = fileResolved;
   if (fileDirectory.startsWith(workspaceDirectory)) {
-    result = fileResolved.substring(workspaceDirectory.length + path.sep.length);
+    result = fileResolved.substring(
+      workspaceDirectory.length + path.sep.length,
+    );
   }
 
   core.debug(`Snapshot relative file =  ${result}`);
