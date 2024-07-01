@@ -1,32 +1,32 @@
-import * as core from "@actions/core";
+import * as core from '@actions/core';
 import {
   Snapshot,
   submitSnapshot,
-} from "@github/dependency-submission-toolkit";
-import { SnapshotConfig, generateSnapshot } from "./snapshot-generator";
+} from '@github/dependency-submission-toolkit';
+import { SnapshotConfig, generateSnapshot } from './snapshot-generator';
 
 async function run() {
   let snapshot: Snapshot | undefined;
 
   try {
-    const directory = core.getInput("directory", { required: true });
+    const directory = core.getInput('directory', { required: true });
     const mavenConfig = {
-      ignoreMavenWrapper: core.getBooleanInput("ignore-maven-wrapper"),
-      settingsFile: core.getInput("settings-file"),
-      mavenArgs: core.getInput("maven-args") || "",
+      ignoreMavenWrapper: core.getBooleanInput('ignore-maven-wrapper'),
+      settingsFile: core.getInput('settings-file'),
+      mavenArgs: core.getInput('maven-args') || '',
     };
     const snapshotConfig: SnapshotConfig = {
-      includeManifestFile: core.getBooleanInput("snapshot-include-file-name"),
-      manifestFile: core.getInput("snapshot-dependency-file-name"),
-      sha: core.getInput("snapshot-sha"),
-      ref: core.getInput("snapshot-ref"),
+      includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
+      manifestFile: core.getInput('snapshot-dependency-file-name'),
+      sha: core.getInput('snapshot-sha'),
+      ref: core.getInput('snapshot-ref'),
     };
-    const detectorName = core.getInput("detector-name");
-    if (detectorName == "") {
+    const detectorName = core.getInput('detector-name');
+    if (detectorName == '') {
       snapshotConfig.detector = {
         name: detectorName,
-        url: core.getInput("detector-url"),
-        version: core.getInput("detector-version"),
+        url: core.getInput('detector-url'),
+        version: core.getInput('detector-version'),
       };
     }
 

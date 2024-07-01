@@ -1,17 +1,17 @@
-import * as core from "@actions/core";
-import * as path from "path";
+import * as core from '@actions/core';
+import * as path from 'path';
 
-import { Manifest, Snapshot } from "@github/dependency-submission-toolkit";
+import { Manifest, Snapshot } from '@github/dependency-submission-toolkit';
 import {
   Depgraph,
   MavenDependencyGraph,
   parseDependencyJson,
-} from "./depgraph";
-import { MavenRunner } from "./maven-runner";
-import { loadFileContents } from "./utils/file-utils";
+} from './depgraph';
+import { MavenRunner } from './maven-runner';
+import { loadFileContents } from './utils/file-utils';
 
-const packageData = require("../package.json");
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = "4.0.2";
+const packageData = require('../package.json');
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
 
 export type MavenConfiguration = {
   ignoreMavenWrapper?: boolean;
@@ -50,7 +50,7 @@ export async function generateSnapshot(
         pomFile = snapshotConfig.manifestFile;
       } else {
         // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-        pomFile = getRepositoryRelativePath(path.join(directory, "pom.xml"));
+        pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
       }
       manifest = mavenDependencies.createManifest(pomFile);
     } else {
@@ -103,11 +103,11 @@ export async function generateDependencyGraph(
       config?.mavenArgs,
     );
 
-    core.startGroup("depgraph-maven-plugin:reactor");
+    core.startGroup('depgraph-maven-plugin:reactor');
     const mavenReactorArguments = [
       `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
-      "-DgraphFormat=json",
-      "-DoutputFileName=reactor.json",
+      '-DgraphFormat=json',
+      '-DoutputFileName=reactor.json',
     ];
     const reactorResults = await mvn.exec(directory, mavenReactorArguments);
 
@@ -121,12 +121,12 @@ export async function generateDependencyGraph(
       );
     }
 
-    core.startGroup("depgraph-maven-plugin:aggregate");
+    core.startGroup('depgraph-maven-plugin:aggregate');
     const mavenAggregateArguments = [
       `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
-      "-DgraphFormat=json",
-      "-DoutputDirectory=target",
-      "-DoutputFileName=aggregate-depgraph.json",
+      '-DgraphFormat=json',
+      '-DoutputDirectory=target',
+      '-DoutputFileName=aggregate-depgraph.json',
     ];
     const aggregateResults = await mvn.exec(directory, mavenAggregateArguments);
 
@@ -146,13 +146,13 @@ export async function generateDependencyGraph(
     );
   }
 
-  const targetPath = path.join(directory, "target");
+  const targetPath = path.join(directory, 'target');
   const isMultiModule = checkForMultiModule(
-    path.join(targetPath, "reactor.json"),
+    path.join(targetPath, 'reactor.json'),
   );
 
   // Now we have the aggregate dependency graph file to process
-  const aggregateGraphFile = path.join(targetPath, "aggregate-depgraph.json");
+  const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
   try {
     return parseDependencyJson(aggregateGraphFile, isMultiModule);
   } catch (err: any) {
@@ -182,7 +182,7 @@ function checkForMultiModule(reactorJsonFile): boolean {
 
 // TODO this is assuming the checkout was made into the base path of the workspace...
 function getRepositoryRelativePath(file) {
-  const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || ".");
+  const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
   const fileResolved = path.resolve(file);
   const fileDirectory = path.dirname(fileResolved);
 
