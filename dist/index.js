@@ -235,7 +235,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const dependency_submission_toolkit_1 = __nccwpck_require__(3415);
 const snapshot_generator_1 = __nccwpck_require__(2963);
-const packageData = __nccwpck_require__(2876);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let snapshot;

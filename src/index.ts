@@ -5,8 +5,6 @@ import {
 } from "@github/dependency-submission-toolkit";
 import { SnapshotConfig, generateSnapshot } from "./snapshot-generator";
 
-const packageData = require("../package.json");
-
 async function run() {
   let snapshot: Snapshot | undefined;
 
