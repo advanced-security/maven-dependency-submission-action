@@ -23,7 +23,7 @@ inputs:
   maven-args:
     description: Additional maven arguments to add to the command line invocation of maven when it generates the dependency snapshot
     type: string
-    default: ''
+    default: ""
 
   snapshot-include-file-name:
     description: Optionally include the file name in the dependency snapshot report to GitHub. This is required to be true if you want the results in the dependency tree to have a working link.
@@ -44,14 +44,31 @@ inputs:
     description: The SHA that the results will be linked to in the dependency snapshot
     type: string
     required: false
-    default: ''
+    default: ""
 
   snapshot-ref:
     description: The ref that the results will be linked to in the dependency snapshot
     type: string
     required: false
-    default: ''
+    default: ""
 
+  detector-name:
+    description: The name of the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ""
+
+  detector-version:
+    description: The version of the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ""
+
+  detector-url:
+    description: The URL to the detector that generated the dependency snapshot
+    type: string
+    required: false
+    default: ""
 
 runs:
   using: node20
