@@ -20,6 +20,10 @@ program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity
 program.option('--snapshot-exclude-file-name', 'exclude the file name in the dependency snapshot report. If false the name of the artifactor from the POM will be used, but any links in GitHub will not work.');
 program.option('--snapshot-dependency-file-name <fileName>', 'optional override to specificy the path to the file that the snapshot will be associated with in the repository');
 
+program.option('--detector-name <detectorName>', 'optional name of the detector that generated the snapshot');
+program.option('--detector-url <detectorUrl>', 'optional URL of the detector that generated the snapshot, but not optional if you specify an detector-name');
+program.option('--detector-version <detectorVersion>', 'optional version of the detector that generated the snapshot, but not optional if you specify an detector-name');
+
 program.parse(process.argv);
 
 const opts = program.opts();
@@ -42,6 +46,25 @@ async function execute() {
     console.error(`  provided value was: '${opts.branchRef}'`);
     program.help({ error: true });
     process.exit(1);
+  }
+
+  // If the detector-name is provided, then the other detector options become mandatory, check these early
+  let detector;
+  if (opts.detectorName) {
+    if (!opts.detectorUrl) {
+      console.error(`Error: detector-url is required when detector-name is provided\n`);
+      program.help({ error: true });
+    }
+
+    if (!opts.detectorVersion) {
+      console.error(`Error: detector-version is required when detector-name is provided\n`);
+      program.help({ error: true });
+    }
+    detector = {
+      name: opts.detectorName,
+      url: opts.detectorUrl,
+      version: opts.detectorVersion,
+    }
   }
 
   try {
@@ -71,7 +94,11 @@ async function execute() {
 
       manifestFile: opts.snapshotDependencyFileName,
       includeManifestFile: !opts.snapshotExcludeFileName,
+      detector: detector
     }
+
+
+
 
     snapshot = await generateSnapshot(opts.directory, mvnConfig, snapshotConfig);
 
