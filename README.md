@@ -42,7 +42,7 @@ Generating and submitting a dependency snapshot using the defaults:
 
 ```
 - name: Submit Dependency Snapshot
-  uses: advanced-security/maven-dependency-submission-action@v3
+  uses: advanced-security/maven-dependency-submission-action@v4
 ```
 
 Upon success it will generate a snapshot captured from Maven POM like;
