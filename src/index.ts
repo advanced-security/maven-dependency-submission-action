@@ -18,6 +18,14 @@ async function run() {
       sha: core.getInput('snapshot-sha'),
       ref: core.getInput('snapshot-ref'),
     }
+    const detectorName = core.getInput('detector-name');
+    if (detectorName !== '') {
+      snapshotConfig.detector = {
+        name: detectorName,
+        url: core.getInput('detector-url', { required: true }),
+        version: core.getInput('detector-version', { required: true }),
+      };
+    }
 
     snapshot = await generateSnapshot(directory, mavenConfig, snapshotConfig);
   } catch (err: any) {
