@@ -48,7 +48,37 @@ Generating and submitting a dependency snapshot using the defaults:
 Upon success it will generate a snapshot captured from Maven POM like;
 ![Screenshot 2022-08-15 at 09 33 47](https://user-images.githubusercontent.com/681306/184603264-3cd69fda-75ff-4a46-b014-630acab60fab.png)
 
+### Configuring for Matrix-Based Workflows
 
+To ensure that the job parameter of the submission remains unique when the action is being called from a workflow that has a matrix, you can pass a `correlator` to the action. This identifier will be appended to the default correlator propterty of a job, ensuring uniqueness across matrix-based workflows. When dealing with Maven-based Java projects that utilize different `pom.xml` files across matrix jobs, you can specify the `directory` relevant to each matrix job. This ensures that the dependency snapshot accurately reflects the dependencies for each specific configuration.
+
+Example of specifying `pom.xml` files for different matrix jobs:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - java-version: 8
+            directory: project1
+          - java-version: 11
+            directory: project2
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ matrix.java-version }}
+    - name: Submit Dependency Snapshot
+      uses: advanced-security/maven-dependency-submission-action@v3
+       with:
+        directory: ${{ matrix.directory }}
+        correlator: ${{ github.job }}-${{ matrix.directory }}
+```
+
+In this example, the action is configured to use different working directories based on the Java version specified in the matrix. This ensures that the dependency snapshot is accurate for each Java version being tested.
 
 ## Command Line Usage
 
