@@ -55,7 +55,7 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     snapshot.addManifest(manifest);
 
     snapshot.job.correlator = snapshotConfig?.correlator
-      ? `${snapshot.job.correlator}-${snapshotConfig.correlator}`
+      ? snapshotConfig.correlator
       : snapshot.job?.correlator;
 
     const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);

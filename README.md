@@ -35,6 +35,7 @@ This action writes informations in the repository dependency graph, so if you ar
 
 * `snapshot-dependency-file-name`: An optional user control file path to the POM file, requires `snapshot-include-file-name` to be `true` for the value to be submitted.
 
+* `correlator`: An optional identifier to distinguish between multiple dependency snapshots of the same type. Defaults to the [job_id](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id) of the current job.
 
 ## Examples
 

@@ -510,7 +510,7 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             const snapshot = new dependency_submission_toolkit_1.Snapshot(detector, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
             snapshot.addManifest(manifest);
             snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
-                ? `${snapshot.job.correlator}-${snapshotConfig.correlator}`
+                ? snapshotConfig.correlator
                 : (_b = snapshot.job) === null || _b === void 0 ? void 0 : _b.correlator;
             const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
             if (specifiedRef) {

@@ -68,6 +68,7 @@ inputs:
     description: An optional identifier to distinguish between multiple dependency snapshots of the same type
     type: string
     required: false
+    default: ''
 
 runs:
   using: node20

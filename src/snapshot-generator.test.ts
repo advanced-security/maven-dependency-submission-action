@@ -69,39 +69,25 @@ describe('snapshot-generator', () => {
       expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(230);
     }, 40000);
 
-    it('should append correlator from snapshotConfig if it exists', async() => {
+    it('should use correlator from snapshotConfig if it exists', async() => {
       const projectDir = getMavenProjectDirectory('simple');
       const mavenSettingsFile = getMavenSettingsFile();
-      const mavenConfig = {
-        ignoreMavenWrapper: true,
-        settingsFile: mavenSettingsFile,
-        mavenArgs: '-DskipTests'
-      };
       const snapshotConfig = {
         correlator: 'configCorrelator',
-        job: {
-          correlator: 'jobCorrelator'
-        }
       };
-      const snapshot = await generateSnapshot(projectDir, mavenConfig, snapshotConfig);
+      const snapshot = await generateSnapshot(projectDir, undefined, snapshotConfig);
 
-      expect(snapshot.job.correlator).toBe('jobCorrelator-configCorrelator');
+      expect(snapshot.job.correlator).toBe('configCorrelator');
     }, 20000);
 
-    it('should use existing job correlator if snapshotConfig correlator does not exist', async() => {
+    it('should use a default job correlator when not specified', async() => {
       const projectDir = getMavenProjectDirectory('simple');
-      const mavenSettingsFile = getMavenSettingsFile();
-      const mavenConfig = {
-        ignoreMavenWrapper: true,
-        settingsFile: mavenSettingsFile,
-        mavenArgs: '-DskipTests'
-      };
       const snapshotConfig = {
         job: {
           correlator: 'jobCorrelator'
         }
       };
-      const snapshot = await generateSnapshot(projectDir, mavenConfig, snapshotConfig);
+      const snapshot = await generateSnapshot(projectDir, undefined, snapshotConfig);
 
       expect(snapshot.job.correlator).toBe('jobCorrelator');
     }, 20000);
