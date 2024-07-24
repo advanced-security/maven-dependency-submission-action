@@ -1,4 +1,4 @@
-import { getMavenProjectDirectory, getMavenSettingsFile } from './utils/test-util';
+import { getMavenProjectDirectory } from './utils/test-util';
 import { generateDependencyGraph, generateSnapshot } from './snapshot-generator';
 import {describe, it, expect} from 'vitest';
 
