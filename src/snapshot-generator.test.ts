@@ -74,6 +74,9 @@ describe('snapshot-generator', () => {
       const mavenSettingsFile = getMavenSettingsFile();
       const snapshotConfig = {
         correlator: 'configCorrelator',
+        job: {
+          correlator: 'jobCorrelator'
+        }
       };
       const snapshot = await generateSnapshot(projectDir, undefined, snapshotConfig);
 
