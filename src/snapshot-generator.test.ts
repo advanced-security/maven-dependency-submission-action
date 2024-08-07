@@ -71,7 +71,6 @@ describe('snapshot-generator', () => {
 
     it('should use correlator from snapshotConfig if it exists', async() => {
       const projectDir = getMavenProjectDirectory('simple');
-      const mavenSettingsFile = getMavenSettingsFile();
       const snapshotConfig = {
         correlator: 'configCorrelator',
         job: {
