@@ -18,6 +18,10 @@ async function run() {
       sha: core.getInput('snapshot-sha'),
       ref: core.getInput('snapshot-ref'),
     }
+    const correlator = core.getInput('correlator');
+    if (correlator) {
+      snapshotConfig.correlator = correlator;
+    }
     const detectorName = core.getInput('detector-name');
     if (detectorName !== '') {
       snapshotConfig.detector = {

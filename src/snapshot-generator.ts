@@ -27,6 +27,7 @@ export type SnapshotConfig = {
     url: string;
     version: string;
   };
+  correlator?: string;
 };
 
 export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
@@ -52,6 +53,10 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     const detector = snapshotConfig?.detector ?? getDetector();
     const snapshot = new Snapshot(detector, snapshotConfig?.context, snapshotConfig?.job);
     snapshot.addManifest(manifest);
+
+    snapshot.job.correlator = snapshotConfig?.correlator
+      ? snapshotConfig.correlator
+      : snapshot.job?.correlator;
 
     const specifiedRef = getNonEmtptyValue(snapshotConfig?.ref);
     if (specifiedRef) {

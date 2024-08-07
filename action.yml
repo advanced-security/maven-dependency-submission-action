@@ -64,6 +64,12 @@ inputs:
     description: The URL to the detector that generated the dependency snapshot
     type: string
 
+  correlator:
+    description: An optional identifier to distinguish between multiple dependency snapshots of the same type
+    type: string
+    required: false
+    default: ''
+
 runs:
   using: node20
   main: dist/index.js
