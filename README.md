@@ -4,8 +4,6 @@ This is a GitHub Action that will generate a complete dependency graph for a Mav
 
 The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:4.0.2` plugin to generate JSON output of the complete dependency graph, which is then processed and submitted using the [Dependency Submission Toolkit](https://github.com/github/dependency-submission-toolkit) to the GitHub repository.
 
-> **Warning** The dependency submission APIs and toolkit are still currently in beta and as such subject to changes in future releases.
-
 
 ## Usage
 
