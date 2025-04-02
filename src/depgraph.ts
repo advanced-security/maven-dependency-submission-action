@@ -85,13 +85,18 @@ export class MavenDependencyGraph {
       let scope = getDependencyScopeForMavenScope(artifact.scopes);
       manifest.addDirectDependency(depPackage, scope);
 
-      function addTransitiveDeps(dependencies) {
+      function addTransitiveDeps(dependencies, seen: Set<string> = new Set()) {
         if (dependencies) {
           dependencies.forEach(transitiveDep => {
+            if (seen.has(transitiveDep.packageURL.toString())) {
+              // we're in a cycle! skip this one.
+              return;
+            }
+            seen.add(transitiveDep.packageURL.toString());
             const transitiveDepArtifact = packageUrlToArtifact[transitiveDep.packageURL.toString()];
             const transitiveDepScope = getDependencyScopeForMavenScope(transitiveDepArtifact.scopes);
             manifest.addIndirectDependency(transitiveDep, transitiveDepScope);
-            addTransitiveDeps(transitiveDep.dependencies);
+            addTransitiveDeps(transitiveDep.dependencies, seen);
           });
         }
       }

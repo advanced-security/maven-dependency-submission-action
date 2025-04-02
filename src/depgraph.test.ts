@@ -116,6 +116,25 @@ describe('depgraph', () => {
       });
     });
 
+    describe('hadoop-tree', () => {
+      let depGraph;
+      beforeAll(() => {
+        depGraph = parseDependencyJson(getTestDataFile("hadoop-tree"));
+      });
+
+      it('should parse out the top level dependencies', () => {
+        const mavenDependencies = new MavenDependencyGraph(depGraph);
+        expect(mavenDependencies.getPackageCount()).to.equal(678);
+      });
+
+      it('should be able to generate a manifest despite having a cycle', () => {
+        const mavenDependencies = new MavenDependencyGraph(depGraph);
+        const manifest = mavenDependencies.createManifest();
+
+        expect(manifest.name).to.equal('hadoop-main');
+        expect(manifest.countDependencies()).to.equal(653);
+      })
+    });
 
     describe('bs-parent-dep-tree', () => {
 
