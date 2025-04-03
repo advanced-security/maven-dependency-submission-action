@@ -7,7 +7,7 @@ import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
 
 const packageData = require('../package.json');
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
 
 export type MavenConfiguration = {
   ignoreMavenWrapper?: boolean;
