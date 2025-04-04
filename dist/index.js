@@ -47,13 +47,19 @@ class MavenDependencyGraph {
             const artifact = this.packageUrlToArtifact[depPackage.packageURL.toString()];
             let scope = getDependencyScopeForMavenScope(artifact.scopes);
             manifest.addDirectDependency(depPackage, scope);
-            function addTransitiveDeps(dependencies) {
+            function addTransitiveDeps(dependencies, seen = new Set()) {
                 if (dependencies) {
                     dependencies.forEach(transitiveDep => {
-                        const transitiveDepArtifact = packageUrlToArtifact[transitiveDep.packageURL.toString()];
+                        let purl = transitiveDep.packageURL.toString();
+                        if (seen.has(purl)) {
+                            // we're in a cycle! skip this one.
+                            return;
+                        }
+                        const transitiveDepArtifact = packageUrlToArtifact[purl];
                         const transitiveDepScope = getDependencyScopeForMavenScope(transitiveDepArtifact.scopes);
                         manifest.addIndirectDependency(transitiveDep, transitiveDepScope);
-                        addTransitiveDeps(transitiveDep.dependencies);
+                        seen.add(purl);
+                        addTransitiveDeps(transitiveDep.dependencies, seen);
                     });
                 }
             }
@@ -484,7 +490,7 @@ const depgraph_1 = __nccwpck_require__(8047);
 const maven_runner_1 = __nccwpck_require__(7433);
 const file_utils_1 = __nccwpck_require__(799);
 const packageData = __nccwpck_require__(2876);
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.2';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
 function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b;
@@ -512,11 +518,11 @@ function generateSnapshot(directory, mvnConfig, snapshotConfig) {
             snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
                 ? snapshotConfig.correlator
                 : (_b = snapshot.job) === null || _b === void 0 ? void 0 : _b.correlator;
-            const specifiedRef = getNonEmtptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
+            const specifiedRef = getNonEmptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
             if (specifiedRef) {
                 snapshot.ref = specifiedRef;
             }
-            const specifiedSha = getNonEmtptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
+            const specifiedSha = getNonEmptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
             if (specifiedSha) {
                 snapshot.sha = specifiedSha;
             }
@@ -616,7 +622,7 @@ function getRepositoryRelativePath(file) {
     core.debug(`Snapshot relative file =  ${result}`);
     return result;
 }
-function getNonEmtptyValue(str) {
+function getNonEmptyValue(str) {
     if (str) {
         const trimmed = str.trim();
         if (trimmed.length > 0) {
@@ -33295,7 +33301,7 @@ exports.submitSnapshot = L;
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"maven-dependency-submission-action","version":"4.1.1","description":"Submit Maven dependencies to GitHub dependency submission API","main":"index.js","scripts":{"base-build":"npm ci && tsc","build":"npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js","build-exe":"npm run build && pkg package.json --compress Gzip","test":"vitest --run"},"repository":{"type":"git","url":"git+https://github.com/advanced-security/maven-dependency-submission-action.git"},"keywords":[],"author":"GitHub, Inc","license":"MIT","bugs":{"url":"https://github.com/advanced-security/maven-dependency-submission-action/issues"},"homepage":"https://github.com/advanced-security/maven-dependency-submission-action","dependencies":{"@actions/core":"^1.10.1","@actions/exec":"^1.1.1","@github/dependency-submission-toolkit":"^2.0.0","commander":"^12.0.0","packageurl-js":"^1.2.0"},"devDependencies":{"@types/chai":"^4.3.1","@vercel/ncc":"^0.38.1","chai":"^4.3.6","@yao-pkg/pkg":"^5.11.5","ts-node":"^10.9.2","typescript":"^5.3.3","vitest":"^1.2.1"},"bin":{"cli":"lib/src/executable/cli.js"},"pkg":{"targets":["node20-linux-x64","node20-win-x64","node20-macos-x64"],"assets":["package.json"],"publicPackages":"*","outputPath":"cli"}}');
+module.exports = JSON.parse('{"name":"maven-dependency-submission-action","version":"4.1.2","description":"Submit Maven dependencies to GitHub dependency submission API","main":"index.js","scripts":{"base-build":"npm ci && tsc","build":"npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js","build-exe":"npm run build && pkg package.json --compress Gzip","test":"vitest --run"},"repository":{"type":"git","url":"git+https://github.com/advanced-security/maven-dependency-submission-action.git"},"keywords":[],"author":"GitHub, Inc","license":"MIT","bugs":{"url":"https://github.com/advanced-security/maven-dependency-submission-action/issues"},"homepage":"https://github.com/advanced-security/maven-dependency-submission-action","dependencies":{"@actions/core":"^1.10.1","@actions/exec":"^1.1.1","@github/dependency-submission-toolkit":"^2.0.0","commander":"^12.0.0","packageurl-js":"^1.2.0"},"devDependencies":{"@types/chai":"^4.3.1","@vercel/ncc":"^0.38.1","chai":"^4.3.6","@yao-pkg/pkg":"^5.11.5","ts-node":"^10.9.2","typescript":"^5.3.3","vitest":"^1.6.1"},"bin":{"cli":"lib/src/executable/cli.js"},"pkg":{"targets":["node20-linux-x64","node20-win-x64","node20-macos-x64"],"assets":["package.json"],"publicPackages":"*","outputPath":"cli"}}');
 
 /***/ })
 
