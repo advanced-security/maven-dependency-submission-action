@@ -30,7 +30,7 @@ Here are a few things you can do that will increase the likelihood of your pull 
 
 _Note: these instructions are for maintainers_
 
-1. Update the version number in [package.json](https://github.com/advanced-security/maven-dependency-submission-action/blob/main/package.json) and run `npm i` to update the lockfile.
+1. Update the version number in [package.json](https://github.com/advanced-security/maven-dependency-submission-action/blob/main/package.json) and run `npm i` to update the lockfile. This is also a good time to make sure that the `dist/index.js` file is up to date by running `npm run build`.
 1. Go to [Draft a new
    release](https://github.com/advanced-security/maven-dependency-submission-action/releases/new)
    in the Releases page.
