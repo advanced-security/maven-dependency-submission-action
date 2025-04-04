@@ -1,0 +1,57 @@
+{
+  "graphName" : "hadoop-main",
+  "artifacts" : [ {
+    "id" : "org.apache.hadoop:hadoop-annotations:jar:compile",
+    "numericId" : 1,
+    "groupId" : "org.apache.hadoop",
+    "artifactId" : "hadoop-annotations",
+    "version" : "3.5.0-SNAPSHOT",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "jdiff:jdiff:jar:provided",
+    "numericId" : 2,
+    "groupId" : "jdiff",
+    "artifactId" : "jdiff",
+    "version" : "1.0.9",
+    "optional" : false,
+    "scopes" : [ "provided" ],
+    "types" : [ "jar" ]
+  }, {
+    "id" : "org.apache.hadoop:hadoop-project-dist:pom:compile",
+    "numericId" : 3,
+    "groupId" : "org.apache.hadoop",
+    "artifactId" : "hadoop-project-dist",
+    "version" : "3.5.0-SNAPSHOT",
+    "optional" : false,
+    "scopes" : [ "compile" ],
+    "types" : [ "pom" ]
+  } ],
+  "dependencies" : [ {
+    "from" : "org.apache.hadoop:hadoop-annotations:jar:compile",
+    "to" : "jdiff:jdiff:jar:provided",
+    "numericFrom" : 1,
+    "numericTo" : 2,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.hadoop:hadoop-annotations:jar:compile",
+    "to" : "jdiff:jdiff:jar:provided",
+    "numericFrom" : 1,
+    "numericTo" : 3,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "jdiff:jdiff:jar:provided",
+    "to" : "org.apache.hadoop:hadoop-project-dist:pom:compile",
+    "numericFrom" : 2,
+    "numericTo" : 3,
+    "resolution" : "INCLUDED"
+  }, {
+    "from" : "org.apache.hadoop:hadoop-project-dist:pom:compile",
+    "to" : "jdiff:jdiff:jar:provided",
+    "numericFrom" : 3,
+    "numericTo" : 2,
+    "resolution" : "INCLUDED"
+  }
+]
+}
