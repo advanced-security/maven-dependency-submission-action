@@ -31,23 +31,23 @@ Here are a few things you can do that will increase the likelihood of your pull 
 _Note: these instructions are for maintainers_
 
 1. Update the version number in [package.json](https://github.com/advanced-security/maven-dependency-submission-action/blob/main/package.json) and run `npm i` to update the lockfile. This is also a good time to make sure that the `dist/index.js` file is up to date by running `npm run build`.
-1. Go to [Draft a new
+2. Go to [Draft a new
    release](https://github.com/advanced-security/maven-dependency-submission-action/releases/new)
    in the Releases page.
-1. Make sure that the `Publish this Action to the GitHub Marketplace`
+3. Make sure that the `Publish this Action to the GitHub Marketplace`
    checkbox is enabled
 
 <img width="481" alt="Screenshot 2022-06-15 at 12 08 19" src="https://user-images.githubusercontent.com/2161/173822484-4b60d8b4-c674-4bff-b5ff-b0c4a3650ab7.png">
 
-3. Click "Choose a tag" and then "Create new tag", where the tag name
+4. Click "Choose a tag" and then "Create new tag", where the tag name
    will be your version prefixed by a `v` (e.g. `v4.1.2`).
-4. Use a version number for the release title (e.g. "4.1.2").
+5. Use a version number for the release title (e.g. "4.1.2").
 
 <img width="700" alt="Screenshot 2022-06-15 at 12 08 36" src="https://user-images.githubusercontent.com/2161/173822548-33ab3432-d679-4dc1-adf8-b50fdaf47de3.png">
 
-5. Add your release notes. If this is a major version make sure to
+6. Add your release notes. If this is a major version make sure to
    include a small description of the biggest changes in the new version.
-6. Click "Publish Release".
+7. Click "Publish Release".
 
 You now have a tag and release using the semver version you used
 above. The last remaining thing to do is to move the dynamic version
