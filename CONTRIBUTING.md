@@ -47,7 +47,8 @@ _Note: these instructions are for maintainers_
 
 6. Add your release notes. If this is a major version make sure to
    include a small description of the biggest changes in the new version.
-7. Click "Publish Release".
+7. Build the release executables by manually triggering [this action](https://github.com/advanced-security/maven-dependency-submission-action/actions/workflows/publish_executables.yml). The output of this action will be a zip file that you should download, extract, and drag into the binaries section. There should be three files there: ending in `-linux`, `-macos`, and `-win.exe`.
+8. Click "Publish Release".
 
 You now have a tag and release using the semver version you used
 above. The last remaining thing to do is to move the dynamic version
