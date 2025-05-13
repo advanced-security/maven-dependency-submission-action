@@ -93,5 +93,36 @@ describe('snapshot-generator', () => {
 
       expect(snapshot.job.correlator).toBe('jobCorrelator');
     }, 20000);
+    it('should generate file-centric manifests for a multi-module project', async () => {
+      const projectDir = getMavenProjectDirectory('multi-module');
+      const snapshot = await generateSnapshot(projectDir, undefined, { fileCentricManifests: true });
+      // Should have a manifest for each pom.xml in the multi-module project
+      const expectedPoms = [
+        'multi-module/pom.xml',
+        'multi-module/bs-application/pom.xml',
+        'multi-module/bs-library/pom.xml',
+        'multi-module/bs-other/pom.xml',
+      ];
+      for (const pom of expectedPoms) {
+        expect(snapshot.manifests[pom]).toBeDefined();
+      }
+    }, 20000);
+
+    it('should generate file-centric manifests for a nested multi-module project', async () => {
+      const projectDir = getMavenProjectDirectory('multi-module-multi-branch');
+      const snapshot = await generateSnapshot(projectDir, undefined, { fileCentricManifests: true });
+      // Should have a manifest for each pom.xml in the nested multi-module project
+      const expectedPoms = [
+        'multi-module-multi-branch/pom.xml',
+        'multi-module-multi-branch/bs-application/pom.xml',
+        'multi-module-multi-branch/bs-libraries/pom.xml',
+        'multi-module-multi-branch/bs-libraries/bs-library-database/pom.xml',
+        'multi-module-multi-branch/bs-libraries/bs-library-web/pom.xml',
+        'multi-module-multi-branch/bs-other/pom.xml',
+      ];
+      for (const pom of expectedPoms) {
+        expect(snapshot.manifests[pom]).toBeDefined();
+      }
+    }, 20000);
   });
 });

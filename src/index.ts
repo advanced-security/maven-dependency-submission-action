@@ -17,6 +17,7 @@ async function run() {
       manifestFile: core.getInput('snapshot-dependency-file-name'),
       sha: core.getInput('snapshot-sha'),
       ref: core.getInput('snapshot-ref'),
+      fileCentricManifests: core.getBooleanInput('file-centric-manifests'),
     }
     const correlator = core.getInput('correlator');
     if (correlator) {

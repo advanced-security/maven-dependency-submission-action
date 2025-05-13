@@ -1,3 +1,7 @@
+  file-centric-manifests:
+    description: If true, generate a manifest for every pom.xml (file-centric mode). If false, use the current aggregate behavior. Default: false for backward compatibility.
+    type: boolean
+    default: false
 name: Maven Dependency Tree Dependency Submission
 description: A GitHub Action for Maven project to submit a complete dependency tree to populate the GitHub Dependency Graph
 
