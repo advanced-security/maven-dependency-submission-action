@@ -592,7 +592,7 @@ function getNonEmptyValue(str) {
     }
     return undefined;
 }
-// getDepgraphFiles should *recursively* find all files that match the filename within the directory
+// getDepgraphFiles recursively finds all files that match the filename within the directory
 function getDepgraphFiles(directory, filename) {
     let files = [];
     // debug only

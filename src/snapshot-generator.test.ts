@@ -145,7 +145,3 @@ describe('snapshot-generator', () => {
 function getDirectDependencyPurls(manifest: Manifest): string[] {
   return Object.values(manifest.resolved).filter(dep => dep.relationship === 'direct').map(dep => dep.depPackage.packageURL.toString()).sort();
 }
-
-function getOtherDependencyPurls(manifest: Manifest): string[] {
-  return Object.values(manifest.resolved).filter(dep => dep.relationship !== 'direct').map(dep => dep.depPackage.packageURL.toString()).sort();
-}
