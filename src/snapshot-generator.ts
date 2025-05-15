@@ -88,7 +88,7 @@ export async function generateDependencyGraphs(directory: string, config?: Maven
     core.endGroup();
 
     if (graphResults.exitCode !== 0) {
-      throw new Error(`Failed to successfully dependency results with Maven, exit code: ${graphResults.exitCode}`);
+      throw new Error(`Failed to successfully generate dependency results with Maven, exit code: ${graphResults.exitCode}`);
     }
   } catch (err: any) {
     core.error(err);
