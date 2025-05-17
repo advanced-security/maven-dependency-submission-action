@@ -4,10 +4,10 @@ import { DependencyScope } from '@github/dependency-submission-toolkit';
 import { loadFileContents } from './utils/file-utils';
 
 export type Depgraph = {
+  filePath: string,
   graphName: string,
   artifacts: DepgraphArtifact[],
   dependencies: DepgraphDependency[],
-  isMultiModule: boolean,
 }
 
 export type DepgraphArtifact = {
@@ -29,6 +29,8 @@ export type DepgraphDependency = {
   numericTo: number,
   resolution: string,
 }
+
+export const depgraphfilename = 'maven-dependency-submission-action-depgraph.json';
 
 export class MavenDependencyGraph {
 
@@ -171,22 +173,25 @@ export class MavenDependencyGraph {
   }
 }
 
-export function parseDependencyJson(file: string, isMultiModule: boolean = false): Depgraph {
+export function parseDependencyJson(file: string): Depgraph {
   const data = loadFileContents(file);
+  const pomXmlFilepath = file.replace(`target/${depgraphfilename}`, 'pom.xml');
 
   if (!data) {
     return {
+      filePath: pomXmlFilepath,
       graphName: 'empty',
       artifacts: [],
       dependencies: [],
-      isMultiModule: isMultiModule
     };
   }
 
   try {
     const depGraph: Depgraph = JSON.parse(data);
-    depGraph.isMultiModule = isMultiModule;
-    return depGraph;
+    return {
+      ...depGraph,
+      filePath: pomXmlFilepath,
+    };
   } catch (err: any) {
     throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
   }

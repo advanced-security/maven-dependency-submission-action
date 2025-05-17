@@ -7,10 +7,11 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.artifactToPackageURL = exports.parseDependencyJson = exports.MavenDependencyGraph = void 0;
+exports.artifactToPackageURL = exports.parseDependencyJson = exports.MavenDependencyGraph = exports.depgraphfilename = void 0;
 const packageurl_js_1 = __nccwpck_require__(8915);
 const dependency_submission_toolkit_1 = __nccwpck_require__(3415);
 const file_utils_1 = __nccwpck_require__(799);
+exports.depgraphfilename = 'maven-dependency-submission-action-depgraph.json';
 class MavenDependencyGraph {
     constructor(graph) {
         this.depGraph = graph;
@@ -119,20 +120,20 @@ class MavenDependencyGraph {
     }
 }
 exports.MavenDependencyGraph = MavenDependencyGraph;
-function parseDependencyJson(file, isMultiModule = false) {
+function parseDependencyJson(file) {
     const data = (0, file_utils_1.loadFileContents)(file);
+    const pomXmlFilepath = file.replace(`target/${exports.depgraphfilename}`, 'pom.xml');
     if (!data) {
         return {
+            filePath: pomXmlFilepath,
             graphName: 'empty',
             artifacts: [],
             dependencies: [],
-            isMultiModule: isMultiModule
         };
     }
     try {
         const depGraph = JSON.parse(data);
-        depGraph.isMultiModule = isMultiModule;
-        return depGraph;
+        return Object.assign(Object.assign({}, depGraph), { filePath: pomXmlFilepath });
     }
     catch (err) {
         throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
@@ -252,8 +253,6 @@ function run() {
                 mavenArgs: core.getInput('maven-args') || '',
             };
             const snapshotConfig = {
-                includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
-                manifestFile: core.getInput('snapshot-dependency-file-name'),
                 sha: core.getInput('snapshot-sha'),
                 ref: core.getInput('snapshot-ref'),
             };
@@ -482,56 +481,45 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateDependencyGraph = exports.generateSnapshot = void 0;
+exports.generateDependencyGraphs = exports.generateSnapshot = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const path = __importStar(__nccwpck_require__(1017));
 const dependency_submission_toolkit_1 = __nccwpck_require__(3415);
 const depgraph_1 = __nccwpck_require__(8047);
 const maven_runner_1 = __nccwpck_require__(7433);
-const file_utils_1 = __nccwpck_require__(799);
+const fs_1 = __nccwpck_require__(7147);
 const packageData = __nccwpck_require__(2876);
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
 function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b;
-        const depgraph = yield generateDependencyGraph(directory, mvnConfig);
+        const depgraphs = yield generateDependencyGraphs(directory, mvnConfig);
+        const detector = (_a = snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.detector) !== null && _a !== void 0 ? _a : getDetector();
+        let snapshot = new dependency_submission_toolkit_1.Snapshot(detector, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
+        snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
+            ? snapshotConfig.correlator
+            : (_b = snapshot.job) === null || _b === void 0 ? void 0 : _b.correlator;
+        const specifiedRef = getNonEmptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
+        if (specifiedRef) {
+            snapshot.ref = specifiedRef;
+        }
+        const specifiedSha = getNonEmptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
+        if (specifiedSha) {
+            snapshot.sha = specifiedSha;
+        }
         try {
-            const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
-            let manifest;
-            if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.includeManifestFile) {
-                let pomFile;
-                if (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.manifestFile) {
-                    pomFile = snapshotConfig.manifestFile;
-                }
-                else {
-                    // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-                    pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
-                }
-                manifest = mavenDependencies.createManifest(pomFile);
+            for (const depgraph of depgraphs) {
+                const mavenDependencies = new depgraph_1.MavenDependencyGraph(depgraph);
+                const pomFile = getRepositoryRelativePath(depgraph.filePath);
+                const manifest = mavenDependencies.createManifest(pomFile);
+                snapshot.addManifest(manifest);
             }
-            else {
-                manifest = mavenDependencies.createManifest();
-            }
-            const detector = (_a = snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.detector) !== null && _a !== void 0 ? _a : getDetector();
-            const snapshot = new dependency_submission_toolkit_1.Snapshot(detector, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
-            snapshot.addManifest(manifest);
-            snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
-                ? snapshotConfig.correlator
-                : (_b = snapshot.job) === null || _b === void 0 ? void 0 : _b.correlator;
-            const specifiedRef = getNonEmptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
-            if (specifiedRef) {
-                snapshot.ref = specifiedRef;
-            }
-            const specifiedSha = getNonEmptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
-            if (specifiedSha) {
-                snapshot.sha = specifiedSha;
-            }
-            return snapshot;
         }
         catch (err) {
             core.error(err);
             throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
         }
+        return snapshot;
     });
 }
 exports.generateSnapshot = generateSnapshot;
@@ -542,71 +530,44 @@ function getDetector() {
         version: packageData.version
     };
 }
-function generateDependencyGraph(directory, config) {
+function generateDependencyGraphs(directory, config) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const mvn = new maven_runner_1.MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper, config === null || config === void 0 ? void 0 : config.mavenArgs);
-            core.startGroup('depgraph-maven-plugin:reactor');
-            const mavenReactorArguments = [
-                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
-                '-DgraphFormat=json',
-                '-DoutputFileName=reactor.json'
-            ];
-            const reactorResults = yield mvn.exec(directory, mavenReactorArguments);
-            core.info(reactorResults.stdout);
-            core.info(reactorResults.stderr);
-            core.endGroup();
-            if (reactorResults.exitCode !== 0) {
-                throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
-            }
             core.startGroup('depgraph-maven-plugin:aggregate');
-            const mavenAggregateArguments = [
-                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
+            const mavenGraphArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:graph`,
                 '-DgraphFormat=json',
-                '-DoutputDirectory=target',
-                '-DoutputFileName=aggregate-depgraph.json'
+                `-DoutputFileName=${depgraph_1.depgraphfilename}`,
             ];
-            const aggregateResults = yield mvn.exec(directory, mavenAggregateArguments);
-            core.info(aggregateResults.stdout);
-            core.info(aggregateResults.stderr);
+            const graphResults = yield mvn.exec(directory, mavenGraphArguments);
+            core.info(graphResults.stdout);
+            core.info(graphResults.stderr);
             core.endGroup();
-            if (aggregateResults.exitCode !== 0) {
-                throw new Error(`Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`);
+            if (graphResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully dependency results with Maven, exit code: ${graphResults.exitCode}`);
             }
         }
         catch (err) {
             core.error(err);
             throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
         }
-        const targetPath = path.join(directory, 'target');
-        const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
-        // Now we have the aggregate dependency graph file to process
-        const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
-        try {
-            return (0, depgraph_1.parseDependencyJson)(aggregateGraphFile, isMultiModule);
+        const graphFiles = getDepgraphFiles(directory, depgraph_1.depgraphfilename);
+        let results = [];
+        for (const graphFile of graphFiles) {
+            core.debug(`Found depgraph file: ${graphFile}`);
+            try {
+                const depgraph = (0, depgraph_1.parseDependencyJson)(graphFile);
+                results.push(depgraph);
+            }
+            catch (err) {
+                core.error(`Could not parse depgraph file, '${graphFile}': ${err.message}`);
+            }
         }
-        catch (err) {
-            core.error(err);
-            throw new Error(`Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`);
-        }
+        return results;
     });
 }
-exports.generateDependencyGraph = generateDependencyGraph;
-function checkForMultiModule(reactorJsonFile) {
-    const data = (0, file_utils_1.loadFileContents)(reactorJsonFile);
-    if (data) {
-        try {
-            const reactor = JSON.parse(data);
-            // The reactor file will have an array of artifacts making up the parent and child modules if it is a multi module project
-            return reactor.artifacts && reactor.artifacts.length > 0;
-        }
-        catch (err) {
-            throw new Error(`Failed to parse reactor JSON payload: ${err.message}`);
-        }
-    }
-    // If no data report that it is not a multi module project
-    return false;
-}
+exports.generateDependencyGraphs = generateDependencyGraphs;
 // TODO this is assuming the checkout was made into the base path of the workspace...
 function getRepositoryRelativePath(file) {
     const workspaceDirectory = path.resolve(process.env.GITHUB_WORKSPACE || '.');
@@ -630,6 +591,31 @@ function getNonEmptyValue(str) {
         }
     }
     return undefined;
+}
+// getDepgraphFiles recursively finds all files that match the filename within the directory
+function getDepgraphFiles(directory, filename) {
+    let files = [];
+    // debug only
+    files = (0, fs_1.readdirSync)(directory);
+    try {
+        files = (0, fs_1.readdirSync)(directory)
+            .filter((f) => f === filename)
+            .map((f) => path.join(directory, f));
+    }
+    catch (err) {
+        core.error(`Could not read depgraphs directory: ${err.message}`);
+        return [];
+    }
+    // recursively find all files that match the filename within the directory
+    const subdirs = (0, fs_1.readdirSync)(directory, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+    for (const subdir of subdirs) {
+        const subdirPath = path.join(directory, subdir);
+        const subdirFiles = getDepgraphFiles(subdirPath, filename);
+        files = files.concat(subdirFiles);
+    }
+    return files;
 }
 //# sourceMappingURL=snapshot-generator.js.map
 
@@ -33301,7 +33287,7 @@ exports.submitSnapshot = L;
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"maven-dependency-submission-action","version":"4.1.2","description":"Submit Maven dependencies to GitHub dependency submission API","main":"index.js","scripts":{"base-build":"npm ci && tsc","build":"npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js","build-exe":"npm run build && pkg package.json --compress Gzip","test":"vitest --run"},"repository":{"type":"git","url":"git+https://github.com/advanced-security/maven-dependency-submission-action.git"},"keywords":[],"author":"GitHub, Inc","license":"MIT","bugs":{"url":"https://github.com/advanced-security/maven-dependency-submission-action/issues"},"homepage":"https://github.com/advanced-security/maven-dependency-submission-action","dependencies":{"@actions/core":"^1.10.1","@actions/exec":"^1.1.1","@github/dependency-submission-toolkit":"^2.0.0","commander":"^12.0.0","packageurl-js":"^1.2.0"},"devDependencies":{"@types/chai":"^4.3.1","@vercel/ncc":"^0.38.1","chai":"^4.3.6","@yao-pkg/pkg":"^5.11.5","ts-node":"^10.9.2","typescript":"^5.3.3","vitest":"^1.6.1"},"bin":{"cli":"lib/src/executable/cli.js"},"pkg":{"targets":["node20-linux-x64","node20-win-x64","node20-macos-x64"],"assets":["package.json"],"publicPackages":"*","outputPath":"cli"}}');
+module.exports = JSON.parse('{"name":"maven-dependency-submission-action","version":"5.0.0","description":"Submit Maven dependencies to GitHub dependency submission API","main":"index.js","scripts":{"base-build":"npm ci && tsc","build":"npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js","build-exe":"npm run build && pkg package.json --compress Gzip","test":"vitest --run"},"repository":{"type":"git","url":"git+https://github.com/advanced-security/maven-dependency-submission-action.git"},"keywords":[],"author":"GitHub, Inc","license":"MIT","bugs":{"url":"https://github.com/advanced-security/maven-dependency-submission-action/issues"},"homepage":"https://github.com/advanced-security/maven-dependency-submission-action","dependencies":{"@actions/core":"^1.10.1","@actions/exec":"^1.1.1","@github/dependency-submission-toolkit":"^2.0.0","commander":"^12.0.0","packageurl-js":"^1.2.0"},"devDependencies":{"@types/chai":"^4.3.1","@vercel/ncc":"^0.38.1","chai":"^4.3.6","@yao-pkg/pkg":"^5.11.5","ts-node":"^10.9.2","typescript":"^5.3.3","vitest":"^1.6.1"},"bin":{"cli":"lib/src/executable/cli.js"},"pkg":{"targets":["node20-linux-x64","node20-win-x64","node20-macos-x64"],"assets":["package.json"],"publicPackages":"*","outputPath":"cli"}}');
 
 /***/ })
 

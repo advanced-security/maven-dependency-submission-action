@@ -18,7 +18,6 @@ program.option('-j --job-name <jobName>', 'Optional name for the activity creati
 program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity that is providing the graph');
 
 program.option('--snapshot-exclude-file-name', 'exclude the file name in the dependency snapshot report. If false the name of the artifactor from the POM will be used, but any links in GitHub will not work.');
-program.option('--snapshot-dependency-file-name <fileName>', 'optional override to specificy the path to the file that the snapshot will be associated with in the repository');
 
 program.option('--detector-name <detectorName>', 'optional name of the detector that generated the snapshot');
 program.option('--detector-url <detectorUrl>', 'optional URL of the detector that generated the snapshot, but not optional if you specify an detector-name');
@@ -92,8 +91,6 @@ async function execute() {
       sha: opts.sha,
       ref: opts.branchRef,
 
-      manifestFile: opts.snapshotDependencyFileName,
-      includeManifestFile: !opts.snapshotExcludeFileName,
       detector: detector
     }
 
