@@ -1,5 +1,8 @@
 name: Test Local Action
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
