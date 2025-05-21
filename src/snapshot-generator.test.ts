@@ -1,6 +1,7 @@
 import { getMavenProjectDirectory } from './utils/test-util';
-import { generateDependencyGraph, generateSnapshot } from './snapshot-generator';
+import { generateDependencyGraphs, generateSnapshot } from './snapshot-generator';
 import {describe, it, expect} from 'vitest';
+import { Manifest } from '@github/dependency-submission-toolkit';
 
 describe('snapshot-generator', () => {
 
@@ -8,7 +9,11 @@ describe('snapshot-generator', () => {
 
     it('should generate a snapshot for a simple project', async () => {
       const projectDir = getMavenProjectDirectory('simple');
-      const depGraph = await generateDependencyGraph(projectDir);
+      const depGraphs = await generateDependencyGraphs(projectDir);
+      expect(depGraphs).toBeDefined();
+      expect(depGraphs.length).toBe(1);
+      const depGraph = depGraphs[0];
+
       expect(depGraph.dependencies.length).toBe(20);
     }, 20000);
   });
@@ -37,9 +42,50 @@ describe('snapshot-generator', () => {
       const projectDir = getMavenProjectDirectory('multi-module-multi-branch');
       const snapshot = await generateSnapshot(projectDir);
 
-      expect(snapshot.manifests['bs-parent']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
-      expect(snapshot.manifests['bs-parent'].countDependencies()).toBe(20);
+
+      const bsParentManifest = snapshot.manifests['bs-parent'];
+      expect(bsParentManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsParentManifest)).toEqual([
+        'pkg:maven/junit/junit@4.13?type=jar']);
+
+      const bsApplicationManifest = snapshot.manifests['bs-application'];
+      expect(bsApplicationManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsApplicationManifest)).toEqual([
+        'pkg:maven/com.github.octodemo/bs-library-web@1.0.0-SNAPSHOT?type=jar',
+        'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.eclipse.jetty/jetty-server@10.0.10?type=jar',
+      ]);
+
+      const bsLibrariesManifest = snapshot.manifests['bs-libraries'];
+      expect(bsLibrariesManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsLibrariesManifest)).toEqual([
+        'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
+      ]);
+
+      const bsOtherManifest = snapshot.manifests['bs-other'];
+      expect(bsOtherManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsOtherManifest)).toEqual([
+        'pkg:maven/junit/junit@4.13?type=jar',
+      ]);
+
+      const bsLibraryDatabaseManifest = snapshot.manifests['bs-library-database'];
+      expect(bsLibraryDatabaseManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsLibraryDatabaseManifest)).toEqual([
+        'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
+        'pkg:maven/org.postgresql/postgresql@42.5.0?type=jar',
+        'pkg:maven/org.xerial/sqlite-jdbc@3.36.0.3?type=jar',
+      ]);
+
+      const bsLibraryWebManifest = snapshot.manifests['bs-library-web'];
+      expect(bsLibraryWebManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsLibraryWebManifest)).toEqual([
+        'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
+        'pkg:maven/org.eclipse.jetty.http2/http2-http-client-transport@10.0.10?type=jar',
+      ]);
     }, 20000);
 
     it('should generate a snapshot for a maven-wrapper project', async () => {
@@ -95,3 +141,7 @@ describe('snapshot-generator', () => {
     }, 20000);
   });
 });
+
+function getDirectDependencyPurls(manifest: Manifest): string[] {
+  return Object.values(manifest.resolved).filter(dep => dep.relationship === 'direct').map(dep => dep.depPackage.packageURL.toString()).sort();
+}

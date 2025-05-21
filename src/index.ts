@@ -13,8 +13,6 @@ async function run() {
       mavenArgs: core.getInput('maven-args') || '',
     }
     const snapshotConfig: SnapshotConfig = {
-      includeManifestFile: core.getBooleanInput('snapshot-include-file-name'),
-      manifestFile: core.getInput('snapshot-dependency-file-name'),
       sha: core.getInput('snapshot-sha'),
       ref: core.getInput('snapshot-ref'),
     }

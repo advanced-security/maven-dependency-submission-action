@@ -2,9 +2,10 @@ import * as core from '@actions/core';
 import * as path from 'path';
 
 import { Manifest, Snapshot } from '@github/dependency-submission-toolkit';
-import { Depgraph, MavenDependencyGraph, parseDependencyJson } from './depgraph';
+import { Depgraph, MavenDependencyGraph, parseDependencyJson, depgraphfilename } from './depgraph';
 import { MavenRunner } from './maven-runner';
 import { loadFileContents } from './utils/file-utils';
+import { readdirSync } from 'fs';
 
 const packageData = require('../package.json');
 const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
@@ -16,8 +17,6 @@ export type MavenConfiguration = {
 }
 
 export type SnapshotConfig = {
-  includeManifestFile?: boolean;
-  manifestFile?: string;
   context?: any;
   job?: any;
   sha?: any;
@@ -31,48 +30,37 @@ export type SnapshotConfig = {
 };
 
 export async function generateSnapshot(directory: string, mvnConfig?: MavenConfiguration, snapshotConfig?: SnapshotConfig) {
-  const depgraph = await generateDependencyGraph(directory, mvnConfig);
+  const depgraphs = await generateDependencyGraphs(directory, mvnConfig);
+  const detector = snapshotConfig?.detector ?? getDetector();
+  let snapshot = new Snapshot(detector, snapshotConfig?.context, snapshotConfig?.job);
+
+  snapshot.job.correlator = snapshotConfig?.correlator
+    ? snapshotConfig.correlator
+    : snapshot.job?.correlator;
+
+  const specifiedRef = getNonEmptyValue(snapshotConfig?.ref);
+  if (specifiedRef) {
+    snapshot.ref = specifiedRef;
+  }
+
+  const specifiedSha = getNonEmptyValue(snapshot?.sha);
+  if (specifiedSha) {
+    snapshot.sha = specifiedSha;
+  }
 
   try {
-    const mavenDependencies = new MavenDependencyGraph(depgraph);
+    for (const depgraph of depgraphs) {
+      const mavenDependencies = new MavenDependencyGraph(depgraph);
+      const pomFile = getRepositoryRelativePath(depgraph.filePath);
+      const manifest = mavenDependencies.createManifest(pomFile);
 
-    let manifest: Manifest;
-    if (snapshotConfig?.includeManifestFile) {
-      let pomFile;
-      if (snapshotConfig?.manifestFile) {
-        pomFile = snapshotConfig.manifestFile;
-      } else {
-        // The filepath to the POM needs to be relative to the root of the GitHub repository for the links to work once uploaded
-        pomFile = getRepositoryRelativePath(path.join(directory, 'pom.xml'));
-      }
-      manifest = mavenDependencies.createManifest(pomFile);
-    } else {
-      manifest = mavenDependencies.createManifest();
+      snapshot.addManifest(manifest);
     }
-
-    const detector = snapshotConfig?.detector ?? getDetector();
-    const snapshot = new Snapshot(detector, snapshotConfig?.context, snapshotConfig?.job);
-    snapshot.addManifest(manifest);
-
-    snapshot.job.correlator = snapshotConfig?.correlator
-      ? snapshotConfig.correlator
-      : snapshot.job?.correlator;
-
-    const specifiedRef = getNonEmptyValue(snapshotConfig?.ref);
-    if (specifiedRef) {
-      snapshot.ref = specifiedRef;
-    }
-
-    const specifiedSha = getNonEmptyValue(snapshot?.sha);
-    if (specifiedSha) {
-      snapshot.sha = specifiedSha;
-    }
-
-    return snapshot;
   } catch (err: any) {
     core.error(err);
     throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
   }
+  return snapshot;
 }
 
 function getDetector() {
@@ -83,75 +71,42 @@ function getDetector() {
   };
 }
 
-export async function generateDependencyGraph(directory: string, config?: MavenConfiguration): Promise<Depgraph> {
+export async function generateDependencyGraphs(directory: string, config?: MavenConfiguration): Promise<Depgraph[]> {
   try {
     const mvn = new MavenRunner(directory, config?.settingsFile, config?.ignoreMavenWrapper, config?.mavenArgs);
 
-    core.startGroup('depgraph-maven-plugin:reactor');
-    const mavenReactorArguments = [
-      `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:reactor`,
-      '-DgraphFormat=json',
-      '-DoutputFileName=reactor.json'
-    ];
-    const reactorResults = await mvn.exec(directory, mavenReactorArguments);
-
-    core.info(reactorResults.stdout);
-    core.info(reactorResults.stderr);
-    core.endGroup();
-
-    if (reactorResults.exitCode !== 0) {
-      throw new Error(`Failed to successfully generate reactor results with Maven, exit code: ${reactorResults.exitCode}`);
-    }
-
     core.startGroup('depgraph-maven-plugin:aggregate');
-    const mavenAggregateArguments = [
-      `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
+    const mavenGraphArguments = [
+      `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:graph`,
       '-DgraphFormat=json',
-      '-DoutputDirectory=target',
-      '-DoutputFileName=aggregate-depgraph.json'
+      `-DoutputFileName=${depgraphfilename}`,
     ];
-    const aggregateResults = await mvn.exec(directory, mavenAggregateArguments);
+    const graphResults = await mvn.exec(directory, mavenGraphArguments);
 
-    core.info(aggregateResults.stdout);
-    core.info(aggregateResults.stderr);
+    core.info(graphResults.stdout);
+    core.info(graphResults.stderr);
     core.endGroup();
 
-    if (aggregateResults.exitCode !== 0) {
-      throw new Error(`Failed to successfully dependency results with Maven, exit code: ${aggregateResults.exitCode}`);
+    if (graphResults.exitCode !== 0) {
+      throw new Error(`Failed to successfully generate dependency results with Maven, exit code: ${graphResults.exitCode}`);
     }
   } catch (err: any) {
     core.error(err);
     throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
   }
 
-  const targetPath = path.join(directory, 'target');
-  const isMultiModule = checkForMultiModule(path.join(targetPath, 'reactor.json'));
-
-  // Now we have the aggregate dependency graph file to process
-  const aggregateGraphFile = path.join(targetPath, 'aggregate-depgraph.json');
-  try {
-    return parseDependencyJson(aggregateGraphFile, isMultiModule);
-  } catch (err: any) {
-    core.error(err);
-    throw new Error(`Could not parse maven dependency file, '${aggregateGraphFile}': ${err.message}`);
-  }
-}
-
-function checkForMultiModule(reactorJsonFile): boolean {
-  const data = loadFileContents(reactorJsonFile);
-
-  if (data) {
+  const graphFiles = getDepgraphFiles(directory, depgraphfilename);
+  let results: Depgraph[] = [];
+  for (const graphFile of graphFiles) {
+    core.debug(`Found depgraph file: ${graphFile}`);
     try {
-      const reactor = JSON.parse(data);
-      // The reactor file will have an array of artifacts making up the parent and child modules if it is a multi module project
-      return reactor.artifacts && reactor.artifacts.length > 0;
+      const depgraph = parseDependencyJson(graphFile);
+      results.push(depgraph);
     } catch (err: any) {
-      throw new Error(`Failed to parse reactor JSON payload: ${err.message}`);
+      core.error(`Could not parse depgraph file, '${graphFile}': ${err.message}`);
     }
   }
-
-  // If no data report that it is not a multi module project
-  return false;
+  return results;
 }
 
 // TODO this is assuming the checkout was made into the base path of the workspace...
@@ -181,4 +136,30 @@ function getNonEmptyValue(str?: string) {
     }
   }
   return undefined;
+}
+
+// getDepgraphFiles recursively finds all files that match the filename within the directory
+function getDepgraphFiles(directory: string, filename: string): string[] {
+  let files: string[] = [];
+  try {
+    files = readdirSync(directory)
+      .filter((f: string) => f === filename)
+      .map((f: string) => path.join(directory, f));
+  } catch (err: any) {
+    core.error(`Could not read depgraphs directory: ${err.message}`);
+    return [];
+  }
+
+  // recursively find all files that match the filename within the directory
+  const subdirs = readdirSync(directory, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  for (const subdir of subdirs) {
+    const subdirPath = path.join(directory, subdir);
+    const subdirFiles = getDepgraphFiles(subdirPath, filename);
+    files = files.concat(subdirFiles);
+  }
+
+  return files;
 }

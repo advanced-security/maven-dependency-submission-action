@@ -2,12 +2,12 @@
 
 This is a GitHub Action that will generate a complete dependency graph for a Maven project and submit the graph to the GitHub repository so that the graph is complete and includes all the transitive dependencies.
 
-The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:4.0.2` plugin to generate JSON output of the complete dependency graph, which is then processed and submitted using the [Dependency Submission Toolkit](https://github.com/github/dependency-submission-toolkit) to the GitHub repository.
+The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:4.0.3` plugin to generate JSON output of the complete dependency graph, which is then processed and submitted using the [Dependency Submission Toolkit](https://github.com/github/dependency-submission-toolkit) to the GitHub repository.
 
 
 ## Usage
 
-As of version `3.0.0` this action now support Maven multi-module projects as well as additional Maven configuration parameters.
+As of version `3.0.0` this action now supports Maven multi-module projects as well as additional Maven configuration parameters. As of version `5.0.0`, multi-module projects report dependencies as coming from their respective `pom.xml` files.
 
 
 ### Pre-requisites
@@ -15,7 +15,7 @@ For this action to work properly, you must have the Maven available on PATH (`mv
 
 Custom maven `settings.xml` can now be specified as an input parameter to the action.
 
-This action writes informations in the repository dependency graph, so if you are using the default token, you need to set the `contents: write` permission to the workflow or job. If you are using a personal access token, this token must have the `repo` scope. ([API used by this action](https://docs.github.com/en/rest/dependency-graph/dependency-submission#create-a-snapshot-of-dependencies-for-a-repository))
+This action writes information in the repository dependency graph, so if you are using the default token, you need to set the `contents: write` permission to the workflow or job. If you are using a personal access token, this token must have the `repo` scope. ([API used by this action](https://docs.github.com/en/rest/dependency-graph/dependency-submission#create-a-snapshot-of-dependencies-for-a-repository))
 
 ### Inputs
 
@@ -29,10 +29,6 @@ This action writes informations in the repository dependency graph, so if you ar
 
 * `maven-args` - An optional string value (space separated) options to pass to the maven command line when generating the dependency snapshot. This is empty by default.
 
-* `snapshot-include-file-name`: Optional flag to control whether or no the path and file name of the pom.xml is provided with the snapshot submission. Defaults to `true` so as to create a link to the repository file from the dependency tree view, but at the cost of losing the POM `artifactId` when it renders.
-
-* `snapshot-dependency-file-name`: An optional user control file path to the POM file, requires `snapshot-include-file-name` to be `true` for the value to be submitted.
-
 * `correlator`: An optional identifier to distinguish between multiple dependency snapshots of the same type. Defaults to the [job_id](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id) of the current job.
 
 ## Examples
@@ -41,7 +37,7 @@ Generating and submitting a dependency snapshot using the defaults:
 
 ```
 - name: Submit Dependency Snapshot
-  uses: advanced-security/maven-dependency-submission-action@v4
+  uses: advanced-security/maven-dependency-submission-action@v5
 ```
 
 Upon success it will generate a snapshot captured from Maven POM like;
