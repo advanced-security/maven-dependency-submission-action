@@ -60,8 +60,8 @@ minor/patch updates.
 To do this just checkout `main`, force-create a new annotated tag, and push it:
 
 ```
-git tag -fa v4 -m "Updating v4 to 4.1.2"
-git push origin v4 --force
+git tag -fa v5 -m "Updating v5 to 5.0.0"
+git push origin v5 --force
 ```
 </details>
 
