@@ -43,7 +43,7 @@ export async function generateSnapshot(directory: string, mvnConfig?: MavenConfi
     snapshot.ref = specifiedRef;
   }
 
-  const specifiedSha = getNonEmptyValue(snapshot?.sha);
+  const specifiedSha = getNonEmptyValue(snapshotConfig?.sha);
   if (specifiedSha) {
     snapshot.sha = specifiedSha;
   }
