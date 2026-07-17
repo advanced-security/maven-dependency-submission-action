@@ -23,7 +23,7 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
-    "@github/dependency-submission-toolkit": "^2.0.0",
+    "@github/dependency-submission-toolkit": "^2.0.5",
     "commander": "^12.0.0",
     "packageurl-js": "^1.2.0"
   },
