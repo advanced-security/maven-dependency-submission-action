@@ -21,3 +21,12 @@ updates:
       github-actions-dependencies:
         patterns:
           - "*"
+
+  # The pom.xml files under test-data/ are fixtures used by the test suite,
+  # not real project dependencies. Scoping the maven ecosystem to the repo
+  # root (which has no pom.xml) prevents Dependabot from scanning test-data
+  # and opening update pull requests against those fixtures.
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
