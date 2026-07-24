@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/chai": "^4.3.1",
     "@vercel/ncc": "^0.38.1",
-    "chai": "^4.3.6",
+    "chai": "^6.2.2",
     "@yao-pkg/pkg": "^5.16.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
