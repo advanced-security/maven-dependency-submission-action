@@ -7,6 +7,8 @@ updates:
       - "/test-data/maven/**"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 0
     ignore:
       - dependency-name: "*"
@@ -16,7 +18,7 @@ updates:
     schedule:
       interval: "weekly"
     cooldown:
-      default-days: 3
+      default-days: 7
     groups:
       npm-dependencies:
         patterns:
@@ -27,7 +29,7 @@ updates:
     schedule:
       interval: "weekly"
     cooldown:
-      default-days: 3
+      default-days: 7
     groups:
       github-actions-dependencies:
         patterns:
