@@ -3,6 +3,7 @@
   "version": "5.0.0",
   "description": "Submit Maven dependencies to GitHub dependency submission API",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "base-build": "npm ci && tsc",
     "build": "npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js",
