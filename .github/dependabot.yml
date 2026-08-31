@@ -1,5 +1,16 @@
 version: 2
 updates:
+  # Maven test fixtures are intentionally pinned and should not receive
+  # Dependabot version or security update pull requests.
+  - package-ecosystem: "maven"
+    directories:
+      - "/test-data/maven/**"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: "*"
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
