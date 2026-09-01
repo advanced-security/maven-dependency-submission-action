@@ -68,7 +68,7 @@ jobs:
         java-version: ${{ matrix.java-version }}
     - name: Submit Dependency Snapshot
       uses: advanced-security/maven-dependency-submission-action@v6.0.0
-       with:
+      with:
         directory: ${{ matrix.directory }}
         correlator: ${{ github.job }}-${{ matrix.directory }}
 ```

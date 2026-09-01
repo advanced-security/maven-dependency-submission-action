@@ -57,7 +57,6 @@ jobs:
           commit-message: "chore: bump version (${{ inputs.bump }})"
           title: "chore: bump version (${{ inputs.bump }})"
           branch: chore/release-${{ inputs.bump }}
-          labels: version
           body: |
             Automated pull request to bump the tracked release version,
             update README.md, synchronize package-lock.json, and rebuild dist/.
@@ -101,6 +100,19 @@ jobs:
 
           if ! git cat-file -e "${BEFORE_SHA}:.release.yml" 2>/dev/null; then
             echo "::notice::Initialized release tracking at v$current_version without publishing a release."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          previous_version=$(git show "${BEFORE_SHA}:.release.yml" |
+            sed -n -E 's/^version:[[:space:]]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p')
+          if [ -z "$previous_version" ]; then
+            echo "::error::Could not read the previous version from .release.yml"
+            exit 1
+          fi
+
+          if [ "$current_version" = "$previous_version" ]; then
+            echo "::notice::.release.yml changed without a version bump; no release will be published."
             echo "release=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
