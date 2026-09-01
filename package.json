@@ -28,6 +28,11 @@
     "commander": "^15.0.0",
     "packageurl-js": "^2.0.1"
   },
+  "overrides": {
+    "@actions/http-client": {
+      "undici": "^6.27.0"
+    }
+  },
   "devDependencies": {
     "@types/chai": "^5.2.3",
     "@vercel/ncc": "^0.45.0",
