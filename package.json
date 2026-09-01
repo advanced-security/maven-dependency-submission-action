@@ -29,7 +29,7 @@
     "packageurl-js": "^2.0.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.1",
+    "@types/chai": "^5.2.3",
     "@vercel/ncc": "^0.45.0",
     "chai": "^6.2.2",
     "@yao-pkg/pkg": "^6.22.0",
