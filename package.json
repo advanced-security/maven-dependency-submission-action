@@ -3,6 +3,7 @@
   "version": "5.0.0",
   "description": "Submit Maven dependencies to GitHub dependency submission API",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "base-build": "npm ci && tsc",
     "build": "npm run base-build && npm exec -- @vercel/ncc build --source-map lib/src/index.js",
@@ -21,29 +22,29 @@
   },
   "homepage": "https://github.com/advanced-security/maven-dependency-submission-action",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/exec": "^1.1.1",
+    "@actions/core": "^3.0.1",
+    "@actions/exec": "^3.0.0",
     "@github/dependency-submission-toolkit": "^2.0.5",
-    "commander": "^12.0.0",
+    "commander": "^15.0.0",
     "packageurl-js": "^2.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
-    "@vercel/ncc": "^0.38.1",
-    "chai": "^4.3.6",
-    "@yao-pkg/pkg": "^5.16.1",
+    "@vercel/ncc": "^0.45.0",
+    "chai": "^6.2.2",
+    "@yao-pkg/pkg": "^6.22.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3",
-    "vitest": "^4.1.8"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   },
   "bin": {
     "cli": "lib/src/executable/cli.js"
   },
   "pkg": {
     "targets": [
-      "node20-linux-x64",
-      "node20-win-x64",
-      "node20-macos-x64"
+      "node22-linux-x64",
+      "node22-win-x64",
+      "node22-macos-x64"
     ],
     "assets": [
       "package.json"
