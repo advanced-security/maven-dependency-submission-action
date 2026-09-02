@@ -66,6 +66,7 @@ jobs:
     uses: advanced-security/reusable-workflows/.github/workflows/release.yml@cdb58ebdac3e974822957b34c90394db7dd44ccc # v0.3.5
     permissions:
       contents: write
+      pull-requests: write
     with:
       version: ${{ inputs.version }}
       prerelease: ${{ inputs.prerelease }}
@@ -139,5 +140,6 @@ jobs:
     uses: advanced-security/reusable-workflows/.github/workflows/release.yml@cdb58ebdac3e974822957b34c90394db7dd44ccc # v0.3.5
     permissions:
       contents: write
+      pull-requests: write
     with:
       version: ${{ needs.fetch-release.outputs.version }}
