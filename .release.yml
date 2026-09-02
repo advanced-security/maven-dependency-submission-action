@@ -1,0 +1,16 @@
+name: "maven-dependency-submission-action"
+repository: "advanced-security/maven-dependency-submission-action"
+version: "6.0.0"
+
+locations:
+  - name: "Node Manifest"
+    paths:
+      - package.json
+    patterns:
+      - '"version":\s*"([0-9]+\.[0-9]+\.[0-9]+)"'
+
+  - name: "Documentation"
+    paths:
+      - README.md
+    patterns:
+      - 'advanced-security/maven-dependency-submission-action@v([0-9]+\.[0-9]+\.[0-9]+)'

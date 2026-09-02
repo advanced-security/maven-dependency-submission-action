@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".release.yml"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Open a version bump PR. Ignored if version is set."
+        type: choice
+        options:
+          - none
+          - patch
+          - minor
+          - major
+        default: none
+      version:
+        description: "Explicit version to release immediately (e.g., 6.0.0)."
+        type: string
+        default: ""
+      prerelease:
+        description: "Publish the explicit version as a pre-release"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  bump-version:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.version == '' && inputs.bump != 'none' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Bump version
+        uses: docker://ghcr.io/42bytelabs/patch-release-me:0.6.7@sha256:b9624359ce08707dfb4d22bcbf9d1a75f7f4718ccec610ddaa62280ffea98958
+        with:
+          args: --disable-banner bump -m ${{ inputs.bump }}
+
+      - name: Sync package lock
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Rebuild distribution
+        run: npm run build
+
+      - name: Create release pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ github.token }}
+          commit-message: "chore: bump version (${{ inputs.bump }})"
+          title: "chore: bump version (${{ inputs.bump }})"
+          branch: chore/release-${{ inputs.bump }}
+          body: |
+            Automated pull request to bump the tracked release version,
+            update README.md, synchronize package-lock.json, and rebuild dist/.
+
+  manual-release:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
+    uses: advanced-security/reusable-workflows/.github/workflows/release.yml@cdb58ebdac3e974822957b34c90394db7dd44ccc # v0.3.5
+    permissions:
+      contents: write
+    with:
+      version: ${{ inputs.version }}
+      prerelease: ${{ inputs.prerelease }}
+
+  fetch-release:
+    if: ${{ github.event_name == 'push' && !github.event.repository.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      release: ${{ steps.check.outputs.release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check tracked version
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          current_version=$(sed -n -E 's/^version:[[:space:]]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p' .release.yml)
+          if [ -z "$current_version" ]; then
+            echo "::error::Could not read a version from .release.yml"
+            exit 1
+          fi
+
+          if ! git cat-file -e "${BEFORE_SHA}:.release.yml" 2>/dev/null; then
+            echo "::notice::Initialized release tracking at v$current_version without publishing a release."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          previous_version=$(git show "${BEFORE_SHA}:.release.yml" |
+            sed -n -E 's/^version:[[:space:]]*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p')
+          if [ -z "$previous_version" ]; then
+            echo "::error::Could not read the previous version from .release.yml"
+            exit 1
+          fi
+
+          if [ "$current_version" = "$previous_version" ]; then
+            echo "::notice::.release.yml changed without a version bump; no release will be published."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          released_version=""
+          if latest_tag=$(gh api "/repos/${GITHUB_REPOSITORY}/releases/latest" --jq '.tag_name' 2>/tmp/gh-api-error); then
+            released_version="${latest_tag#v}"
+          elif ! grep -q "HTTP 404" /tmp/gh-api-error; then
+            echo "::error::Failed to look up the latest release"
+            cat /tmp/gh-api-error
+            exit 1
+          fi
+
+          if [ "$current_version" = "$released_version" ]; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=$current_version" >> "$GITHUB_OUTPUT"
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    needs: fetch-release
+    if: ${{ needs.fetch-release.outputs.release == 'true' }}
+    uses: advanced-security/reusable-workflows/.github/workflows/release.yml@cdb58ebdac3e974822957b34c90394db7dd44ccc # v0.3.5
+    permissions:
+      contents: write
+    with:
+      version: ${{ needs.fetch-release.outputs.version }}
