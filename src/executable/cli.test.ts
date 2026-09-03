@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SNAPSHOT_EXCLUDE_FILE_NAME_WARNING, warnIfSnapshotExcludeFileNameUsed } from './deprecated-options';
 
-describe('cli', () => {
+describe('deprecated-options', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });

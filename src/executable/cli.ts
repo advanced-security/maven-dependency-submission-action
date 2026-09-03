@@ -69,7 +69,7 @@ async function execute() {
 
   try {
     // The above injection of environment variables is required before the submission APIs are imported
-    const { generateSnapshot } = await import('../snapshot-generator');
+    const { generateSnapshot } = await import('../snapshot-generator.js');
 
     // Build a fake GitHub Actions context so that values for the submission APIs can be retrieved
     const context = {
