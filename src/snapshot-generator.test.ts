@@ -34,7 +34,15 @@ describe('snapshot-generator', () => {
       const projectDir = getMavenProjectDirectory('multi-module');
       const snapshot = await generateSnapshot(projectDir);
 
-      expect(snapshot.manifests['bs-parent']).toBeDefined();
+      const bsParentManifest = snapshot.manifests['bs-parent'];
+      expect(bsParentManifest).toBeDefined();
+      expect(getDirectDependencyPurls(bsParentManifest)).toEqual([
+        'pkg:maven/com.github.octodemo/bs-library@1.0.0-SNAPSHOT?type=jar',
+        'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.eclipse.jetty/jetty-server@10.0.10?type=jar',
+      ]);
+      expect(bsParentManifest.resolved['pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar']).toBeDefined();
+      expect(bsParentManifest.resolved['pkg:maven/org.eclipse.jetty.http2/http2-http-client-transport@10.0.10?type=jar']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
     }, 20000);
 
@@ -47,44 +55,12 @@ describe('snapshot-generator', () => {
       const bsParentManifest = snapshot.manifests['bs-parent'];
       expect(bsParentManifest).toBeDefined();
       expect(getDirectDependencyPurls(bsParentManifest)).toEqual([
-        'pkg:maven/junit/junit@4.13?type=jar']);
-
-      const bsApplicationManifest = snapshot.manifests['bs-application'];
-      expect(bsApplicationManifest).toBeDefined();
-      expect(getDirectDependencyPurls(bsApplicationManifest)).toEqual([
         'pkg:maven/com.github.octodemo/bs-library-web@1.0.0-SNAPSHOT?type=jar',
         'pkg:maven/junit/junit@4.13?type=jar',
+        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
         'pkg:maven/org.eclipse.jetty/jetty-server@10.0.10?type=jar',
-      ]);
-
-      const bsLibrariesManifest = snapshot.manifests['bs-libraries'];
-      expect(bsLibrariesManifest).toBeDefined();
-      expect(getDirectDependencyPurls(bsLibrariesManifest)).toEqual([
-        'pkg:maven/junit/junit@4.13?type=jar',
-        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
-      ]);
-
-      const bsOtherManifest = snapshot.manifests['bs-other'];
-      expect(bsOtherManifest).toBeDefined();
-      expect(getDirectDependencyPurls(bsOtherManifest)).toEqual([
-        'pkg:maven/junit/junit@4.13?type=jar',
-      ]);
-
-      const bsLibraryDatabaseManifest = snapshot.manifests['bs-library-database'];
-      expect(bsLibraryDatabaseManifest).toBeDefined();
-      expect(getDirectDependencyPurls(bsLibraryDatabaseManifest)).toEqual([
-        'pkg:maven/junit/junit@4.13?type=jar',
-        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
         'pkg:maven/org.postgresql/postgresql@42.5.0?type=jar',
         'pkg:maven/org.xerial/sqlite-jdbc@3.36.0.3?type=jar',
-      ]);
-
-      const bsLibraryWebManifest = snapshot.manifests['bs-library-web'];
-      expect(bsLibraryWebManifest).toBeDefined();
-      expect(getDirectDependencyPurls(bsLibraryWebManifest)).toEqual([
-        'pkg:maven/junit/junit@4.13?type=jar',
-        'pkg:maven/org.apache.logging.log4j/log4j-api@2.19.0?type=jar',
-        'pkg:maven/org.eclipse.jetty.http2/http2-http-client-transport@10.0.10?type=jar',
       ]);
     }, 20000);
 
