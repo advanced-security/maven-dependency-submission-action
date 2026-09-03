@@ -1,5 +1,8 @@
-import pkg from '../../package.json';
+import pkg from '../../package.json' with { type: 'json' };
 import { program } from 'commander';
+import { warnIfSnapshotExcludeFileNameUsed } from './deprecated-options.js';
+import type { Snapshot } from '@github/dependency-submission-toolkit';
+import type { SnapshotConfig } from '../snapshot-generator';
 
 program.name(pkg.name);
 program.version(pkg.version);
@@ -17,7 +20,7 @@ program.option('--github-api-url <url>', 'GitHub API URL', 'https://api.github.c
 program.option('-j --job-name <jobName>', 'Optional name for the activity creating and submitting the graph', 'maven-dependency-submission-cli');
 program.option('-i --run-id <jobName>', 'Optional Run ID number for the activity that is providing the graph');
 
-program.option('--snapshot-exclude-file-name', 'exclude the file name in the dependency snapshot report. If false the name of the artifactor from the POM will be used, but any links in GitHub will not work.');
+program.option('--snapshot-exclude-file-name', 'deprecated: this option is ignored and will be removed in a future release');
 
 program.option('--detector-name <detectorName>', 'optional name of the detector that generated the snapshot');
 program.option('--detector-url <detectorUrl>', 'optional URL of the detector that generated the snapshot, but not optional if you specify an detector-name');
@@ -27,14 +30,12 @@ program.parse(process.argv);
 
 const opts = program.opts();
 
+warnIfSnapshotExcludeFileNameUsed(opts.snapshotExcludeFileName);
+
 // Inject some required environment variables like the Actions INPUTs and special environment variables
 process.env['INPUT_TOKEN'] = opts.token;
 process.env['GITHUB_REPOSITORY'] = opts.repository;
 process.env['GITHUB_API_URL'] = opts.githubApiUrl;
-
-// The above injection of environment variables is required before the submission APIs are imported
-import { Snapshot, submitSnapshot } from '@github/dependency-submission-toolkit';
-import { SnapshotConfig, generateSnapshot } from '../snapshot-generator';
 
 async function execute() {
   let snapshot: Snapshot | undefined;
@@ -67,6 +68,9 @@ async function execute() {
   }
 
   try {
+    // The above injection of environment variables is required before the submission APIs are imported
+    const { generateSnapshot } = await import('../snapshot-generator');
+
     // Build a fake GitHub Actions context so that values for the submission APIs can be retrieved
     const context = {
       sha: opts.sha,
@@ -110,6 +114,7 @@ async function execute() {
   if (snapshot) {
     console.log(`Submitting Snapshot...`);
     try {
+      const { submitSnapshot } = await import('@github/dependency-submission-toolkit');
       await submitSnapshot(snapshot);
       console.log(`completed.`)
     } catch (err: any) {
