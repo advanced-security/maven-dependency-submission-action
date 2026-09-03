@@ -34,6 +34,7 @@ describe('snapshot-generator', () => {
       const projectDir = getMavenProjectDirectory('multi-module');
       const snapshot = await generateSnapshot(projectDir);
 
+      expect(Object.keys(snapshot.manifests)).toEqual(['bs-parent']);
       const bsParentManifest = snapshot.manifests['bs-parent'];
       expect(bsParentManifest).toBeDefined();
       expect(getDirectDependencyPurls(bsParentManifest)).toEqual([
