@@ -56,8 +56,8 @@ export function parseDependencyTree(file: string): MavenArtifact | undefined {
 }
 
 function parseDependencyLine(line: string): { artifact: MavenArtifact, depth: number } | undefined {
-  const strippedPrefixLine = line.replace(/^\[INFO\]\s*/, '');
-  const match = /^(?:((?:\|  |   )*)(\+- |\\- ))?(\S+)$/.exec(strippedPrefixLine.trim());
+  const strippedPrefixLine = line.replace(/^\[INFO\] /, '');
+  const match = /^(?:((?:\|  |   )*)(\+- |\\- ))?(\S+)(?:\s.*)?$/.exec(strippedPrefixLine);
   if (!match) {
     return undefined;
   }

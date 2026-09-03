@@ -11,6 +11,7 @@ describe('maven-dependencies', () => {
       '[INFO] +- org.foo:foo-lib:jar:2.0.0:compile',
       '[INFO] |  \\- org.bar:bar-lib:pom:3.1.0:test',
       '[INFO] \\- org.baz:baz-lib:war:4.0.0:provided',
+      '[INFO]    \\- org.qux:qux-lib:jar:5.0.0:compile (optional)',
       '[INFO] BUILD SUCCESS'
     ].join('\n');
 
@@ -27,6 +28,7 @@ describe('maven-dependencies', () => {
     expect(root?.dependencies?.[0].dependencies?.[0].scope).toBe('test');
     expect(root?.dependencies?.[1].artifactId).toBe('baz-lib');
     expect(root?.dependencies?.[1].scope).toBe('provided');
+    expect(root?.dependencies?.[1].dependencies?.[0].artifactId).toBe('qux-lib');
   });
 
   it('parses classifier coordinates and defaults unsupported scopes to compile', () => {
