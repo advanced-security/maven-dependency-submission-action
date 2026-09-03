@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseDependencyJson, MavenDependencyGraph } from './depgraph';
+import { parseDependencyJson, MavenDependencyGraph, depgraphfilename } from './depgraph';
 import * as path from 'path';
 import {describe, it, beforeAll} from 'vitest';
 
@@ -21,6 +21,12 @@ describe('depgraph', () => {
     expect(dependency.resolution).to.equal('INCLUDED');
     expect(dependency.from).to.equal('org.apache.maven.plugins:maven-dependency-plugin:maven-plugin');
     expect(dependency.to).to.equal('org.apache.maven:maven-artifact:jar');
+  });
+
+  it('should resolve the pom.xml path from a Windows dependency JSON file path', () => {
+    const depGraph = parseDependencyJson(path.win32.join('C:\\project', 'target', depgraphfilename));
+
+    expect(depGraph.filePath).to.equal(path.win32.join('C:\\project', 'pom.xml'));
   });
 
   describe('parseDependencies', () => {
