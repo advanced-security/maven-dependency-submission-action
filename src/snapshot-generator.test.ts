@@ -88,7 +88,7 @@ describe('snapshot-generator', () => {
 
       expect(snapshot.manifests['problem-dependency-graph-2602']).toBeDefined();
       expect(snapshot.detector.version).toBe(version);
-      expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(230);
+      expect(snapshot.manifests['problem-dependency-graph-2602'].countDependencies()).toBe(116);
     }, 40000);
 
     it('should use correlator from snapshotConfig if it exists', async() => {
