@@ -1,6 +1,6 @@
 name: "maven-dependency-submission-action"
 repository: "advanced-security/maven-dependency-submission-action"
-version: "6.0.0"
+version: "6.0.1"
 
 locations:
   - name: "Node Manifest"

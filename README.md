@@ -37,7 +37,7 @@ Generating and submitting a dependency snapshot using the defaults:
 
 ```
 - name: Submit Dependency Snapshot
-  uses: advanced-security/maven-dependency-submission-action@v6.0.0
+  uses: advanced-security/maven-dependency-submission-action@v6.0.1
 ```
 
 Upon success it will generate a snapshot captured from Maven POM like;
@@ -67,7 +67,7 @@ jobs:
       with:
         java-version: ${{ matrix.java-version }}
     - name: Submit Dependency Snapshot
-      uses: advanced-security/maven-dependency-submission-action@v6.0.0
+      uses: advanced-security/maven-dependency-submission-action@v6.0.1
       with:
         directory: ${{ matrix.directory }}
         correlator: ${{ github.job }}-${{ matrix.directory }}
