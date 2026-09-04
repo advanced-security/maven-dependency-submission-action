@@ -18,7 +18,7 @@ jobs:
       - name: Build executables
         run: |
           npm run build
-          npm run build-exe
+          npm exec -- pkg package.json --compress Gzip
 
       - name: Attach artifacts
         uses: actions/upload-artifact@v7
