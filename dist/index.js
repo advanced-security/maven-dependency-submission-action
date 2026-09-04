@@ -7626,6 +7626,1495 @@ function onceStrict (fn) {
 
 /***/ }),
 
+/***/ 7091:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/*!
+Copyright (c) the purl authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+const {
+  PackageURL,
+  PurlComponent,
+  PurlQualifierNames,
+  PurlType
+} = __nccwpck_require__(6686)
+
+module.exports = {
+  PackageURL,
+  PurlComponent,
+  PurlQualifierNames,
+  PurlType
+}
+
+
+/***/ }),
+
+/***/ 3779:
+/***/ ((module) => {
+
+
+
+const LOOP_SENTINEL = 1_000_000
+
+const REUSED_SEARCH_PARAMS = new URLSearchParams()
+
+const REUSED_SEARCH_PARAMS_KEY = '_'
+
+const REUSED_SEARCH_PARAMS_OFFSET = 2 // '_='.length
+
+module.exports = {
+    LOOP_SENTINEL,
+    REUSED_SEARCH_PARAMS,
+    REUSED_SEARCH_PARAMS_KEY,
+    REUSED_SEARCH_PARAMS_OFFSET
+}
+
+
+/***/ }),
+
+/***/ 782:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const { PurlError } = __nccwpck_require__(616)
+
+const { decodeURIComponent } = globalThis
+
+function decodePurlComponent(comp, encodedURIComponent) {
+    try {
+        return decodeURIComponent(encodedURIComponent)
+    } catch {}
+    throw new PurlError(`unable to decode "${comp}" component`)
+}
+
+module.exports = {
+    decodePurlComponent
+}
+
+
+/***/ }),
+
+/***/ 9925:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const {
+    REUSED_SEARCH_PARAMS,
+    REUSED_SEARCH_PARAMS_KEY,
+    REUSED_SEARCH_PARAMS_OFFSET
+} = __nccwpck_require__(3779)
+const { isObject } = __nccwpck_require__(7018)
+const { isNonEmptyString } = __nccwpck_require__(2764)
+
+const { encodeURIComponent } = globalThis
+
+function encodeNamespace(namespace) {
+    return isNonEmptyString(namespace)
+        ? encodeURIComponent(namespace)
+              .replace(/%3A/g, ':')
+              .replace(/%2F/g, '/')
+        : ''
+}
+
+function encodeQualifierParam(param) {
+    if (isNonEmptyString(param)) {
+        // Param key and value are encoded with `percentEncodeSet` of
+        // 'application/x-www-form-urlencoded' and `spaceAsPlus` of `true`.
+        // https://url.spec.whatwg.org/#urlencoded-serializing
+        REUSED_SEARCH_PARAMS.set(REUSED_SEARCH_PARAMS_KEY, param)
+        return replacePlusSignWithPercentEncodedSpace(
+            REUSED_SEARCH_PARAMS.toString().slice(REUSED_SEARCH_PARAMS_OFFSET)
+        )
+    }
+    return ''
+}
+
+function encodeQualifiers(qualifiers) {
+    if (isObject(qualifiers)) {
+        // Sort this list of qualifier strings lexicographically.
+        const qualifiersKeys = Object.keys(qualifiers).sort()
+        const searchParams = new URLSearchParams()
+        for (let i = 0, { length } = qualifiersKeys; i < length; i += 1) {
+            const key = qualifiersKeys[i]
+            searchParams.set(key, qualifiers[key])
+        }
+        return replacePlusSignWithPercentEncodedSpace(searchParams.toString())
+    }
+    return ''
+}
+
+function encodeSubpath(subpath) {
+    return isNonEmptyString(subpath)
+        ? encodeURIComponent(subpath).replace(/%2F/g, '/')
+        : ''
+}
+
+function encodeVersion(version) {
+    return isNonEmptyString(version)
+        ? encodeURIComponent(version).replace(/%3A/g, ':').replace(/%2B/g, '+')
+        : ''
+}
+
+function replacePlusSignWithPercentEncodedSpace(str) {
+    // Convert plus signs to %20 for better portability.
+    return str.replace(/\+/g, '%20')
+}
+
+module.exports = {
+    encodeNamespace,
+    encodeVersion,
+    encodeQualifiers,
+    encodeQualifierParam,
+    encodeSubpath,
+    encodeURIComponent
+}
+
+
+/***/ }),
+
+/***/ 616:
+/***/ ((module) => {
+
+
+
+function formatPurlErrorMessage(message = '') {
+    const { length } = message
+    let formatted = ''
+    if (length) {
+        // Lower case start of message.
+        const code0 = message.charCodeAt(0)
+        formatted =
+            code0 >= 65 /*'A'*/ || code0 <= 90 /*'Z'*/
+                ? `${message[0].toLowerCase()}${message.slice(1)}`
+                : message
+        // Remove period from end of message.
+        if (
+            length > 1 &&
+            message.charCodeAt(length - 1) === 46 /*'.'*/ &&
+            message.charCodeAt(length - 2) !== 46
+        ) {
+            formatted = formatted.slice(0, -1)
+        }
+    }
+    return `Invalid purl: ${formatted}`
+}
+
+class PurlError extends Error {
+    constructor(message) {
+        super(formatPurlErrorMessage(message))
+    }
+}
+
+module.exports = {
+    formatPurlErrorMessage,
+    PurlError
+}
+
+
+/***/ }),
+
+/***/ 4947:
+/***/ ((module) => {
+
+
+
+function createHelpersNamespaceObject(helpers, options_ = {}) {
+    const { comparator, ...defaults } = { __proto__: null, ...options_ }
+    const helperNames = Object.keys(helpers).sort()
+    const propNames = [
+        ...new Set([...Object.values(helpers)].map(Object.keys).flat())
+    ].sort(comparator)
+    const nsObject = Object.create(null)
+    for (let i = 0, { length } = propNames; i < length; i += 1) {
+        const propName = propNames[i]
+        const helpersForProp = Object.create(null)
+        for (
+            let j = 0, { length: length_j } = helperNames;
+            j < length_j;
+            j += 1
+        ) {
+            const helperName = helperNames[j]
+            const helperValue =
+                helpers[helperName][propName] ?? defaults[helperName]
+            if (helperValue !== undefined) {
+                helpersForProp[helperName] = helperValue
+            }
+        }
+        nsObject[propName] = helpersForProp
+    }
+    return nsObject
+}
+
+module.exports = {
+    createHelpersNamespaceObject
+}
+
+
+/***/ }),
+
+/***/ 6808:
+/***/ ((module) => {
+
+
+
+function isNullishOrEmptyString(value) {
+    return (
+        value === null ||
+        value === undefined ||
+        (typeof value === 'string' && value.length === 0)
+    )
+}
+
+module.exports = {
+    isNullishOrEmptyString
+}
+
+
+/***/ }),
+
+/***/ 4265:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const { isObject } = __nccwpck_require__(7018)
+const { isBlank } = __nccwpck_require__(2764)
+
+function normalizeName(rawName) {
+    return typeof rawName === 'string' ? rawName.trim() : undefined
+}
+
+function normalizeNamespace(rawNamespace) {
+    return typeof rawNamespace === 'string'
+        ? normalizePath(rawNamespace)
+        : undefined
+}
+
+function normalizePath(pathname, callback) {
+    let collapsed = ''
+    let start = 0
+    // Leading and trailing slashes, i.e. '/', are not significant and should be
+    // stripped in the canonical form.
+    while (pathname.charCodeAt(start) === 47 /*'/'*/) {
+        start += 1
+    }
+    let nextIndex = pathname.indexOf('/', start)
+    if (nextIndex === -1) {
+        return pathname.slice(start)
+    }
+    // Discard any empty string segments by collapsing repeated segment
+    // separator slashes, i.e. '/'.
+    while (nextIndex !== -1) {
+        const segment = pathname.slice(start, nextIndex)
+        if (callback === undefined || callback(segment)) {
+            collapsed =
+                collapsed + (collapsed.length === 0 ? '' : '/') + segment
+        }
+        start = nextIndex + 1
+        while (pathname.charCodeAt(start) === 47) {
+            start += 1
+        }
+        nextIndex = pathname.indexOf('/', start)
+    }
+    const lastSegment = pathname.slice(start)
+    if (
+        lastSegment.length !== 0 &&
+        (callback === undefined || callback(lastSegment))
+    ) {
+        collapsed = collapsed + '/' + lastSegment
+    }
+    return collapsed
+}
+
+function normalizeQualifiers(rawQualifiers) {
+    let qualifiers
+    for (const { 0: key, 1: value } of qualifiersToEntries(rawQualifiers)) {
+        const strValue = typeof value === 'string' ? value : String(value)
+        const trimmed = strValue.trim()
+        // A key=value pair with an empty value is the same as no key/value
+        // at all for this key.
+        if (trimmed.length === 0) {
+            continue
+        }
+        if (qualifiers === undefined) {
+            qualifiers = { __proto__: null }
+        }
+        // A key is case insensitive. The canonical form is lowercase.
+        qualifiers[key.toLowerCase()] = trimmed
+    }
+    return qualifiers
+}
+
+function normalizeSubpath(rawSubpath) {
+    return typeof rawSubpath === 'string'
+        ? normalizePath(rawSubpath, subpathFilter)
+        : undefined
+}
+
+function normalizeType(rawType) {
+    // The type must NOT be percent-encoded.
+    // The type is case insensitive. The canonical form is lowercase.
+    return typeof rawType === 'string'
+        ? rawType.trim().toLowerCase()
+        : undefined
+}
+
+function normalizeVersion(rawVersion) {
+    return typeof rawVersion === 'string' ? rawVersion.trim() : undefined
+}
+
+function qualifiersToEntries(rawQualifiers) {
+    if (isObject(rawQualifiers)) {
+        return rawQualifiers instanceof URLSearchParams
+            ? rawQualifiers.entries()
+            : Object.entries(rawQualifiers)
+    }
+    return typeof rawQualifiers === 'string'
+        ? new URLSearchParams(rawQualifiers).entries()
+        : Object.entries({})
+}
+
+function subpathFilter(segment) {
+    // When percent-decoded, a segment
+    //   - must not be any of '.' or '..'
+    //   - must not be empty
+    const { length } = segment
+    if (length === 1 && segment.charCodeAt(0) === 46 /*'.'*/) return false
+    if (
+        length === 2 &&
+        segment.charCodeAt(0) === 46 &&
+        segment.charCodeAt(1) === 46
+    ) {
+        return false
+    }
+    return !isBlank(segment)
+}
+
+module.exports = {
+    normalizeName,
+    normalizeNamespace,
+    normalizePath,
+    normalizeQualifiers,
+    normalizeSubpath,
+    normalizeType,
+    normalizeVersion
+}
+
+
+/***/ }),
+
+/***/ 7018:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const { LOOP_SENTINEL } = __nccwpck_require__(3779)
+
+function isObject(value) {
+    return value !== null && typeof value === 'object'
+}
+
+function recursiveFreeze(value_) {
+    if (
+        value_ === null ||
+        !(typeof value_ === 'object' || typeof value_ === 'function') ||
+        Object.isFrozen(value_)
+    ) {
+        return value_
+    }
+    const queue = [value_]
+    let { length: queueLength } = queue
+    let pos = 0
+    while (pos < queueLength) {
+        if (pos === LOOP_SENTINEL) {
+            throw new Error(
+                'Detected infinite loop in object crawl of recursiveFreeze'
+            )
+        }
+        const obj = queue[pos++]
+        Object.freeze(obj)
+        if (Array.isArray(obj)) {
+            for (let i = 0, { length } = obj; i < length; i += 1) {
+                const item = obj[i]
+                if (
+                    item !== null &&
+                    (typeof item === 'object' || typeof item === 'function') &&
+                    !Object.isFrozen(item)
+                ) {
+                    queue[queueLength++] = item
+                }
+            }
+        } else {
+            const keys = Reflect.ownKeys(obj)
+            for (let i = 0, { length } = keys; i < length; i += 1) {
+                const propValue = obj[keys[i]]
+                if (
+                    propValue !== null &&
+                    (typeof propValue === 'object' ||
+                        typeof propValue === 'function') &&
+                    !Object.isFrozen(propValue)
+                ) {
+                    queue[queueLength++] = propValue
+                }
+            }
+        }
+    }
+    return value_
+}
+
+module.exports = {
+    isObject,
+    recursiveFreeze
+}
+
+
+/***/ }),
+
+/***/ 6686:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+/*!
+Copyright (c) the purl authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+const { decodePurlComponent } = __nccwpck_require__(782)
+const { isObject, recursiveFreeze } = __nccwpck_require__(7018)
+const { isBlank, isNonEmptyString, trimLeadingSlashes } = __nccwpck_require__(2764)
+
+const { PurlComponent } = __nccwpck_require__(1487)
+const { PurlQualifierNames } = __nccwpck_require__(7197)
+const { PurlType } = __nccwpck_require__(8958)
+const { PurlError } = __nccwpck_require__(616)
+
+class PackageURL {
+    static Component = recursiveFreeze(PurlComponent)
+    static KnownQualifierNames = recursiveFreeze(PurlQualifierNames)
+    static Type = recursiveFreeze(PurlType)
+
+    constructor(
+        rawType,
+        rawNamespace,
+        rawName,
+        rawVersion,
+        rawQualifiers,
+        rawSubpath
+    ) {
+        const type = isNonEmptyString(rawType)
+            ? PurlComponent.type.normalize(rawType)
+            : rawType
+        PurlComponent.type.validate(type, true)
+
+        const namespace = isNonEmptyString(rawNamespace)
+            ? PurlComponent.namespace.normalize(rawNamespace)
+            : rawNamespace
+        PurlComponent.namespace.validate(namespace, true)
+
+        const name = isNonEmptyString(rawName)
+            ? PurlComponent.name.normalize(rawName)
+            : rawName
+        PurlComponent.name.validate(name, true)
+
+        const version = isNonEmptyString(rawVersion)
+            ? PurlComponent.version.normalize(rawVersion)
+            : rawVersion
+        PurlComponent.version.validate(version, true)
+
+        const qualifiers =
+            typeof rawQualifiers === 'string' || isObject(rawQualifiers)
+                ? PurlComponent.qualifiers.normalize(rawQualifiers)
+                : rawQualifiers
+        PurlComponent.qualifiers.validate(qualifiers, true)
+
+        const subpath = isNonEmptyString(rawSubpath)
+            ? PurlComponent.subpath.normalize(rawSubpath)
+            : rawSubpath
+        PurlComponent.subpath.validate(subpath, true)
+
+        this.type = type
+        this.name = name
+        this.namespace = namespace ?? undefined
+        this.version = version ?? undefined
+        this.qualifiers = qualifiers ?? undefined
+        this.subpath = subpath ?? undefined
+
+        const typeHelpers = PurlType[type]
+        if (typeHelpers) {
+            typeHelpers.normalize(this)
+            typeHelpers.validate(this, true)
+        }
+    }
+
+    toString() {
+        const { namespace, name, version, qualifiers, subpath, type } = this
+        let purlStr = `pkg:${PurlComponent.type.encode(type)}/`
+        if (namespace) {
+            purlStr = `${purlStr}${PurlComponent.namespace.encode(namespace)}/`
+        }
+        purlStr = `${purlStr}${PurlComponent.name.encode(name)}`
+        if (version) {
+            purlStr = `${purlStr}@${PurlComponent.version.encode(version)}`
+        }
+        if (qualifiers) {
+            purlStr = `${purlStr}?${PurlComponent.qualifiers.encode(qualifiers)}`
+        }
+        if (subpath) {
+            purlStr = `${purlStr}#${PurlComponent.subpath.encode(subpath)}`
+        }
+        return purlStr
+    }
+
+    static fromString(purlStr) {
+        return new PackageURL(...PackageURL.parseString(purlStr))
+    }
+
+    static parseString(purlStr) {
+        // https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst#how-to-parse-a-purl-string-in-its-components
+        if (typeof purlStr !== 'string') {
+            throw new Error('A purl string argument is required.')
+        }
+        if (isBlank(purlStr)) {
+            return [
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined
+            ]
+        }
+
+        // Split the remainder once from left on ':'.
+        const colonIndex = purlStr.indexOf(':')
+        // Use WHATWG URL to split up the purl string.
+        //   - Split the purl string once from right on '#'
+        //   - Split the remainder once from right on '?'
+        //   - Split the remainder once from left on ':'
+        let url
+        let maybeUrlWithAuth
+        if (colonIndex !== -1) {
+            try {
+                // Since a purl never contains a URL Authority, its scheme
+                // must not be suffixed with double slash as in 'pkg://'
+                // and should use instead 'pkg:'. Purl parsers must accept
+                // URLs such as 'pkg://' and must ignore the '//'
+                const beforeColon = purlStr.slice(0, colonIndex)
+                const afterColon = purlStr.slice(colonIndex + 1)
+                const trimmedAfterColon = trimLeadingSlashes(afterColon)
+                url = new URL(`${beforeColon}:${trimmedAfterColon}`)
+                maybeUrlWithAuth =
+                    afterColon.length === trimmedAfterColon.length
+                        ? url
+                        : new URL(purlStr)
+            } catch (e) {
+                throw new PurlError('failed to parse as URL', {
+                    cause: e
+                })
+            }
+        }
+        // The scheme is a constant with the value "pkg".
+        if (url?.protocol !== 'pkg:') {
+            throw new PurlError('missing required "pkg" scheme component')
+        }
+        // A purl must NOT contain a URL Authority i.e. there is no support for
+        // username, password, host and port components.
+        if (
+            maybeUrlWithAuth.username !== '' ||
+            maybeUrlWithAuth.password !== ''
+        ) {
+            throw new PurlError('cannot contain a "user:pass@host:port"')
+        }
+
+        const { pathname } = url
+        const firstSlashIndex = pathname.indexOf('/')
+        const rawType = decodePurlComponent(
+            'type',
+            firstSlashIndex === -1
+                ? pathname
+                : pathname.slice(0, firstSlashIndex)
+        )
+        if (firstSlashIndex < 1) {
+            return [
+                rawType,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined
+            ]
+        }
+
+        let rawVersion
+        let atSignIndex = pathname.lastIndexOf('@')
+        // Handle unencoded leading '@' characters. This is a small break from
+        // the specification to make parsing more forgiving so that users don't
+        // have to deal with it.
+        if (
+            atSignIndex !== -1 &&
+            pathname.charCodeAt(atSignIndex - 1) === 47 /*'/'*/
+        ) {
+            atSignIndex = -1
+        }
+        const beforeVersion = pathname.slice(
+            rawType.length + 1,
+            atSignIndex === -1 ? pathname.length : atSignIndex
+        )
+        if (atSignIndex !== -1) {
+            // Split the remainder once from right on '@'.
+            rawVersion = decodePurlComponent(
+                'version',
+                pathname.slice(atSignIndex + 1)
+            )
+        }
+
+        let rawNamespace
+        let rawName
+        const lastSlashIndex = beforeVersion.lastIndexOf('/')
+        if (lastSlashIndex === -1) {
+            // Split the remainder once from right on '/'.
+            rawName = decodePurlComponent('name', beforeVersion)
+        } else {
+            // Split the remainder once from right on '/'.
+            rawName = decodePurlComponent(
+                'name',
+                beforeVersion.slice(lastSlashIndex + 1)
+            )
+            // Split the remainder on '/'.
+            rawNamespace = decodePurlComponent(
+                'namespace',
+                beforeVersion.slice(0, lastSlashIndex)
+            )
+        }
+
+        let rawQualifiers
+        const { searchParams } = url
+        if (searchParams.size !== 0) {
+            searchParams.forEach((value) =>
+                decodePurlComponent('qualifiers', value)
+            )
+            // Split the remainder once from right on '?'.
+            rawQualifiers = searchParams
+        }
+
+        let rawSubpath
+        const { hash } = url
+        if (hash.length !== 0) {
+            // Split the purl string once from right on '#'.
+            rawSubpath = decodePurlComponent('subpath', hash.slice(1))
+        }
+
+        return [
+            rawType,
+            rawNamespace,
+            rawName,
+            rawVersion,
+            rawQualifiers,
+            rawSubpath
+        ]
+    }
+}
+
+for (const staticProp of ['Component', 'KnownQualifierNames', 'Type']) {
+    Reflect.defineProperty(PackageURL, staticProp, {
+        ...Reflect.getOwnPropertyDescriptor(PackageURL, staticProp),
+        writable: false
+    })
+}
+
+Reflect.setPrototypeOf(PackageURL.prototype, null)
+
+module.exports = {
+    PackageURL,
+    PurlComponent,
+    PurlQualifierNames,
+    PurlType
+}
+
+
+/***/ }),
+
+/***/ 1487:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const {
+    encodeNamespace,
+    encodeVersion,
+    encodeQualifiers,
+    encodeQualifierParam,
+    encodeSubpath,
+    encodeURIComponent
+} = __nccwpck_require__(9925)
+
+const { createHelpersNamespaceObject } = __nccwpck_require__(4947)
+
+const {
+    normalizeType,
+    normalizeNamespace,
+    normalizeName,
+    normalizeVersion,
+    normalizeQualifiers,
+    normalizeSubpath
+} = __nccwpck_require__(4265)
+
+const { localeCompare, isNonEmptyString } = __nccwpck_require__(2764)
+
+const {
+    validateType,
+    validateNamespace,
+    validateName,
+    validateVersion,
+    validateQualifiers,
+    validateQualifierKey,
+    validateSubpath
+} = __nccwpck_require__(3206)
+
+const PurlComponentEncoder = (comp) =>
+    isNonEmptyString(comp) ? encodeURIComponent(comp) : ''
+
+const PurlComponentStringNormalizer = (comp) =>
+    typeof comp === 'string' ? comp : undefined
+
+const PurlComponentValidator = (_comp, _throws) => true
+
+const componentSortOrderLookup = {
+    __proto__: null,
+    type: 0,
+    namespace: 1,
+    name: 2,
+    version: 3,
+    qualifiers: 4,
+    qualifierKey: 5,
+    qualifierValue: 6,
+    subpath: 7
+}
+
+function componentSortOrder(comp) {
+    return componentSortOrderLookup[comp] ?? comp
+}
+
+function componentComparator(compA, compB) {
+    return localeCompare(componentSortOrder(compA), componentSortOrder(compB))
+}
+
+module.exports = {
+    // Rules for each purl component:
+    // https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst#rules-for-each-purl-component
+    PurlComponent: createHelpersNamespaceObject(
+        {
+            encode: {
+                namespace: encodeNamespace,
+                version: encodeVersion,
+                qualifiers: encodeQualifiers,
+                qualifierKey: encodeQualifierParam,
+                qualifierValue: encodeQualifierParam,
+                subpath: encodeSubpath
+            },
+            normalize: {
+                type: normalizeType,
+                namespace: normalizeNamespace,
+                name: normalizeName,
+                version: normalizeVersion,
+                qualifiers: normalizeQualifiers,
+                subpath: normalizeSubpath
+            },
+            validate: {
+                type: validateType,
+                namespace: validateNamespace,
+                name: validateName,
+                version: validateVersion,
+                qualifierKey: validateQualifierKey,
+                qualifiers: validateQualifiers,
+                subpath: validateSubpath
+            }
+        },
+        {
+            comparator: componentComparator,
+            encode: PurlComponentEncoder,
+            normalize: PurlComponentStringNormalizer,
+            validate: PurlComponentValidator
+        }
+    )
+}
+
+
+/***/ }),
+
+/***/ 7197:
+/***/ ((module) => {
+
+
+
+module.exports = {
+    // Known qualifiers:
+    // https://github.com/package-url/purl-spec/blob/master/PURL-SPECIFICATION.rst#known-qualifiers-keyvalue-pairs
+    PurlQualifierNames: {
+        __proto__: null,
+        RepositoryUrl: 'repository_url',
+        DownloadUrl: 'download_url',
+        VcsUrl: 'vcs_url',
+        FileName: 'file_name',
+        Checksum: 'checksum'
+    }
+}
+
+
+/***/ }),
+
+/***/ 8958:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const { isNullishOrEmptyString } = __nccwpck_require__(6808)
+
+const { createHelpersNamespaceObject } = __nccwpck_require__(4947)
+
+const {
+    isSemverString,
+    lowerName,
+    lowerNamespace,
+    lowerVersion,
+    replaceDashesWithUnderscores,
+    replaceUnderscoresWithDashes
+} = __nccwpck_require__(2764)
+
+const { validateEmptyByType, validateRequiredByType } = __nccwpck_require__(3206)
+const { PurlError } = __nccwpck_require__(616)
+
+const PurlTypNormalizer = (purl) => purl
+
+const PurlTypeValidator = (_purl, _throws) => true
+
+module.exports = {
+    // PURL types:
+    // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst
+    PurlType: createHelpersNamespaceObject(
+        {
+            normalize: {
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#alpm
+                alpm(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#apk
+                apk(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#bitbucket
+                bitbucket(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#bitnami
+                bitnami(purl) {
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#composer
+                composer(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#deb
+                deb(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#other-candidate-types-to-define
+                gitlab(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#github
+                github(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#golang
+                // golang(purl) {
+                //     // Ignore case-insensitive rule because go.mod are case-sensitive.
+                //     // Pending spec change: https://github.com/package-url/purl-spec/pull/196
+                //     lowerNamespace(purl)
+                //     lowerName(purl)
+                //     return purl
+                // },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#hex
+                hex(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#huggingface
+                huggingface(purl) {
+                    lowerVersion(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#mlflow
+                mlflow(purl) {
+                    if (
+                        purl.qualifiers?.repository_url?.includes('databricks')
+                    ) {
+                        lowerName(purl)
+                    }
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#npm
+                npm(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#luarocks
+                luarocks(purl) {
+                    lowerVersion(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#oci
+                oci(purl) {
+                    lowerName(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#pub
+                pub(purl) {
+                    lowerName(purl)
+                    purl.name = replaceDashesWithUnderscores(purl.name)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#pypi
+                pypi(purl) {
+                    lowerNamespace(purl)
+                    lowerName(purl)
+                    purl.name = replaceUnderscoresWithDashes(purl.name)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#qpkg
+                qpkg(purl) {
+                    lowerNamespace(purl)
+                    return purl
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#rpm
+                rpm(purl) {
+                    lowerNamespace(purl)
+                    return purl
+                }
+            },
+            validate: {
+                // TODO: cocoapods name validation
+                // TODO: cpan namespace validation
+                // TODO: swid qualifier validation
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#conan
+                conan(purl, throws) {
+                    if (isNullishOrEmptyString(purl.namespace)) {
+                        if (purl.qualifiers?.channel) {
+                            if (throws) {
+                                throw new PurlError(
+                                    'conan requires a "namespace" component when a "channel" qualifier is present'
+                                )
+                            }
+                            return false
+                        }
+                    } else if (isNullishOrEmptyString(purl.qualifiers)) {
+                        if (throws) {
+                            throw new PurlError(
+                                'conan requires a "qualifiers" component when a namespace is present'
+                            )
+                        }
+                        return false
+                    }
+                    return true
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#cran
+                cran(purl, throws) {
+                    return validateRequiredByType(
+                        'cran',
+                        'version',
+                        purl.version,
+                        throws
+                    )
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#golang
+                golang(purl) {
+                    // Still being lenient here since the standard changes aren't official.
+                    // Pending spec change: https://github.com/package-url/purl-spec/pull/196
+                    const { version } = purl
+                    const length =
+                        typeof version === 'string' ? version.length : 0
+                    // If the version starts with a "v" then ensure its a valid semver version.
+                    // This, by semver semantics, also supports pseudo-version number.
+                    // https://go.dev/doc/modules/version-numbers#pseudo-version-number
+                    if (
+                        length &&
+                        version.charCodeAt(0) === 118 /*'v'*/ &&
+                        !isSemverString(version.slice(1))
+                    ) {
+                        if (throws) {
+                            throw new PurlError(
+                                'golang "version" component starting with a "v" must be followed by a valid semver version'
+                            )
+                        }
+                        return false
+                    }
+                    return true
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#maven
+                maven(purl, throws) {
+                    return validateRequiredByType(
+                        'maven',
+                        'namespace',
+                        purl.namespace,
+                        throws
+                    )
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#mlflow
+                mlflow(purl, throws) {
+                    return validateEmptyByType(
+                        'mlflow',
+                        'namespace',
+                        purl.namespace,
+                        throws
+                    )
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#oci
+                oci(purl, throws) {
+                    return validateEmptyByType(
+                        'oci',
+                        'namespace',
+                        purl.namespace,
+                        throws
+                    )
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#pub
+                pub(purl, throws) {
+                    const { name } = purl
+                    for (let i = 0, { length } = name; i < length; i += 1) {
+                        const code = name.charCodeAt(i)
+                        // prettier-ignore
+                        if (
+                  !(
+                      (
+                          (code >= 48 && code <= 57)  || // 0-9
+                          (code >= 97 && code <= 122) || // a-z
+                          code === 95 // _
+                      )
+                  )
+              ) {
+                  if (throws) {
+                      throw new PurlError(
+                          'pub "name" component may only contain [a-z0-9_] characters'
+                      )
+                  }
+                  return false
+              }
+                    }
+                    return true
+                },
+                // https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst#swift
+                swift(purl, throws) {
+                    return (
+                        validateRequiredByType(
+                            'swift',
+                            'namespace',
+                            purl.namespace,
+                            throws
+                        ) &&
+                        validateRequiredByType(
+                            'swift',
+                            'version',
+                            purl.version,
+                            throws
+                        )
+                    )
+                }
+            }
+        },
+        {
+            normalize: PurlTypNormalizer,
+            validate: PurlTypeValidator
+        }
+    )
+}
+
+
+/***/ }),
+
+/***/ 2764:
+/***/ ((module) => {
+
+
+
+// Intl.Collator is faster than String#localeCompare
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare:
+// > When comparing large numbers of strings, such as in sorting large arrays,
+// > it is better to create an Intl.Collator object and use the function provided
+// > by its compare() method.
+const { compare: localeCompare } = new Intl.Collator()
+
+// This regexp is valid as of 2024-08-01.
+// https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+const regexSemverNumberedGroups =
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+
+function isBlank(str) {
+    for (let i = 0, { length } = str; i < length; i += 1) {
+        const code = str.charCodeAt(i)
+        // prettier-ignore
+        if (
+            !(
+                // Whitespace characters according to ECMAScript spec:
+                // https://tc39.es/ecma262/#sec-white-space
+                (
+                    code === 0x0020 || // Space
+                    code === 0x0009 || // Tab
+                    code === 0x000a || // Line Feed
+                    code === 0x000b || // Vertical Tab
+                    code === 0x000c || // Form Feed
+                    code === 0x000d || // Carriage Return
+                    code === 0x00a0 || // No-Break Space
+                    code === 0x1680 || // Ogham Space Mark
+                    code === 0x2000 || // En Quad
+                    code === 0x2001 || // Em Quad
+                    code === 0x2002 || // En Space
+                    code === 0x2003 || // Em Space
+                    code === 0x2004 || // Three-Per-Em Space
+                    code === 0x2005 || // Four-Per-Em Space
+                    code === 0x2006 || // Six-Per-Em Space
+                    code === 0x2007 || // Figure Space
+                    code === 0x2008 || // Punctuation Space
+                    code === 0x2009 || // Thin Space
+                    code === 0x200a || // Hair Space
+                    code === 0x2028 || // Line Separator
+                    code === 0x2029 || // Paragraph Separator
+                    code === 0x202f || // Narrow No-Break Space
+                    code === 0x205f || // Medium Mathematical Space
+                    code === 0x3000 || // Ideographic Space
+                    code === 0xfeff    // Byte Order Mark
+                )
+            )
+        ) {
+            return false
+        }
+    }
+    return true
+}
+
+function isNonEmptyString(value) {
+    return typeof value === 'string' && value.length > 0
+}
+
+function isSemverString(value) {
+    return typeof value === 'string' && regexSemverNumberedGroups.test(value)
+}
+
+function lowerName(purl) {
+    purl.name = purl.name.toLowerCase()
+}
+
+function lowerNamespace(purl) {
+    const { namespace } = purl
+    if (typeof namespace === 'string') {
+        purl.namespace = namespace.toLowerCase()
+    }
+}
+
+function lowerVersion(purl) {
+    const { version } = purl
+    if (typeof version === 'string') {
+        purl.version = version.toLowerCase()
+    }
+}
+
+function replaceDashesWithUnderscores(str) {
+    // Replace all "-" with "_"
+    let result = ''
+    let fromIndex = 0
+    let index = 0
+    while ((index = str.indexOf('-', fromIndex)) !== -1) {
+        result = result + str.slice(fromIndex, index) + '_'
+        fromIndex = index + 1
+    }
+    return fromIndex ? result + str.slice(fromIndex) : str
+}
+
+function replaceUnderscoresWithDashes(str) {
+    // Replace all "_" with "-"
+    let result = ''
+    let fromIndex = 0
+    let index = 0
+    while ((index = str.indexOf('_', fromIndex)) !== -1) {
+        result = result + str.slice(fromIndex, index) + '-'
+        fromIndex = index + 1
+    }
+    return fromIndex ? result + str.slice(fromIndex) : str
+}
+
+function trimLeadingSlashes(str) {
+    let start = 0
+    while (str.charCodeAt(start) === 47 /*'/'*/) {
+        start += 1
+    }
+    return start === 0 ? str : str.slice(start)
+}
+
+module.exports = {
+    isBlank,
+    isNonEmptyString,
+    isSemverString,
+    localeCompare,
+    lowerName,
+    lowerNamespace,
+    lowerVersion,
+    replaceDashesWithUnderscores,
+    replaceUnderscoresWithDashes,
+    trimLeadingSlashes
+}
+
+
+/***/ }),
+
+/***/ 3206:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+const { PurlError } = __nccwpck_require__(616)
+const { isNullishOrEmptyString } = __nccwpck_require__(6808)
+const { isNonEmptyString } = __nccwpck_require__(2764)
+
+function validateEmptyByType(type, name, value, throws) {
+    if (!isNullishOrEmptyString(value)) {
+        if (throws) {
+            throw new PurlError(`${type} "${name}" component must be empty`)
+        }
+        return false
+    }
+    return true
+}
+
+function validateName(name, throws) {
+    return (
+        validateRequired('name', name, throws) &&
+        validateStrings('name', name, throws)
+    )
+}
+
+function validateNamespace(namespace, throws) {
+    return validateStrings('namespace', namespace, throws)
+}
+
+function validateQualifiers(qualifiers, throws) {
+    if (qualifiers === null || qualifiers === undefined) {
+        return true
+    }
+    if (typeof qualifiers !== 'object') {
+        if (throws) {
+            throw new PurlError('"qualifiers" must be an object')
+        }
+        return false
+    }
+    const keysIterable =
+        // URL searchParams have an "keys" method that returns an iterator.
+        typeof qualifiers.keys === 'function'
+            ? qualifiers.keys()
+            : Object.keys(qualifiers)
+    for (const key of keysIterable) {
+        if (!validateQualifierKey(key, throws)) {
+            return false
+        }
+    }
+    return true
+}
+
+function validateQualifierKey(key, throws) {
+    // A key cannot start with a number.
+    if (!validateStartsWithoutNumber('qualifier', key, throws)) {
+        return false
+    }
+    // The key must be composed only of ASCII letters and numbers,
+    // '.', '-' and '_' (period, dash and underscore).
+    for (let i = 0, { length } = key; i < length; i += 1) {
+        const code = key.charCodeAt(i)
+        // prettier-ignore
+        if (
+            !(
+                (
+                    (code >= 48 && code <= 57)  || // 0-9
+                    (code >= 65 && code <= 90)  || // A-Z
+                    (code >= 97 && code <= 122) || // a-z
+                    code === 46 || // .
+                    code === 45 || // -
+                    code === 95    // _
+                )
+            )
+        ) {
+            if (throws) {
+                throw new PurlError(
+                    `qualifier "${key}" contains an illegal character`
+                )
+            }
+            return false
+        }
+    }
+    return true
+}
+
+function validateRequired(name, value, throws) {
+    if (isNullishOrEmptyString(value)) {
+        if (throws) {
+            throw new PurlError(`"${name}" is a required component`)
+        }
+        return false
+    }
+    return true
+}
+
+function validateRequiredByType(type, name, value, throws) {
+    if (isNullishOrEmptyString(value)) {
+        if (throws) {
+            throw new PurlError(`${type} requires a "${name}" component`)
+        }
+        return false
+    }
+    return true
+}
+
+function validateStartsWithoutNumber(name, value, throws) {
+    if (isNonEmptyString(value)) {
+        const code = value.charCodeAt(0)
+        if (code >= 48 /*'0'*/ && code <= 57 /*'9'*/) {
+            if (throws) {
+                throw new PurlError(
+                    `${name} "${value}" cannot start with a number`
+                )
+            }
+            return false
+        }
+    }
+    return true
+}
+
+function validateStrings(name, value, throws) {
+    if (value === null || value === undefined || typeof value === 'string') {
+        return true
+    }
+    if (throws) {
+        throw new PurlError(`"'${name}" must be a string`)
+    }
+    return false
+}
+
+function validateSubpath(subpath, throws) {
+    return validateStrings('subpath', subpath, throws)
+}
+
+function validateType(type, throws) {
+    // The type cannot be nullish, an empty string, or start with a number.
+    if (
+        !validateRequired('type', type, throws) ||
+        !validateStrings('type', type, throws) ||
+        !validateStartsWithoutNumber('type', type, throws)
+    ) {
+        return false
+    }
+    // The package type is composed only of ASCII letters and numbers,
+    // '.', '+' and '-' (period, plus, and dash)
+    for (let i = 0, { length } = type; i < length; i += 1) {
+        const code = type.charCodeAt(i)
+        // prettier-ignore
+        if (
+            !(
+                (
+                    (code >= 48 && code <= 57)  || // 0-9
+                    (code >= 65 && code <= 90)  || // A-Z
+                    (code >= 97 && code <= 122) || // a-z
+                    code === 46 || // .
+                    code === 43 || // +
+                    code === 45    // -
+                )
+            )
+        ) {
+            if (throws) {
+                throw new PurlError(
+                    `type "${type}" contains an illegal character`
+                )
+            }
+            return false
+        }
+    }
+    return true
+}
+
+function validateVersion(version, throws) {
+    return validateStrings('version', version, throws)
+}
+
+module.exports = {
+    validateEmptyByType,
+    validateName,
+    validateNamespace,
+    validateQualifiers,
+    validateQualifierKey,
+    validateRequired,
+    validateRequiredByType,
+    validateStartsWithoutNumber,
+    validateStrings,
+    validateSubpath,
+    validateType,
+    validateVersion
+}
+
+
+/***/ }),
+
 /***/ 770:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -35688,14 +37177,6 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 9696:
-/***/ ((module) => {
-
-module.exports = eval("require")("./snapshot-generator");
-
-
-/***/ }),
-
 /***/ 2613:
 /***/ ((module) => {
 
@@ -38479,14 +39960,14 @@ var exec_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arg
  */
 function exec_exec(commandLine, args, options) {
     return exec_awaiter(this, void 0, void 0, function* () {
-        const commandArgs = tr.argStringToArray(commandLine);
+        const commandArgs = argStringToArray(commandLine);
         if (commandArgs.length === 0) {
             throw new Error(`Parameter 'commandLine' cannot be null or empty.`);
         }
         // Path to tool to execute should be first arg
         const toolPath = commandArgs[0];
         args = commandArgs.slice(1).concat(args || []);
-        const runner = new tr.ToolRunner(toolPath, args, options);
+        const runner = new ToolRunner(toolPath, args, options);
         return runner.exec();
     });
 }
@@ -38800,7 +40281,7 @@ function isDebug() {
  * @param message debug message
  */
 function core_debug(message) {
-    issueCommand('debug', {}, message);
+    command_issueCommand('debug', {}, message);
 }
 /**
  * Adds an error issue
@@ -38816,7 +40297,7 @@ function error(message, properties = {}) {
  * @param properties optional properties to add to the annotation.
  */
 function warning(message, properties = {}) {
-    issueCommand('warning', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+    command_issueCommand('warning', utils_toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 /**
  * Adds a notice issue
@@ -38965,11 +40446,496 @@ class RequestError extends Error {
 
 
 ;// CONCATENATED MODULE: ./node_modules/@github/dependency-submission-toolkit/dist/index.js
-var o=class{depPackage;relationship;scope;constructor(e,t,s){this.depPackage=e,t!==void 0&&(this.relationship=t),s!==void 0&&(this.scope=s);}toJSON(){return {package_url:this.depPackage.packageURL.toString(),relationship:this.relationship,scope:this.scope,dependencies:this.depPackage.packageDependencyIDs}}},g=class{resolved;name;file;constructor(e,t){this.resolved={},this.name=e,t&&(this.file={source_location:t});}addDirectDependency(e,t){this.resolved[e.packageID()]=new o(e,"direct",t);}addIndirectDependency(e,t){this.resolved[e.packageID()]??=new o(e,"indirect",t);}hasDependency(e){return this.lookupDependency(e)!==void 0}lookupDependency(e){return this.resolved[e.packageID()]}countDependencies(){return Object.keys(this.resolved).length}filterDependencies(e){return Object.values(this.resolved).reduce((t,s)=>(e(s)&&t.push(s.depPackage),t),[])}directDependencies(){return this.filterDependencies(e=>e.relationship==="direct")}indirectDependencies(){return this.filterDependencies(e=>e.relationship==="indirect")}},u=class extends (/* unused pure expression or super */ null && (g)){addBuildDependency(e){this.addDirectDependency(e,"runtime");for(let t of e.dependencies)this.addIndirectDependency(t,"runtime");}};var c=class{packageURL;dependencies;constructor(e){typeof e=="string"?this.packageURL=PackageURL.fromString(e):this.packageURL=e,this.dependencies=[];}dependsOn(e){return this.dependencies.push(e),this}dependsOnPackages(e){for(let t of e)this.dependsOn(t);return this}get packageDependencyIDs(){return this.dependencies.map(e=>e.packageID())}packageID(){return this.packageURL.toString()}namespace(){return this.packageURL.namespace??null}name(){return this.packageURL.name}version(){return this.packageURL.version||""}matching(e){return (e.namespace===void 0||this.packageURL.namespace===e.namespace)&&(e.name===void 0||this.packageURL.name===e.name)&&(e.version===void 0||this.packageURL.version===e.version)}};var h=class{database;constructor(){this.database={};}package(e){let t=this.lookupPackage(e);if(t)return t;let s=new c(e);return this.addPackage(s),s}packagesMatching(e){return Object.values(this.database).filter(t=>t.matching(e))}addPackage(e){this.database[e.packageURL.toString()]=e;}removePackage(e){delete this.database[e.packageURL.toString()];}lookupPackage(e){if(typeof e=="string"){let t=PackageURL.fromString(e);return this.database[t.toString()]}return this.database[e.toString()]}hasPackage(e){return this.lookupPackage(e)!==void 0}countPackages(){return Object.values(this.database).length}};function y(r){return {correlator:r.job,id:r.runId.toString()}}function P(r){return ["pull_request","pull_request_comment","pull_request_review","pull_request_review_comment"].includes(r.eventName)?r.payload.pull_request.head.sha:r.sha}var l=class{manifests;version;job;sha;ref;scanned;detector;constructor(e,t=i.context,s,p=new Date,n=0){this.detector=e,this.version=n,this.job=s||y(t),this.sha=P(t),this.ref=t.ref,this.scanned=p.toISOString(),this.manifests={};}addManifest(e){this.manifests[e.name]=e;}prettyJSON(){return JSON.stringify(this,void 0,4)}};async function L(r,e=github.context){core.setOutput("snapshot",JSON.stringify(r)),core.notice("Submitting snapshot..."),core.notice(r.prettyJSON());let t=e.repo,s=core.getInput("token")||await core.getIDToken(),p=github.getOctokit(s);try{let n=await p.request("POST /repos/{owner}/{repo}/dependency-graph/snapshots",{headers:{accept:"application/vnd.github.foo-bar-preview+json"},owner:t.owner,repo:t.repo,...r}),d=n.data.result;d==="SUCCESS"||d==="ACCEPTED"?core.notice(`Snapshot successfully created at ${n.data.created_at.toString()}`):core.error(`Snapshot creation failed with result: "${d}: ${n.data.message}"`);}catch(n){throw n instanceof RequestError&&(core.error(`HTTP Status ${n.status} for request ${n.request.method} ${n.request.url}`),n.response&&core.error(`Response body:
+var o=class{depPackage;relationship;scope;constructor(e,t,s){this.depPackage=e,t!==void 0&&(this.relationship=t),s!==void 0&&(this.scope=s);}toJSON(){return {package_url:this.depPackage.packageURL.toString(),relationship:this.relationship,scope:this.scope,dependencies:this.depPackage.packageDependencyIDs}}},g=class{resolved;name;file;constructor(e,t){this.resolved={},this.name=e,t&&(this.file={source_location:t});}addDirectDependency(e,t){this.resolved[e.packageID()]=new o(e,"direct",t);}addIndirectDependency(e,t){this.resolved[e.packageID()]??=new o(e,"indirect",t);}hasDependency(e){return this.lookupDependency(e)!==void 0}lookupDependency(e){return this.resolved[e.packageID()]}countDependencies(){return Object.keys(this.resolved).length}filterDependencies(e){return Object.values(this.resolved).reduce((t,s)=>(e(s)&&t.push(s.depPackage),t),[])}directDependencies(){return this.filterDependencies(e=>e.relationship==="direct")}indirectDependencies(){return this.filterDependencies(e=>e.relationship==="indirect")}},u=class extends (/* unused pure expression or super */ null && (g)){addBuildDependency(e){this.addDirectDependency(e,"runtime");for(let t of e.dependencies)this.addIndirectDependency(t,"runtime");}};var c=class{packageURL;dependencies;constructor(e){typeof e=="string"?this.packageURL=packageurl_js.PackageURL.fromString(e):this.packageURL=e,this.dependencies=[];}dependsOn(e){return this.dependencies.push(e),this}dependsOnPackages(e){for(let t of e)this.dependsOn(t);return this}get packageDependencyIDs(){return this.dependencies.map(e=>e.packageID())}packageID(){return this.packageURL.toString()}namespace(){return this.packageURL.namespace??null}name(){return this.packageURL.name}version(){return this.packageURL.version||""}matching(e){return (e.namespace===void 0||this.packageURL.namespace===e.namespace)&&(e.name===void 0||this.packageURL.name===e.name)&&(e.version===void 0||this.packageURL.version===e.version)}};var h=class{database;constructor(){this.database={};}package(e){let t=this.lookupPackage(e);if(t)return t;let s=new c(e);return this.addPackage(s),s}packagesMatching(e){return Object.values(this.database).filter(t=>t.matching(e))}addPackage(e){this.database[e.packageURL.toString()]=e;}removePackage(e){delete this.database[e.packageURL.toString()];}lookupPackage(e){if(typeof e=="string"){let t=packageurl_js.PackageURL.fromString(e);return this.database[t.toString()]}return this.database[e.toString()]}hasPackage(e){return this.lookupPackage(e)!==void 0}countPackages(){return Object.values(this.database).length}};function y(r){return {correlator:r.job,id:r.runId.toString()}}function P(r){return ["pull_request","pull_request_comment","pull_request_review","pull_request_review_comment"].includes(r.eventName)?r.payload.pull_request.head.sha:r.sha}var l=class{manifests;version;job;sha;ref;scanned;detector;constructor(e,t=github.context,s,p=new Date,n=0){this.detector=e,this.version=n,this.job=s||y(t),this.sha=P(t),this.ref=t.ref,this.scanned=p.toISOString(),this.manifests={};}addManifest(e){this.manifests[e.name]=e;}prettyJSON(){return JSON.stringify(this,void 0,4)}};async function L(r,e=github.context){core.setOutput("snapshot",JSON.stringify(r)),core.notice("Submitting snapshot..."),core.notice(r.prettyJSON());let t=e.repo,s=core.getInput("token")||await core.getIDToken(),p=github.getOctokit(s);try{let n=await p.request("POST /repos/{owner}/{repo}/dependency-graph/snapshots",{headers:{accept:"application/vnd.github.foo-bar-preview+json"},owner:t.owner,repo:t.repo,...r}),d=n.data.result;d==="SUCCESS"||d==="ACCEPTED"?core.notice(`Snapshot successfully created at ${n.data.created_at.toString()}`):core.error(`Snapshot creation failed with result: "${d}: ${n.data.message}"`);}catch(n){throw n instanceof RequestError&&(core.error(`HTTP Status ${n.status} for request ${n.request.method} ${n.request.url}`),n.response&&core.error(`Response body:
 ${JSON.stringify(n.response.data,void 0,2)}`)),n instanceof Error&&(core.error(n.message),n.stack&&core.error(n.stack)),new Error(`Failed to submit snapshot: ${n}`)}}//# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
-// EXTERNAL MODULE: ./node_modules/@vercel/ncc/dist/ncc/@@notfound.js?./snapshot-generator
-var _notfoundsnapshot_generator = __nccwpck_require__(9696);
+;// CONCATENATED MODULE: ./lib/package.json
+const package_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"maven-dependency-submission-action","rE":"6.0.0","TB":"https://github.com/advanced-security/maven-dependency-submission-action"}');
+// EXTERNAL MODULE: ./node_modules/packageurl-js/index.js
+var node_modules_packageurl_js = __nccwpck_require__(7091);
+;// CONCATENATED MODULE: ./lib/src/utils/file-utils.js
+
+function loadFileContents(file) {
+    if (!fileExists(file)) {
+        return undefined;
+    }
+    try {
+        const data = external_fs_.readFileSync(file);
+        return data.toString('utf8');
+    }
+    catch (err) {
+        throw new Error(`Failed to load file contents ${file}: ${err}`);
+    }
+}
+function fileExists(file) {
+    if (!file) {
+        return false;
+    }
+    try {
+        const wrapperFileStats = external_fs_.statSync(file);
+        // TODO might need to deal with a linked file, but ingoring that for now
+        return wrapperFileStats && wrapperFileStats.isFile();
+    }
+    catch (err) {
+        if (err.code == 'ENOENT') {
+            return false;
+        }
+        throw err;
+    }
+}
+//# sourceMappingURL=file-utils.js.map
+;// CONCATENATED MODULE: ./lib/src/depgraph.js
+
+
+
+const depgraphfilename = 'maven-dependency-submission-action-depgraph.json';
+class MavenDependencyGraph {
+    constructor(graph) {
+        this.depGraph = graph;
+        this.cache = new h();
+        this.packageUrlToArtifact = new Map();
+        this.directDependencies = [];
+        this.parseDependencies();
+    }
+    getProjectName() {
+        return this.depGraph.graphName;
+    }
+    getAllPackageUrls() {
+        return Object.keys(this.packageUrlToArtifact);
+    }
+    getArtifactForPackageUrl(packageUrl) {
+        return this.packageUrlToArtifact[packageUrl];
+    }
+    getDirectDependencies() {
+        return this.directDependencies;
+    }
+    getPackageCount() {
+        return this.cache.countPackages();
+    }
+    createManifest(filePath) {
+        let manifest;
+        if (filePath) {
+            manifest = new g(this.getProjectName(), filePath);
+        }
+        else {
+            manifest = new g(this.getProjectName());
+        }
+        const packageUrlToArtifact = this.packageUrlToArtifact;
+        this.directDependencies.forEach(depPackage => {
+            const artifact = this.packageUrlToArtifact[depPackage.packageURL.toString()];
+            let scope = getDependencyScopeForMavenScope(artifact.scopes);
+            manifest.addDirectDependency(depPackage, scope);
+            function addTransitiveDeps(dependencies, seen = new Set()) {
+                if (dependencies) {
+                    dependencies.forEach(transitiveDep => {
+                        let purl = transitiveDep.packageURL.toString();
+                        if (seen.has(purl)) {
+                            // we're in a cycle! skip this one.
+                            return;
+                        }
+                        const transitiveDepArtifact = packageUrlToArtifact[purl];
+                        const transitiveDepScope = getDependencyScopeForMavenScope(transitiveDepArtifact.scopes);
+                        manifest.addIndirectDependency(transitiveDep, transitiveDepScope);
+                        seen.add(purl);
+                        addTransitiveDeps(transitiveDep.dependencies, seen);
+                    });
+                }
+            }
+            addTransitiveDeps(depPackage.dependencies);
+        });
+        return manifest;
+    }
+    parseDependencies() {
+        const graph = this.depGraph;
+        const cache = this.cache;
+        const dependencies = graph.dependencies || [];
+        const rootArtifactIds = [];
+        const dependencyIdMap = dependencyMap(dependencies);
+        const dependencyArtifactIdsWithParents = extractDependencyArtifactIdsWithParents(dependencies);
+        const idToPackageCachePackage = new Map();
+        // Create the packages for all known artifacts
+        graph.artifacts.forEach((artifact) => {
+            const artifactUrl = artifactToPackageURL(artifact);
+            const pkg = cache.package(artifactUrl);
+            idToPackageCachePackage[artifact.id] = pkg;
+            // Store a reference from the package URL to the original artifact as the artifact has extra metadata we need later for scopes and optionality
+            this.packageUrlToArtifact[artifactUrl.toString()] = artifact;
+            if (dependencyArtifactIdsWithParents.indexOf(artifact.id) === -1) {
+                rootArtifactIds.push(artifact.id);
+            }
+        });
+        // Now that all packages are known, process the dependencies for each and link them
+        Object.keys(dependencyIdMap).forEach(fromId => {
+            const pkg = idToPackageCachePackage[fromId];
+            if (!pkg) {
+                throw new Error(`Package '${fromId}' was not found in the cache.`);
+            }
+            const deps = dependencyIdMap[fromId];
+            if (deps) {
+                // Process each dependency id and link to the package in the cache
+                deps.forEach(dependencyId => {
+                    const dependencyPkg = idToPackageCachePackage[dependencyId];
+                    if (!dependencyPkg) {
+                        throw new Error(`Failed to find a dependency package for '${dependencyId}'`);
+                    }
+                    pkg.dependsOn(dependencyPkg);
+                });
+            }
+        });
+        const uniqueRootArtifactDependencies = [];
+        rootArtifactIds.forEach(rootArtifactId => {
+            const dependencyIds = getDirectDependencies(rootArtifactId, dependencies);
+            if (dependencyIds) {
+                dependencyIds.forEach(dependencyId => {
+                    if (uniqueRootArtifactDependencies.indexOf(dependencyId) === -1) {
+                        uniqueRootArtifactDependencies.push(dependencyId);
+                    }
+                });
+            }
+        });
+        this.directDependencies = uniqueRootArtifactDependencies.map(depId => idToPackageCachePackage[depId]);
+    }
+}
+function parseDependencyJson(file) {
+    const data = loadFileContents(file);
+    const pomXmlFilepath = file.replace(`target/${depgraphfilename}`, 'pom.xml');
+    if (!data) {
+        return {
+            filePath: pomXmlFilepath,
+            graphName: 'empty',
+            artifacts: [],
+            dependencies: [],
+        };
+    }
+    try {
+        const depGraph = JSON.parse(data);
+        return Object.assign(Object.assign({}, depGraph), { filePath: pomXmlFilepath });
+    }
+    catch (err) {
+        throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
+    }
+}
+function artifactToPackageURL(artifact) {
+    const qualifiers = getArtifactQualifiers(artifact);
+    return new node_modules_packageurl_js.PackageURL('maven', artifact.groupId, artifact.artifactId, artifact.version, qualifiers, undefined);
+}
+function getArtifactQualifiers(artifact) {
+    let qualifiers = undefined;
+    if (artifact.types && artifact.types.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['type'] = artifact.types[0];
+    }
+    if (artifact.classifiers && artifact.classifiers.length > 0) {
+        if (!qualifiers) {
+            qualifiers = {};
+        }
+        qualifiers['classifier'] = artifact.classifiers[0];
+    }
+    return qualifiers;
+}
+function getDependencyScopeForMavenScope(mavenScopes) {
+    // Once the API scopes are improved and expanded we should be able to perform better mapping here from Maven to cater for
+    // provided, runtime, compile, test, system, etc... in the future.
+    if (mavenScopes) {
+        if (mavenScopes.includes('test')) {
+            return 'development';
+        }
+    }
+    // The default scope for now as we only have runtime and development currently
+    return 'runtime';
+}
+function extractDependencyArtifactIdsWithParents(dependencies) {
+    if (dependencies) {
+        return dependencies.map(dependency => { return dependency.to; });
+    }
+    return [];
+}
+function dependencyMap(dependencies) {
+    const map = new Map();
+    if (dependencies) {
+        dependencies.forEach(dependency => {
+            const fromUrl = dependency.from;
+            let deps = map[fromUrl];
+            if (!deps) {
+                deps = [];
+                map[fromUrl] = deps;
+            }
+            deps.push(dependency.to);
+        });
+    }
+    return map;
+}
+function getDirectDependencies(artifactId, dependencies) {
+    const topLevel = dependencies.filter(dependency => { return dependency.from === artifactId; });
+    return topLevel.map(dep => { return dep.to; });
+}
+//# sourceMappingURL=depgraph.js.map
+;// CONCATENATED MODULE: ./lib/src/maven-runner.js
+var maven_runner_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+class MavenRunner {
+    constructor(directory, settingsFile, ingoreWrapper = false, mavenArguments = '') {
+        this.mavenExecutable = resolveMavenExecutable(directory, ingoreWrapper);
+        if (settingsFile) {
+            if (fileExists(settingsFile)) {
+                this.settings = settingsFile;
+            }
+            else {
+                throw new Error(`The specified settings file '${settingsFile}' does not exist`);
+            }
+        }
+        this.additionalArguments = [];
+        if (mavenArguments.trim().length > 0) {
+            this.additionalArguments = mavenArguments.trim().split(' ');
+        }
+    }
+    get configuration() {
+        return {
+            executable: this.mavenExecutable,
+            settingsFile: this.settings
+        };
+    }
+    exec(cwd, parameters) {
+        return maven_runner_awaiter(this, void 0, void 0, function* () {
+            const commandArgs = [];
+            // implictly run in batch mode, might need to make this configurable in the future
+            commandArgs.push('-B');
+            if (this.settings) {
+                commandArgs.push('--settings');
+                commandArgs.push(this.settings);
+            }
+            // Only append the additional arguments they are not empty values
+            if (this.additionalArguments && this.additionalArguments.length > 0) {
+                this.additionalArguments.forEach(arg => {
+                    if (arg.trim().length > 0) {
+                        commandArgs.push(arg);
+                    }
+                });
+            }
+            Array.prototype.push.apply(commandArgs, parameters);
+            let executionOutput = '';
+            let executionErrors = '';
+            const options = {
+                cwd: cwd,
+                listeners: {
+                    stdout: (data) => {
+                        executionOutput += data.toString();
+                    },
+                    stderr: (data) => {
+                        executionErrors += data.toString();
+                    }
+                }
+            };
+            try {
+                const exitCode = yield exec_exec(this.mavenExecutable, commandArgs, options);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: exitCode
+                };
+            }
+            catch (err) {
+                //TODO possibly throw a wrapped error here
+                warning(`Error encountered executing maven: ${err.message}`);
+                return {
+                    stdout: executionOutput,
+                    stderr: executionErrors,
+                    exitCode: -1
+                };
+            }
+        });
+    }
+}
+function resolveMavenExecutable(directory, ignoreWrapper = false) {
+    if (ignoreWrapper) {
+        return getMavenExecutable();
+    }
+    const wrapper = getMavenWrapper(directory);
+    // Return the matche maven wrapper script or otherwise fall back to mvn on the path
+    return wrapper || getMavenExecutable();
+}
+function getMavenWrapper(directory) {
+    if (!directory) {
+        return undefined;
+    }
+    const mavenWrapperFilename = external_path_.join(directory, getMavenWrapperExecutable());
+    if (fileExists(mavenWrapperFilename)) {
+        return mavenWrapperFilename;
+    }
+    return undefined;
+}
+function getMavenWrapperExecutable() {
+    if (maven_runner_isWindows()) {
+        return 'mvnw.cmd';
+    }
+    return 'mvnw';
+}
+function getMavenExecutable() {
+    if (maven_runner_isWindows()) {
+        return 'mvn.cmd';
+    }
+    return 'mvn';
+}
+function maven_runner_isWindows() {
+    return process.platform === 'win32';
+}
+//# sourceMappingURL=maven-runner.js.map
+;// CONCATENATED MODULE: ./lib/src/snapshot-generator.js
+var snapshot_generator_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+
+
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
+function generateSnapshot(directory, mvnConfig, snapshotConfig) {
+    return snapshot_generator_awaiter(this, void 0, void 0, function* () {
+        var _a;
+        var _b;
+        const depgraphs = yield generateDependencyGraphs(directory, mvnConfig);
+        const detector = (_b = snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.detector) !== null && _b !== void 0 ? _b : getDetector();
+        let snapshot = new l(detector, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.context, snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.job);
+        snapshot.job.correlator = (snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.correlator)
+            ? snapshotConfig.correlator
+            : (_a = snapshot.job) === null || _a === void 0 ? void 0 : _a.correlator;
+        const specifiedRef = getNonEmptyValue(snapshotConfig === null || snapshotConfig === void 0 ? void 0 : snapshotConfig.ref);
+        if (specifiedRef) {
+            snapshot.ref = specifiedRef;
+        }
+        const specifiedSha = getNonEmptyValue(snapshot === null || snapshot === void 0 ? void 0 : snapshot.sha);
+        if (specifiedSha) {
+            snapshot.sha = specifiedSha;
+        }
+        try {
+            for (const depgraph of depgraphs) {
+                const mavenDependencies = new MavenDependencyGraph(depgraph);
+                const pomFile = getRepositoryRelativePath(depgraph.filePath);
+                const manifest = mavenDependencies.createManifest(pomFile);
+                snapshot.addManifest(manifest);
+            }
+        }
+        catch (err) {
+            error(err);
+            throw new Error(`Could not generate a snapshot of the dependencies; ${err.message}`);
+        }
+        return snapshot;
+    });
+}
+function getDetector() {
+    return {
+        name: package_namespaceObject.UU,
+        url: package_namespaceObject.TB,
+        version: package_namespaceObject.rE
+    };
+}
+function generateDependencyGraphs(directory, config) {
+    return snapshot_generator_awaiter(this, void 0, void 0, function* () {
+        try {
+            const mvn = new MavenRunner(directory, config === null || config === void 0 ? void 0 : config.settingsFile, config === null || config === void 0 ? void 0 : config.ignoreMavenWrapper, config === null || config === void 0 ? void 0 : config.mavenArgs);
+            startGroup('depgraph-maven-plugin:aggregate');
+            const mavenGraphArguments = [
+                `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:graph`,
+                '-DgraphFormat=json',
+                `-DoutputFileName=${depgraphfilename}`,
+            ];
+            const graphResults = yield mvn.exec(directory, mavenGraphArguments);
+            info(graphResults.stdout);
+            info(graphResults.stderr);
+            endGroup();
+            if (graphResults.exitCode !== 0) {
+                throw new Error(`Failed to successfully generate dependency results with Maven, exit code: ${graphResults.exitCode}`);
+            }
+        }
+        catch (err) {
+            error(err);
+            throw new Error(`A problem was encountered generating dependency files, please check execution logs for details; ${err.message}`);
+        }
+        const graphFiles = getDepgraphFiles(directory, depgraphfilename);
+        let results = [];
+        for (const graphFile of graphFiles) {
+            core_debug(`Found depgraph file: ${graphFile}`);
+            try {
+                const depgraph = parseDependencyJson(graphFile);
+                results.push(depgraph);
+            }
+            catch (err) {
+                error(`Could not parse depgraph file, '${graphFile}': ${err.message}`);
+            }
+        }
+        return results;
+    });
+}
+// TODO this is assuming the checkout was made into the base path of the workspace...
+function getRepositoryRelativePath(file) {
+    const workspaceDirectory = external_path_.resolve(process.env.GITHUB_WORKSPACE || '.');
+    const fileResolved = external_path_.resolve(file);
+    const fileDirectory = external_path_.dirname(fileResolved);
+    core_debug(`Workspace directory   =  ${workspaceDirectory}`);
+    core_debug(`Snapshot file         =  ${fileResolved}`);
+    core_debug(`Snapshot directory    =  ${fileDirectory}`);
+    let result = fileResolved;
+    if (fileDirectory.startsWith(workspaceDirectory)) {
+        result = fileResolved.substring(workspaceDirectory.length + external_path_.sep.length);
+    }
+    core_debug(`Snapshot relative file =  ${result}`);
+    return result;
+}
+function getNonEmptyValue(str) {
+    if (str) {
+        const trimmed = str.trim();
+        if (trimmed.length > 0) {
+            return trimmed;
+        }
+    }
+    return undefined;
+}
+// getDepgraphFiles recursively finds all files that match the filename within the directory
+function getDepgraphFiles(directory, filename) {
+    let files = [];
+    try {
+        files = (0,external_fs_.readdirSync)(directory)
+            .filter((f) => f === filename)
+            .map((f) => external_path_.join(directory, f));
+    }
+    catch (err) {
+        error(`Could not read depgraphs directory: ${err.message}`);
+        return [];
+    }
+    // recursively find all files that match the filename within the directory
+    const subdirs = (0,external_fs_.readdirSync)(directory, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+    for (const subdir of subdirs) {
+        const subdirPath = external_path_.join(directory, subdir);
+        const subdirFiles = getDepgraphFiles(subdirPath, filename);
+        files = files.concat(subdirFiles);
+    }
+    return files;
+}
+//# sourceMappingURL=snapshot-generator.js.map
 ;// CONCATENATED MODULE: ./lib/src/index.js
 var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -39009,7 +40975,7 @@ function run() {
                     version: getInput('detector-version', { required: true }),
                 };
             }
-            snapshot = yield (0,_notfoundsnapshot_generator.generateSnapshot)(directory, mavenConfig, snapshotConfig);
+            snapshot = yield generateSnapshot(directory, mavenConfig, snapshotConfig);
         }
         catch (err) {
             error(err);

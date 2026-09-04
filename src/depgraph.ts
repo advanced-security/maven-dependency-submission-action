@@ -1,7 +1,7 @@
 import { PackageURL } from 'packageurl-js'
 import { PackageCache, Package, Manifest } from '@github/dependency-submission-toolkit';
 import { DependencyScope } from '@github/dependency-submission-toolkit';
-import { loadFileContents } from './utils/file-utils';
+import { loadFileContents } from './utils/file-utils.js';
 
 export type Depgraph = {
   filePath: string,

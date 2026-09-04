@@ -2,7 +2,7 @@ import pkg from '../../package.json' with { type: 'json' };
 import { program } from 'commander';
 import { warnIfSnapshotExcludeFileNameUsed } from './deprecated-options.js';
 import type { Snapshot } from '@github/dependency-submission-toolkit';
-import type { SnapshotConfig } from '../snapshot-generator';
+import type { SnapshotConfig } from '../snapshot-generator.js';
 
 program.name(pkg.name);
 program.version(pkg.version);
