@@ -175,7 +175,7 @@ export class MavenDependencyGraph {
 
 export function parseDependencyJson(file: string): Depgraph {
   const data = loadFileContents(file);
-  const pomXmlFilepath = file.replace(`target/${depgraphfilename}`, 'pom.xml');
+  const pomXmlFilepath = file.replace(new RegExp(`(^|[/\\\\])target[/\\\\]${escapeRegExp(depgraphfilename)}$`), '$1pom.xml');
 
   if (!data) {
     return {
@@ -195,6 +195,10 @@ export function parseDependencyJson(file: string): Depgraph {
   } catch (err: any) {
     throw new Error(`Failed to parse JSON dependency data: ${err.message}`);
   }
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 export function artifactToPackageURL(artifact: DepgraphArtifact): PackageURL {
