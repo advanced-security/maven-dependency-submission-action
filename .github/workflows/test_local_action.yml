@@ -1,9 +1,16 @@
 name: Test Local Action
 
 permissions:
-  contents: read
+  contents: write
 
 on:
+  push:
+    paths:
+      - action.yml
+      - dist/**
+      - src/**
+      - test-data/maven/simple/**
+      - .github/workflows/test_local_action.yml
   workflow_dispatch:
     inputs:
       directory:
