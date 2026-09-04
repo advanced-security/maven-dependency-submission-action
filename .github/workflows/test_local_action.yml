@@ -1,9 +1,16 @@
 name: Test Local Action
 
 permissions:
-  contents: read
+  contents: write
 
 on:
+  push:
+    paths:
+      - action.yml
+      - dist/**
+      - src/**
+      - test-data/maven/simple/**
+      - .github/workflows/test_local_action.yml
   workflow_dispatch:
     inputs:
       directory:
@@ -24,7 +31,7 @@ jobs:
       - name: Run local Action
         uses: ./
         with:
-          directory: ${{ inputs.directory }}
+          directory: ${{ inputs.directory || 'test-data/maven/simple' }}
 
   test_with_arguments:
     name: Test with Arguments
@@ -38,5 +45,5 @@ jobs:
       - name: Run local Action
         uses: ./
         with:
-          directory: ${{ inputs.directory }}
+          directory: ${{ inputs.directory || 'test-data/maven/simple' }}
           maven-args: ' -X -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'

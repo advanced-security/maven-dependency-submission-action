@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import {Snapshot, submitSnapshot} from '@github/dependency-submission-toolkit';
-import { SnapshotConfig, generateSnapshot } from './snapshot-generator';
+import { SnapshotConfig, generateSnapshot } from './snapshot-generator.js';
 
 async function run() {
   let snapshot: Snapshot | undefined;
