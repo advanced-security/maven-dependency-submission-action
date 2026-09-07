@@ -7,7 +7,7 @@ The action will invoke maven using the `com.github.ferstl:depgraph-maven-plugin:
 
 ## Usage
 
-As of version `3.0.0` this action now supports Maven multi-module projects as well as additional Maven configuration parameters. As of version `5.0.0`, multi-module projects report dependencies as coming from their respective `pom.xml` files.
+As of version `3.0.0` this action now supports Maven multi-module projects as well as additional Maven configuration parameters. Multi-module projects report dependencies in an aggregate manifest associated with the parent `pom.xml`.
 
 
 ### Pre-requisites

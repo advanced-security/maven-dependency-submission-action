@@ -77,7 +77,7 @@ export async function generateDependencyGraphs(directory: string, config?: Maven
 
     core.startGroup('depgraph-maven-plugin:aggregate');
     const mavenGraphArguments = [
-      `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:graph`,
+      `com.github.ferstl:depgraph-maven-plugin:${DEPGRAPH_MAVEN_PLUGIN_VERSION}:aggregate`,
       '-DgraphFormat=json',
       `-DoutputFileName=${depgraphfilename}`,
     ];
