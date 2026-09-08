@@ -40450,7 +40450,7 @@ var o=class{depPackage;relationship;scope;constructor(e,t,s){this.depPackage=e,t
 ${JSON.stringify(n.response.data,void 0,2)}`)),n instanceof Error&&(core.error(n.message),n.stack&&core.error(n.stack)),new Error(`Failed to submit snapshot: ${n}`)}}//# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./lib/package.json
-const package_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"maven-dependency-submission-action","rE":"6.0.0","TB":"https://github.com/advanced-security/maven-dependency-submission-action"}');
+const package_namespaceObject = /*#__PURE__*/JSON.parse('{"UU":"maven-dependency-submission-action","rE":"6.0.1","TB":"https://github.com/advanced-security/maven-dependency-submission-action"}');
 // EXTERNAL MODULE: ./node_modules/packageurl-js/index.js
 var node_modules_packageurl_js = __nccwpck_require__(7091);
 ;// CONCATENATED MODULE: ./lib/src/utils/file-utils.js
