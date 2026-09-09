@@ -13,7 +13,7 @@ describe('maven-runner', () => {
       const runner = new MavenRunner(projectDir);
 
       expect(runner.configuration.executable).toBeDefined();
-      expect(runner.configuration.executable).toBe('mvn');
+      expect(runner.configuration.executable).toBeOneOf(['mvn', 'mvn.cmd']);
       expect(runner.configuration.settingsFile).toBeUndefined();
     }, 20000);
 
@@ -23,7 +23,10 @@ describe('maven-runner', () => {
       const runner = new MavenRunner(projectDir);
 
       expect(runner.configuration.executable).toBeDefined();
-      expect(runner.configuration.executable).toBe(path.join(projectDir, 'mvnw'));
+      expect(runner.configuration.executable).toBeOneOf([
+        path.join(projectDir, 'mvnw'),
+        path.join(projectDir, 'mvnw.cmd')
+      ]);
       expect(runner.configuration.settingsFile).toBeUndefined();
     }, 20000);
 
@@ -36,7 +39,7 @@ describe('maven-runner', () => {
         const runner = new MavenRunner(projectDir, settings);
 
         expect(runner.configuration.executable).toBeDefined();
-        expect(runner.configuration.executable).toBe('mvn');
+        expect(runner.configuration.executable).toBeOneOf(['mvn', 'mvn.cmd']);
         expect(runner.configuration.settingsFile).toBe(settings);
       });
 

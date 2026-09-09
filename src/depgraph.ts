@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import { PackageURL } from 'packageurl-js'
 import { PackageCache, Package, Manifest } from '@github/dependency-submission-toolkit';
 import { DependencyScope } from '@github/dependency-submission-toolkit';
@@ -175,7 +177,7 @@ export class MavenDependencyGraph {
 
 export function parseDependencyJson(file: string): Depgraph {
   const data = loadFileContents(file);
-  const pomXmlFilepath = file.replace(`target/${depgraphfilename}`, 'pom.xml');
+  const pomXmlFilepath = file.replace(path.join('target', depgraphfilename), 'pom.xml');
 
   if (!data) {
     return {
