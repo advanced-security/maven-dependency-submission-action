@@ -40,7 +40,7 @@
     "@yao-pkg/pkg": "^6.22.0",
     "ts-node": "^10.9.2",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "bin": {
     "cli": "lib/src/executable/cli.js"
