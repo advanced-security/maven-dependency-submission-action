@@ -8,7 +8,7 @@ import { MavenRunner } from './maven-runner.js';
 import { loadFileContents } from './utils/file-utils.js';
 import { readdirSync } from 'fs';
 
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.5';
 
 export type MavenConfiguration = {
   ignoreMavenWrapper?: boolean;
