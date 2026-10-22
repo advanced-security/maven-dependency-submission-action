@@ -40810,7 +40810,7 @@ var snapshot_generator_awaiter = (undefined && undefined.__awaiter) || function 
 
 
 
-const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.3';
+const DEPGRAPH_MAVEN_PLUGIN_VERSION = '4.0.5';
 function generateSnapshot(directory, mvnConfig, snapshotConfig) {
     return snapshot_generator_awaiter(this, void 0, void 0, function* () {
         var _a;
